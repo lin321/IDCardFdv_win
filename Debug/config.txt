@@ -1,0 +1,5 @@
+appId=10022245
+apiKey=MGRhNjEyYWExOTdhYzYxNTkx
+secretKey=NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw
+url=http://192.168.1.201:8004/idcardfdv
+registeredNo=0

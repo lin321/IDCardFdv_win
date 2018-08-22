@@ -35,9 +35,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -75,14 +75,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\opencv-2.4.7-bin\install\include;$(SolutionDir)..\..\opencv-2.4.7-bin\install\include\opencv;$(SolutionDir)..\..\opencv-2.4.7-bin\install\include\opencv2;E:\vc\cpprestsdk-2.8.0\Release\include;E:\vc\OpenSSL-Win32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\opencv-2.4.7-bin\install\lib;E:\vc\cpprestsdk-2.8.0\Binaries\Win32\Debug;E:\vc\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\cpprestsdk-2.8.0;$(SolutionDir)\include\openssl-1_1_0i;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\cpprestsdk-2.8.0;$(SolutionDir)\include\openssl-1_1_0i;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -146,8 +148,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;cpprest120_xp_2_8.lib;opencv_core247.lib;opencv_highgui247.lib;opencv_imgproc247.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -202,7 +203,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThresholdSettingDlg.h" />
     <ClInclude Include="utility_funcs.h" />
-    <ClInclude Include="ZZLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CvvImage.cpp" />

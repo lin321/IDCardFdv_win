@@ -7,7 +7,7 @@
 #include "IDCardFdvDlg.h"
 #include "afxdialogex.h"
 
-#include "IdCardReader.h"
+#include "MTLibIDCardReader.h"
 #include "LocalMac.h"
 #include "utility_funcs.h"
 #include "base64.h"
@@ -195,6 +195,9 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_iplImgResultIconRight = cvLoadImage(fn.c_str(), -1);
 	fn = m_strModulePath + "wrong.png";
 	m_iplImgResultIconWrong = cvLoadImage(fn.c_str(), -1);
+
+	// IDCardReader
+	LoadIDCardReader();
 
 	// Mac ID
 	char mac[64];
@@ -530,29 +533,7 @@ UINT FdvThread(LPVOID lpParam)
 	GetModuleFileName(NULL, szPath, MAX_PATH);
 	std::string strModulePath = ExtractFilePath(szPath);
 
-	// init
-	CIdCardReader* pIdCardReader = new CIdCardReader();
-	int error = pIdCardReader->Init(strModulePath);
-	if (error)
-	{
-		delete pIdCardReader;
-		pIdCardReader = NULL;
-		switch (error)
-		{
-		case -1:
-			//m_strProcText.SetWindowText("身份证读卡器库装载失败!");
-			break;
-		case -2:
-			//m_strProcText.SetWindowText("身份证读卡器不支持所需功能!");
-			break;
-		default:
-			break;
-		}
-
-		pDlg->m_bFdvRun = false;
-		return 0;
-	}
-
+	
 #if OPENCV_CAPTURE
 	pDlg->m_bCmdCapture = true;
 	ResetEvent(pDlg->m_eCaptureEnd);
@@ -569,46 +550,21 @@ UINT FdvThread(LPVOID lpParam)
 #endif
 
 	// read idcard
-	int usbport = -1;
-	for (int port = 1001; port <= 1016; ++port)
-	{
-		if (pIdCardReader->InitComm(port) == 1) {
-			usbport = port;
-			break;
-		}
-	}
-	if (usbport == -1) {
-		// pDlg->m_strProcText.SetWindowText("身份证读卡器连接失败!");
-		pIdCardReader->CloseComm();
-		pDlg->m_bFdvRun = false;
-		return 0;
-	}
-
-	int li_ret = pIdCardReader->Authenticate();
-	li_ret = 1;
-	if (li_ret <= 0) {
-		//pDlg->m_strProcText.SetWindowText("身份证验证失败!");
-		pIdCardReader->CloseComm();
+	int iopen = OpenIDCardReader();
+	if (iopen < 0) {
 		pDlg->m_bFdvRun = false;
 		return 0;
 	}
 	else
 	{
-		if (1 != pIdCardReader->Read_Content(1)) {
-			// pDlg->m_strProcText.SetWindowText("身份证信息读取失败!");
-			pIdCardReader->CloseComm();
-			pDlg->m_bFdvRun = false;
-			return 0;
-		}
-
 		// 获取身份证号
-		long len = pIdCardReader->GetPeopleIDCode(pDlg->m_IdCardId, sizeof(pDlg->m_IdCardId));
+		long len = IDCardReader_GetPeopleIDCode(pDlg->m_IdCardId, sizeof(pDlg->m_IdCardId));
 		// 获取身份证有效期
-		len = pIdCardReader->GetStartDate(pDlg->m_IdCardIssuedate, sizeof(pDlg->m_IdCardIssuedate));
+		len = IDCardReader_GetStartDate(pDlg->m_IdCardIssuedate, sizeof(pDlg->m_IdCardIssuedate));
 
 		// 获取照片
-		long lenbmp = pIdCardReader->GetPhotoBMP(pDlg->m_IdCardPhoto, sizeof(pDlg->m_IdCardPhoto));
-		pIdCardReader->CloseComm();
+		long lenbmp = IDCardReader_GetPhotoBMP(pDlg->m_IdCardPhoto, sizeof(pDlg->m_IdCardPhoto));
+		CloseIDCardReader();
 
 		pDlg->m_iplImgPhoto = BMP2Ipl((unsigned char*)pDlg->m_IdCardPhoto, lenbmp);
 		pDlg->m_pInfoDlg->clearResultIcon();  // 验证结果图标清空
@@ -827,6 +783,9 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 	ZZCloseDevice(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
 	ZZDeinitFaceMgr();
 #endif
+	// IDCardReader
+	UnloadIDCardReader();
+
 	if (m_iplImgDisplay != NULL) {
 		cvReleaseImage(&m_iplImgDisplay);
 		m_iplImgDisplay = NULL;

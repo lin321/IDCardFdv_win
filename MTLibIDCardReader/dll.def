@@ -1,0 +1,11 @@
+LIBRARY MTLibIDCardReader
+
+EXPORTS
+
+LoadIDCardReader @ 1
+OpenIDCardReader @ 2
+IDCardReader_GetPeopleIDCode @ 3
+IDCardReader_GetStartDate @ 4
+IDCardReader_GetPhotoBMP @ 5
+CloseIDCardReader @ 6
+UnloadIDCardReader @ 7

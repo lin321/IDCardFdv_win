@@ -1,0 +1,12 @@
+IDCardFdv.VC.db
+IDCardFdv.VC.VC.opendb
+Debug/
+ipch/
+Release/
+.vs/IDCardFdv/v14/.suo
+IDCardFdvRegister/IDCardFdvRegister.vcxproj.user
+IDCardFdvRegister/IDCardFdvRegister.vcxproj.filters
+IDCardFdvRegister/IDCardFdvRegister.aps
+IDCardFdv/IDCardFdv.vcxproj.filters
+IDCardFdv/IDCardFdv.aps
+MTLibIDCardReader/MTLibIDCardReader.vcxproj.filters

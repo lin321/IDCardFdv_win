@@ -1,0 +1,6 @@
+LIBRARY MTLibNetwork
+
+EXPORTS
+
+MTLibCallVerify @ 1
+MTLibCallRegister @ 2

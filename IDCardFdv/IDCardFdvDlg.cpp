@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 
 #include "MTLibIDCardReader.h"
+#include "MTLibNetwork.h"
 #include "LocalMac.h"
 #include "utility_funcs.h"
 #include "base64.h"
@@ -29,11 +30,6 @@ using namespace cv;
 
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
-std::string callverify(std::string url, std::string appId, std::string apiKey, std::string secretKey,
-	std::string macId, std::string registeredNo,
-	std::string idcardId, std::string idcardIssuedate,
-	std::vector<uchar> idcardPhoto, std::vector<uchar> verifyPhotos[], int verifyPhotoNum);
-
 
 
 #if OPENCV_CAPTURE
@@ -66,6 +62,35 @@ static VOID __stdcall FaceResultCB(HWND hWnd, LONG result, BSTR feature, ULONG_P
 }
 #endif
 
+// 识别callback
+static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarity, unsigned long userdata)
+{
+	// 返回结果处理
+	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)userdata;
+
+	double retsim = similarity;
+	CString csTemp;
+	csTemp.Format("%.2f", retsim);
+	std::string retstr = csTemp.GetString();
+	if (retsim >= pDlg->m_dThreshold) {
+		pDlg->m_pInfoDlg->setResultTextSize(60);
+		pDlg->m_pInfoDlg->setResultText(retstr + "%");
+		pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconRight);
+	}
+	else if (retsim > 0.0) {
+		pDlg->m_pInfoDlg->setResultTextSize(60);
+		pDlg->m_pInfoDlg->setResultText(retstr + "%");
+		pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconWrong);
+	}
+	else {
+		// error
+		pDlg->m_pInfoDlg->setResultTextSize(20);
+		pDlg->m_pInfoDlg->setResultText(err_msg);
+		pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconWrong);
+	}
+
+	pDlg->setClearTimer();
+}
 
 // CIDCardFdvDlg 对话框
 
@@ -523,7 +548,6 @@ UINT CameraShowThread(LPVOID lpParam)
 }
 
 // capture thread
-#include <cpprest/json.h>
 UINT FdvThread(LPVOID lpParam)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
@@ -595,32 +619,25 @@ UINT FdvThread(LPVOID lpParam)
 #else
 		verifyPhotos[0] = facebuff;
 #endif
-		std::string retstr = callverify(pDlg->m_cfgUrl,
-			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey,
+		// uuid
+		CString struuid(L"error");
+		RPC_CSTR guidStr;
+		GUID guid;
+		if (UuidCreateSequential(&guid) == RPC_S_OK)
+		{
+			if (UuidToString(&guid, &guidStr) == RPC_S_OK)
+			{
+				struuid = (LPTSTR)guidStr;
+				RpcStringFree(&guidStr);
+			}
+		}
+		std::string uuid = std::string(struuid);
+		int ret = MTLibCallVerify(pDlg->m_cfgUrl,
+			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1);
+			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
+			VerifyCB, (unsigned long)pDlg);
 
-		
-		// 返回结果处理
-		double retsim = atof(retstr.c_str());
-		if (retsim >= pDlg->m_dThreshold ) {
-			pDlg->m_pInfoDlg->setResultTextSize(60);
-			pDlg->m_pInfoDlg->setResultText(retstr + "%");
-			pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconRight);
-		}
-		else if (retsim > 0.0) {
-			pDlg->m_pInfoDlg->setResultTextSize(60);
-			pDlg->m_pInfoDlg->setResultText(retstr + "%");
-			pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconWrong);
-		}
-		else {
-			// erro msg
-			pDlg->m_pInfoDlg->setResultTextSize(20);
-			pDlg->m_pInfoDlg->setResultText(retstr);
-			pDlg->m_pInfoDlg->drawResultIcon(pDlg->m_iplImgResultIconWrong);
-		}
-
-		pDlg->setClearTimer();
 	}
 
 	pDlg->m_bFdvRun = false;
@@ -632,140 +649,6 @@ void CIDCardFdvDlg::setClearTimer()
 	KillTimer(CLEAR_INFOIMG_TIMER);
 	SetTimer(CLEAR_INFOIMG_TIMER, 1000 * 10, NULL);
 }
-
-//==============================================
-#include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
-#include <cpprest/json.h>
-#include <openssl/sha.h>
-using namespace web;
-using namespace web::http;
-using namespace web::http::client;
-std::string callverifySub(utility::string_t& url, web::json::value& postParameters);
-
-// ---- sha256摘要哈希 ---- //    
-void sha256(const std::string &srcStr, std::string &encodedStr, std::string &encodedHexStr)
-{
-	// 调用sha256哈希    
-	unsigned char mdStr[33] = { 0 };
-	SHA256((const unsigned char *)srcStr.c_str(), srcStr.length(), mdStr);
-
-	// 哈希后的字符串    
-	encodedStr = std::string((const char *)mdStr);
-	// 哈希后的十六进制串 32字节    
-	char buf[65] = { 0 };
-	char tmp[3] = { 0 };
-	for (int i = 0; i < 32; i++)
-	{
-		sprintf_s(tmp, "%02x", mdStr[i]);
-		strcat_s(buf, tmp);
-	}
-	buf[32] = '\0'; // 后面都是0，从32字节截断    
-	encodedHexStr = std::string(buf);
-}
-
-std::string callverify(std::string url, std::string appId, std::string apiKey, std::string secretKey,
-				std::string macId, std::string registeredNo,
-				std::string idcardId, std::string idcardIssuedate,
-				std::vector<uchar> idcardPhoto, std::vector<uchar> verifyPhotos[], int verifyPhotoNum)
-{
-	json::value verify_json = json::value::object();
-
-	std::string shastr="";
-	// uuid
-	CString struuid(L"error");
-	RPC_CSTR guidStr;
-	GUID guid;
-	if (UuidCreateSequential(&guid) == RPC_S_OK)
-	{
-		if (UuidToString(&guid, &guidStr) == RPC_S_OK)
-		{
-			struuid = (LPTSTR)guidStr;
-			RpcStringFree(&guidStr);
-		}
-	}
-
-	verify_json[U("appId")] = json::value::string(utility::conversions::to_string_t(appId));
-	verify_json[U("apiKey")] = json::value::string(utility::conversions::to_string_t(apiKey));
-	verify_json[U("secretKey")] = json::value::string(utility::conversions::to_string_t(secretKey));
-	verify_json[U("uuid")] = json::value::string(utility::conversions::to_string_t(std::string(struuid)));
-	shastr += appId;
-	shastr += apiKey;
-	shastr += secretKey;
-	shastr += struuid;
-
-	//std::string macId = "00:09:4c:53:78:2c"; // test
-	verify_json[U("MacId")] = json::value::string(utility::conversions::to_string_t(macId));
-	shastr += macId;
-
-	//std::string registerno = "9081"; // test
-	verify_json[U("RegisteredNo")] = json::value::string(utility::conversions::to_string_t(registeredNo));
-	shastr += registeredNo;
-
-	verify_json[U("idcard_id")] = json::value::string(utility::conversions::to_string_t(idcardId));
-	verify_json[U("idcard_issuedate")] = json::value::string(utility::conversions::to_string_t(idcardIssuedate));
-	shastr += idcardId;
-	shastr += idcardIssuedate;
-
-	utility::string_t b64str = U("data:image/bmp;base64,") + utility::conversions::to_base64(idcardPhoto);
-	verify_json[U("idcard_photo")] = json::value::string(b64str);
-	shastr += utility::conversions::to_utf8string(b64str);
-
-	verify_json[U("verify_photos")] = json::value::array();
-	for (int i = 0; i < verifyPhotoNum; i++) {
-		utility::string_t b64str = U("data:image/jpeg;base64,") + utility::conversions::to_base64(verifyPhotos[i]);
-		verify_json[U("verify_photos")][i] = json::value::string(b64str);
-		shastr += utility::conversions::to_utf8string(b64str);
-	}
-
-	std::string shaEncoded;
-	std::string shaEncodedHex;
-	sha256(shastr, shaEncoded, shaEncodedHex);
-	verify_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
-
-	return callverifySub(utility::conversions::to_string_t(url), verify_json);
-}
-std::string callverifySub(utility::string_t& url, web::json::value& postParameters)
-{
-	std::string ret;
-
-	http::uri uri = http::uri(url);
-	http_client client(uri);
-	web::http::http_request postRequest;
-	postRequest.set_method(methods::POST);
-	postRequest.set_body(postParameters);
-
-	try {
-		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);
-		http_response resp = getTask.get();
-		const json::value& jval = resp.extract_json().get();
-		const web::json::object& jobj = jval.as_object();
-		if (jval.has_field(U("Err_no"))) {
-			int err_no = jobj.at(L"Err_no").as_integer();
-			if (err_no != 0) {
-				utility::string_t err_msg = jobj.at(L"Err_msg").as_string();
-				ret = utility::conversions::to_utf8string(err_msg);
-				//AfxMessageBox(err_msg.c_str());
-				//printf("%ls\n", err_msg.c_str());
-			}
-			else {
-				double sim = jobj.at(L"Similarity").as_double() * 100;
-				CString csTemp;
-				csTemp.Format("%.2f", sim);
-				ret = csTemp.GetString();
-			}
-		}
-	}
-	catch (...) {
-		ret = "network error!";
-		//AfxMessageBox(_T("network error!"));
-		//printf("network error!\n");
-	}
-
-	return ret;
-}
-
-//==============================================
 
 
 BOOL CIDCardFdvDlg::DestroyWindow()

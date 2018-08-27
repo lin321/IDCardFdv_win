@@ -31,7 +31,6 @@ using namespace cv;
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
 
-
 #if OPENCV_CAPTURE
 #else
 static VOID __stdcall FaceImageCB(HWND hWnd, BSTR imgBase64, ULONG_PTR userdata)

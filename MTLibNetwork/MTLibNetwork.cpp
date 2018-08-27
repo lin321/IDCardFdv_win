@@ -215,3 +215,30 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 }
 
 
+int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, unsigned long userdata)
+{
+	utility::string_t urlstr = utility::conversions::to_string_t(url);
+	http::uri uri = http::uri(urlstr);
+	http_client client(uri);
+	web::http::http_request postRequest;
+	postRequest.set_method(methods::POST);
+	try {
+		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);
+		http_response resp = getTask.get();
+		if (resp.status_code() == 200) {
+			testurlCB(0, userdata);
+		}
+		else {
+			testurlCB(-1, userdata);
+			return -1;
+		}
+	}
+	catch (...) {
+		//printf("network error!\n");
+		testurlCB(-1, userdata);
+		return -1;
+	}
+
+	return 0;
+}
+

@@ -1,4 +1,4 @@
 dir
-copy ..\Debug\MTLibNetwork.dll ..\bin\
-copy ..\Debug\MTLibNetwork.lib ..\lib\
+copy ..\Debug\MTLibNetworkd.dll ..\bin\
+copy ..\Debug\MTLibNetworkd.lib ..\lib\
 copy MTLibNetwork.h ..\include\MTLib\

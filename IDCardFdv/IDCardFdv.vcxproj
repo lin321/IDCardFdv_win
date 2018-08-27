@@ -99,7 +99,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Rpcrt4.lib;opencv_core247d.lib;opencv_highgui247d.lib;opencv_imgproc247d.lib;MTLibIDCardReader.lib;MTLibNetwork.lib</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;opencv_core247d.lib;opencv_highgui247d.lib;opencv_imgproc247d.lib;MTLibIDCardReader.lib;MTLibNetworkd.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

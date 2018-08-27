@@ -8,21 +8,48 @@
 #include "afxdialogex.h"
 
 #include "LocalMac.h"
+#include "MTLibNetwork.h"
 
 #include <fstream>
 #include <sstream>
-
-#include <cpprest/http_client.h> 
-#include <cpprest/json.h>
-#include <openssl/sha.h>
+#include <string>
 
 using namespace std;
-using namespace web;
-using namespace web::http;
-using namespace web::http::client;
 
-std::string callregister(HANDLE handle, std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string productsn, std::string macId);
-std::string callregisterSub(HANDLE handle, utility::string_t& url, web::json::value& postParameters);
+static void __stdcall RegisterCB(int err_no, std::string err_msg, std::string RegisteredNo, unsigned long userdata)
+{
+	if (-1 == err_no) {
+		AfxMessageBox(_T("network error!")); 
+		return;
+	}
+
+	if (0 != err_no) {
+		if (404 == err_no) {
+			AfxMessageBox(_T("该序列号已被注册!"));
+		}
+		else if (403 == err_no) {
+			AfxMessageBox(_T("无效的序列号！"));
+		}
+		else
+			AfxMessageBox(_T("注册失败！"));
+	}
+	else {
+		AfxMessageBox(_T("注册成功!"));
+
+		// save
+		CIDCardFdvRegisterDlg* pDlg = (CIDCardFdvRegisterDlg*)userdata;
+		pDlg->m_cfgRegisteredNo = RegisteredNo;
+		pDlg->saveConfig();
+	}
+}
+
+static void __stdcall TestUrlCB(int err_no, unsigned long userdata)
+{
+	if(0 == err_no)
+		AfxMessageBox(_T("URL 可用!"));
+	else
+		AfxMessageBox(_T("URL 不可用!"));
+}
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -227,27 +254,10 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnTest()
 	// TODO: 在此添加控件通知处理程序代码
 	CString str;
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(str);
-	std::string urlstr = str.GetString();
+	std::string url = str.GetString();
 
-	utility::string_t url = utility::conversions::to_string_t(urlstr);
-	http::uri uri = http::uri(url);
-	http_client client(uri);
-	web::http::http_request postRequest;
-	postRequest.set_method(methods::POST);
-	try {
-		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);
-		http_response resp = getTask.get();
-		if (resp.status_code() == 200) {
-			AfxMessageBox(_T("URL 可用!"));
-		}
-		else {
-			AfxMessageBox(_T("URL 不可用!"));
-		}
-	}
-	catch (...) {
-		AfxMessageBox(_T("URL 不可用!"));
-		//printf("network error!\n");
-	}
+	MTLibTestUrl(url, TestUrlCB, (unsigned long)this);
+
 }
 
 
@@ -275,12 +285,27 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnReg()
 	productsn = productsn + "-" + editstr.GetString();
 
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(editstr);
-	std::string urlstr = editstr.GetString();
+	std::string url = editstr.GetString();
 
 	char mac[64];
 	GetLocalMAC(mac,sizeof(mac));
 	std::string macId = mac;
-	callregister(this,urlstr, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, productsn, macId);
+
+	// uuid
+	CString struuid(L"error");
+	RPC_CSTR guidStr;
+	GUID guid;
+	if (UuidCreateSequential(&guid) == RPC_S_OK)
+	{
+		if (UuidToString(&guid, &guidStr) == RPC_S_OK)
+		{
+			struuid = (LPTSTR)guidStr;
+			RpcStringFree(&guidStr);
+		}
+	}
+	std::string uuid = std::string(struuid);
+
+	MTLibCallRegister(url, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, uuid, productsn, macId,RegisterCB,(unsigned long)this);
 
 	btn_reg->EnableWindow(true);
 }
@@ -297,116 +322,3 @@ void CIDCardFdvRegisterDlg::saveConfig()
 }
 
 
-// ---- sha256摘要哈希 ---- //    
-void sha256(const std::string &srcStr, std::string &encodedStr, std::string &encodedHexStr)
-{
-	// 调用sha256哈希    
-	unsigned char mdStr[33] = { 0 };
-	SHA256((const unsigned char *)srcStr.c_str(), srcStr.length(), mdStr);
-
-	// 哈希后的字符串    
-	encodedStr = std::string((const char *)mdStr);
-	// 哈希后的十六进制串 32字节    
-	char buf[65] = { 0 };
-	char tmp[3] = { 0 };
-	for (int i = 0; i < 32; i++)
-	{
-		sprintf_s(tmp, "%02x", mdStr[i]);
-		strcat_s(buf, tmp);
-	}
-	buf[32] = '\0'; // 后面都是0，从32字节截断    
-	encodedHexStr = std::string(buf);
-}
-
-std::string callregister(HANDLE handle, std::string url, std::string appId, std::string apiKey, std::string secretKey,
-						std::string productsn, std::string macId)
-{
-	json::value reg_json = json::value::object();
-
-	std::string shastr = "";
-	// uuid
-	CString struuid(L"error");
-	RPC_CSTR guidStr;
-	GUID guid;
-	if (UuidCreateSequential(&guid) == RPC_S_OK)
-	{
-		if (UuidToString(&guid, &guidStr) == RPC_S_OK)
-		{
-			struuid = (LPTSTR)guidStr;
-			RpcStringFree(&guidStr);
-		}
-	}
-
-	reg_json[U("appId")] = json::value::string(utility::conversions::to_string_t(appId));
-	reg_json[U("apiKey")] = json::value::string(utility::conversions::to_string_t(apiKey));
-	//reg_json[U("secretKey")] = json::value::string(utility::conversions::to_string_t(secretKey));
-	reg_json[U("uuid")] = json::value::string(utility::conversions::to_string_t(std::string(struuid)));
-	shastr += appId;
-	shastr += apiKey;
-	shastr += secretKey;
-	shastr += struuid;
-
-	reg_json[U("MacId")] = json::value::string(utility::conversions::to_string_t(macId));
-	shastr += macId;
-
-	reg_json[U("productsn")] = json::value::string(utility::conversions::to_string_t(productsn));
-	shastr += productsn;
-
-	std::string shaEncoded;
-	std::string shaEncodedHex;
-	sha256(shastr, shaEncoded, shaEncodedHex);
-	reg_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
-
-	return callregisterSub(handle,utility::conversions::to_string_t(url), reg_json);
-}
-std::string callregisterSub(HANDLE handle, utility::string_t& url, web::json::value& postParameters)
-{
-	std::string ret;
-
-	http::uri uri = http::uri(url);
-	http_client client(uri);
-	web::http::http_request postRequest;
-	postRequest.set_method(methods::POST);
-	postRequest.set_body(postParameters);
-
-	try {
-		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);
-		http_response resp = getTask.get();
-		const json::value& jval = resp.extract_json().get();
-		const web::json::object& jobj = jval.as_object();
-		if (jval.has_field(U("Err_no"))) {
-			int err_no = jobj.at(L"Err_no").as_integer();
-			if (err_no != 0) {
-				utility::string_t err_msg = jobj.at(L"Err_msg").as_string();
-				ret = utility::conversions::to_utf8string(err_msg);
-				//AfxMessageBox(ret.c_str());
-				//printf("%ls\n", err_msg.c_str());
-				if (404 == err_no) {
-					AfxMessageBox(_T("该序列号已被注册!"));
-				}
-				else if (403 == err_no) {
-					AfxMessageBox(_T("无效的序列号！"));
-				}
-				else
-					AfxMessageBox(_T("注册失败！"));
-			}
-			else {
-				utility::string_t RegisteredNo = jobj.at(L"RegisteredNo").as_string();
-				ret = utility::conversions::to_utf8string(RegisteredNo);
-				AfxMessageBox(_T("注册成功!"));
-
-				// save
-				CIDCardFdvRegisterDlg* pDlg = (CIDCardFdvRegisterDlg*)handle;
-				pDlg->m_cfgRegisteredNo = ret;
-				pDlg->saveConfig();				
-			}
-		}
-	}
-	catch (...) {
-		ret = "network error!";
-		AfxMessageBox(_T("network error!"));
-		//printf("network error!\n");
-	}
-
-	return ret;
-}

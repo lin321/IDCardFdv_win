@@ -12,3 +12,6 @@ IDCardFdv/IDCardFdv.aps
 MTLibIDCardReader/MTLibIDCardReader.vcxproj.filters
 MTLibNetwork/MTLibNetwork.vcxproj.filters
 MTLibNetwork/MTLibNetwork.vcxproj.user
+IDCardFdv/IDCardFdv.vcxproj.user
+MTLibCamera/MTLibCamera.vcxproj.user
+MTLibCamera/MTLibCamera.vcxproj.filters

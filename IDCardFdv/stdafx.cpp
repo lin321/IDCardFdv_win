@@ -5,4 +5,4 @@
 
 #include "stdafx.h"
 
-#pragma comment(lib, "ZZLibrary.lib")
+//#pragma comment(lib, "ZZLibrary.lib")

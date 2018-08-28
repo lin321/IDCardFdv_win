@@ -23,7 +23,7 @@ using namespace cv;
 #endif
 
 
-#define OPENCV_CAPTURE 1
+#define OPENCV_CAPTURE 0
 
 #define CLEAR_INFOIMG_TIMER 1
 
@@ -33,17 +33,18 @@ UINT FdvThread(LPVOID lpParam);
 
 #if OPENCV_CAPTURE
 #else
-static VOID __stdcall FaceImageCB(HWND hWnd, BSTR imgBase64, ULONG_PTR userdata)
+#include "MTLibCameraLib.h"
+
+static void __stdcall FaceImageCB(HWND hWnd, BSTR imgBase64, ULONG_PTR userdata)
 {
 	CIDCardFdvDlg* handle = (CIDCardFdvDlg*)userdata;
 
 	_bstr_t bstr_t(imgBase64);
 	handle->m_sCaptureBase64 = bstr_t;
 	handle->m_bFaceGot = true;
-	ZZReleaseString(imgBase64);
 }
 
-static VOID __stdcall FaceResultCB(HWND hWnd, LONG result, BSTR feature, ULONG_PTR userdata)
+static void __stdcall FaceResultCB(HWND hWnd, LONG result, ULONG_PTR userdata)
 {
 	CIDCardFdvDlg* handle = (CIDCardFdvDlg*)userdata;
 	if (0 == result) {
@@ -57,7 +58,6 @@ static VOID __stdcall FaceResultCB(HWND hWnd, LONG result, BSTR feature, ULONG_P
 	else {
 		handle->m_bFaceGot = false;
 	}
-	ZZReleaseString(feature);
 }
 #endif
 
@@ -270,12 +270,10 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	ResetEvent(m_eCameraEnd);
 	startCameraThread();
 #else
-	ZZInitFaceMgr();
-	ZZOpenDevice(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd, 2);
-	ZZOpenHideDevice(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd, 4);
-	ZZOpenVideo(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZOpenHideVideo(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZGetFaceFeature(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd, FaceImageCB, (ULONG_PTR)this, 2, FaceResultCB, (ULONG_PTR)this);
+	MTLibLoadCamera();
+	MTLibOpenCamera(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd,
+					FaceImageCB, (ULONG_PTR)this, 
+					FaceResultCB, (ULONG_PTR)this);
 #endif
 
 	// ÏÔÊ¾³õÊ¼Öµ
@@ -658,12 +656,8 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 	Sleep(20);
 #else
 	m_pInfoDlg->ShowWindow(SW_HIDE);
-	ZZStopGetFace(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZCloseHideVideo(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZCloseVideo(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZCloseHideDevice(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZCloseDevice(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd);
-	ZZDeinitFaceMgr();
+	MTLibCloseCamera();
+	MTLibUnloadCamera();
 #endif
 	// IDCardReader
 	UnloadIDCardReader();

@@ -1,0 +1,8 @@
+LIBRARY MTLibCameraLibd
+
+EXPORTS
+
+MTLibLoadCamera @ 1
+MTLibOpenCamera @ 2
+MTLibCloseCamera @ 3
+MTLibUnloadCamera @ 4

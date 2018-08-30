@@ -27,7 +27,7 @@ using namespace cv;
 
 #define CLEAR_INFOIMG_TIMER 1
 
-
+CCriticalSection g_CriticalSection;
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
 
@@ -105,6 +105,7 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_thCamera = NULL;
 	ResetEvent(m_eCameraEnd);
 	m_iplImgDisplay = NULL;
+	m_iplImgTemp = NULL;
 	m_bFlip = true;
 
 	m_bCmdCapture = false;
@@ -368,28 +369,22 @@ void CIDCardFdvDlg::showPreview(IplImage* img)
 	int displayY = (int)(rh - displayH) / 2;	// 垂直居中
 	SetRect(rect, displayX, displayY, displayX + displayW, displayY + displayH);
 
-	CvSize ImgSize;
-	ImgSize.height = displayW;
-	ImgSize.width = displayH;
 	CvSize ImgOrgSize;
 	ImgOrgSize.width = img->width;
 	ImgOrgSize.height = img->height;
 	if (m_iplImgDisplay == NULL)
-		m_iplImgDisplay = cvCreateImage(ImgSize, IPL_DEPTH_8U, 3);
+		m_iplImgDisplay = cvCreateImage(ImgOrgSize, img->depth, img->nChannels);
 	
-	if (m_iplImgTemp == NULL)
-		m_iplImgTemp = cvCreateImage(ImgOrgSize, IPL_DEPTH_8U, 3);
-
-	if (m_bFlip)
-		cvFlip(img, m_iplImgTemp, 1);
+	IplImage* pImg;
+	if (m_bFlip) {
+		cvFlip(img, m_iplImgDisplay, 1);
+		pImg = m_iplImgDisplay;
+	}
 	else
-		cvCopy(img, m_iplImgTemp);
-	
-
-	cvResize(m_iplImgTemp, m_iplImgDisplay, INTER_CUBIC);
+		pImg = img;
 
 	CvvImage cimg;
-	cimg.CopyOf(m_iplImgDisplay, -1);							// 复制图片
+	cimg.CopyOf(pImg, -1);							// 复制图片
 	cimg.DrawToHDC(hDC, &rect);				// 将图片绘制到显示控件的指定区域内
 
 	ReleaseDC(pDC);
@@ -433,7 +428,9 @@ void CIDCardFdvDlg::startCameraThread()
 
 void CIDCardFdvDlg::stopCameraThread()
 {
+	g_CriticalSection.Lock();
 	m_bCameraRun = false;
+	g_CriticalSection.Unlock();
 	if (m_thCamera) {
 		WaitForSingleObject(m_eCameraEnd, INFINITE);
 		ResetEvent(m_eCameraEnd);
@@ -489,7 +486,10 @@ UINT CameraShowThread(LPVOID lpParam)
 		return 0;
 	}
 
+	g_CriticalSection.Lock();
 	pDlg->m_bCameraRun = true;
+	g_CriticalSection.Unlock();
+
 	while (pDlg->m_bCameraRun)
 	{
 		WINDOWPLACEMENT wpl;
@@ -725,7 +725,9 @@ void CIDCardFdvDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	// test code
+#if OPENCV_CAPTURE
 	ProcessCapture();
+#endif
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 

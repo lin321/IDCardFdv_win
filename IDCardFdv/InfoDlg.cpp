@@ -58,7 +58,7 @@ BOOL CInfoDlg::OnInitDialog()
 	SetWindowLong(this->GetSafeHwnd(),
 		GWL_EXSTYLE,
 		GetWindowLong(this->GetSafeHwnd(), GWL_EXSTYLE) | 0x80000);  //设定窗体使用扩展模式 
-	SetLayeredWindowAttributes(maskColor, 255, 1);
+	SetLayeredWindowAttributes(maskColor, 255, LWA_COLORKEY);
 
 	/**/
 	m_iplImgClearImg = cvCreateImage(cvSize(2, 2), IPL_DEPTH_8U, 3);
@@ -216,9 +216,10 @@ void CInfoDlg::drawImage(IplImage* img, UINT ID, int type, bool clearArea)
 	if (clearArea) {
 		CRect clearrect;
 		SetRect(clearrect, 0, 0, rw, rh);
-		CvvImage clearimg;
-		clearimg.CopyOf(m_iplImgClearImg, -1);
-		clearimg.DrawToHDC(hDC, &clearrect);
+		//CvvImage clearimg;
+		//clearimg.CopyOf(m_iplImgClearImg, -1);
+		//clearimg.DrawToHDC(hDC, &clearrect);
+		pDC->FillSolidRect(clearrect, RGB(255, 255, 255));
 	}
 
 	CvvImage cimg;

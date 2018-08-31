@@ -5,6 +5,9 @@
 #pragma once
 #include <string>
 
+#include "CvvImage.h"
+#include "QRScanMaskDlg.h"
+
 // CIDCardFdvRegisterDlg ¶Ô»°¿ò
 class CIDCardFdvRegisterDlg : public CDialogEx
 {
@@ -43,8 +46,32 @@ public:
 	std::string m_cfgUrl;
 	std::string m_cfgRegisteredNo;
 
+	int camdevid;
+	bool m_bCameraRun;
+	int m_iQRbtnState;
+	CWinThread* m_thCamera;
+	CEvent m_eCameraEnd;
+	bool m_bFlip;
+	IplImage* m_iplImgDisplay;
+	IplImage* m_iplImgTemp;
+
+	int qrScanCnt;
+	int qrScanCntMax;
+	IplImage* m_iplImgQRimg;
+	IplImage* m_iplImgQRimgGray;
+	CQRScanMaskDlg* m_pScanMaskDlg;
+
 public:
+	void showPreview(IplImage* img);
+	void startCameraThread();
+	void stopCameraThread();
+
+	void setProductSnText(std::string str);
 	void saveConfig();
 	afx_msg void OnBnClickedBtnTest();
 	afx_msg void OnBnClickedBtnReg();
+	virtual BOOL DestroyWindow();
+	afx_msg void OnBnClickedBtnQrscan();
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+	afx_msg void OnMove(int x, int y);
 };

@@ -10,3 +10,4 @@ IDCardFdv/IDCardFdv.aps
 MTLibNetwork/MTLibNetwork.vcxproj.user
 IDCardFdv/IDCardFdv.vcxproj.user
 MTLibCamera/MTLibCamera.vcxproj.user
+qrencode/qrencode.vcxproj.user

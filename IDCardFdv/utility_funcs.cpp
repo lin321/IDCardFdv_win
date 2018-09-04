@@ -10,7 +10,7 @@ struct bmp_fileheader
 {
 	unsigned short   bfType; //文件标识
 	unsigned long	 bfSize; //文件大小
-	unsigned long	 bfReverved1; //保留
+	unsigned long	 bfReserved1; //保留
 	unsigned long    bfOffBits;//数据偏移
 };
 
@@ -25,7 +25,7 @@ struct bmp_infoheader
 	unsigned long    biCompression;//压缩说明
 	unsigned long    biSizeImage;//位图数据的大小
 	unsigned long    biXPelsPerMeter;//水平分辨率
-	unsigned long    biYpelsPerMeter;//垂直分辨率
+	unsigned long    biYPelsPerMeter;//垂直分辨率
 	unsigned long    biClrUsed;//使用的颜色数
 	unsigned long    biClrImportant;//重要的颜色数
 };

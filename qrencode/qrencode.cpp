@@ -48,14 +48,15 @@ void QREncode(const char* szSourceSring, const char* outputDir)
 	unsigned char*  pRGBData, *pSourceData, *pDestData;
 	QRcode*         pQRC;
 	FILE*           f;
+	int				blank = 2;	// ±ßÔµÁô°×ÏñËØ
 
 	if (pQRC = QRcode_encodeString(szSourceSring, 0, QR_ECLEVEL_H, QR_MODE_8, 1))
 	{
 		unWidth = pQRC->width;
-		unWidthAdjusted = unWidth * 8 * 3;
+		unWidthAdjusted = unWidth * 8 * 3 + blank * 2 * 3;
 		if (unWidthAdjusted % 4)
 			unWidthAdjusted = (unWidthAdjusted / 4 + 1) * 4;
-		unDataBytes = unWidthAdjusted * unWidth * 8;
+		unDataBytes = unWidthAdjusted * (unWidth * 8 + blank * 2);
 
 		// Allocate pixels buffer
 
@@ -82,8 +83,8 @@ void QREncode(const char* szSourceSring, const char* outputDir)
 
 		BITMAPINFOHEADER kInfoHeader;
 		kInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
-		kInfoHeader.biWidth = unWidth * 8;
-		kInfoHeader.biHeight = -((int)unWidth * 8);
+		kInfoHeader.biWidth = unWidth * 8 + blank * 2;
+		kInfoHeader.biHeight = -((int)unWidth * 8 + blank * 2);
 		kInfoHeader.biPlanes = 1;
 		kInfoHeader.biBitCount = 24;
 		kInfoHeader.biCompression = 0;	// no compression
@@ -99,7 +100,7 @@ void QREncode(const char* szSourceSring, const char* outputDir)
 		pSourceData = pQRC->data;
 		for (y = 0; y < unWidth; y++)
 		{
-			pDestData = pRGBData + unWidthAdjusted * y * 8;
+			pDestData = pRGBData + unWidthAdjusted * y * 8 + unWidthAdjusted * blank;
 			for (x = 0; x < unWidth; x++)
 			{
 				if (*pSourceData & 1)
@@ -108,9 +109,9 @@ void QREncode(const char* szSourceSring, const char* outputDir)
 					{
 						for (n = 0; n < 8; n++)
 						{
-							*(pDestData + n * 3 + unWidthAdjusted * l) = 0;
-							*(pDestData + 1 + n * 3 + unWidthAdjusted * l) = 0;
-							*(pDestData + 2 + n * 3 + unWidthAdjusted * l) = 0;
+							*(pDestData + n * 3 + unWidthAdjusted * l + blank * 3) = 0;
+							*(pDestData + 1 + n * 3 + unWidthAdjusted * l + blank * 3) = 0;
+							*(pDestData + 2 + n * 3 + unWidthAdjusted * l + blank * 3) = 0;
 						}
 					}
 				}

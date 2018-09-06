@@ -11,3 +11,6 @@ MTLibNetwork/MTLibNetwork.vcxproj.user
 IDCardFdv/IDCardFdv.vcxproj.user
 MTLibCamera/MTLibCamera.vcxproj.user
 qrencode/qrencode.vcxproj.user
+IDCardFdvSetup/IDCardFdvSetup/Express/SingleImage/LogFiles/
+IDCardFdvSetup/IDCardFdvSetup/Express/SingleImage/Reports/
+IDCardFdvSetup/IDCardFdvSetup/Express/

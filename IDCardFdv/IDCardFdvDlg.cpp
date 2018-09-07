@@ -23,7 +23,7 @@ using namespace cv;
 #endif
 
 
-#define OPENCV_CAPTURE 1
+#define OPENCV_CAPTURE 0
 
 #define CLEAR_INFOIMG_TIMER 1
 

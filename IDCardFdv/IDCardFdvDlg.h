@@ -44,6 +44,7 @@ public:
 	std::string m_cfgApiKey;
 	std::string m_cfgSecretKey;
 	std::string m_cfgUrl;
+	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
 
 	int camdevid;

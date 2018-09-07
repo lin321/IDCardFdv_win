@@ -195,6 +195,7 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 	m_cfgApiKey = "MGRhNjEyYWExOTdhYzYxNTkx";
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
+	m_cfgTimeOut = "15";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
 	while (std::getline(confFile, line))
@@ -214,6 +215,8 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 					m_cfgSecretKey = value;
 				if (key == "url")
 					m_cfgUrl = value;
+				if (key == "timeout")
+					m_cfgTimeOut = value;
 			}
 		}
 	}
@@ -317,7 +320,7 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnTest()
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(str);
 	std::string url = str.GetString();
 
-	MTLibTestUrl(url, TestUrlCB, (unsigned long)this);
+	MTLibTestUrl(url, TestUrlCB, (unsigned long)this, ::stoi(m_cfgTimeOut));
 
 }
 
@@ -366,7 +369,7 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnReg()
 	}
 	std::string uuid = std::string(struuid);
 
-	MTLibCallRegister(url, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, uuid, productsn, macId,RegisterCB,(unsigned long)this);
+	MTLibCallRegister(url, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, uuid, productsn, macId,RegisterCB,(unsigned long)this, ::stoi(m_cfgTimeOut));
 
 	btn_reg->EnableWindow(true);
 }
@@ -510,6 +513,7 @@ void CIDCardFdvRegisterDlg::saveConfig()
 	confFile << "apiKey=" << m_cfgApiKey << endl;
 	confFile << "secretKey=" << m_cfgSecretKey << endl;
 	confFile << "url=" << m_cfgUrl << endl;
+	confFile << "timeout=" << m_cfgTimeOut << endl;
 	confFile << "registeredNo=" << m_cfgRegisteredNo << endl;
 	confFile.close();
 }

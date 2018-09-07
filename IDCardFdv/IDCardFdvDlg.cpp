@@ -23,7 +23,7 @@ using namespace cv;
 #endif
 
 
-#define OPENCV_CAPTURE 0
+#define OPENCV_CAPTURE 1
 
 #define CLEAR_INFOIMG_TIMER 1
 
@@ -234,6 +234,7 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_cfgApiKey = "MGRhNjEyYWExOTdhYzYxNTkx";
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
+	m_cfgTimeOut = "15";
 	m_cfgRegisteredNo = "0";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
@@ -254,6 +255,8 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 					m_cfgSecretKey = value;
 				if (key == "url")
 					m_cfgUrl = value;
+				if (key == "timeout")
+					m_cfgTimeOut = value;
 				if (key == "registeredNo")
 					m_cfgRegisteredNo = value;
 			}
@@ -633,7 +636,7 @@ UINT FdvThread(LPVOID lpParam)
 			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
 			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
-			VerifyCB, (unsigned long)pDlg);
+			VerifyCB, (unsigned long)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 
 	}
 

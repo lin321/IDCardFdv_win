@@ -35,13 +35,13 @@ void sha256(const std::string &srcStr, std::string &encodedStr, std::string &enc
 }
 
 int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters,
-				CallVerifyCallback callverifyCB, unsigned long userdata);
+				CallVerifyCallback callverifyCB, unsigned long userdata, int timeout);
 
 int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
 	std::vector<unsigned char> idcardPhoto, std::vector<unsigned char> verifyPhotos[], int verifyPhotoNum,
-	CallVerifyCallback callverifyCB, unsigned long userdata)
+	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
 {
 	json::value verify_json = json::value::object();
 
@@ -86,15 +86,19 @@ int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string ap
 	sha256(shastr, shaEncoded, shaEncodedHex);
 	verify_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
 
-	return CallVerifySub(utility::conversions::to_string_t(url), verify_json, callverifyCB,userdata);
+	return CallVerifySub(utility::conversions::to_string_t(url), verify_json, callverifyCB,userdata, timeout);
 }
 
-int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters, CallVerifyCallback callverifyCB, unsigned long userdata)
+int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters, 
+							CallVerifyCallback callverifyCB, unsigned long userdata,
+							int timeout )
 {
 	std::string ret;
 
 	http::uri uri = http::uri(url);
-	http_client client(uri);
+	http_client_config config;
+	config.set_timeout(utility::seconds(timeout));
+	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
 	postRequest.set_body(postParameters);
@@ -138,10 +142,10 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 
 
 //==========================================
-int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata);
+int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata, int timeout);
 int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string productsn, std::string macId,
-	CallRegisterCallback callregisterCB, unsigned long userdata)
+	CallRegisterCallback callregisterCB, unsigned long userdata, int timeout)
 {
 	json::value reg_json = json::value::object();
 
@@ -167,14 +171,16 @@ int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string 
 	sha256(shastr, shaEncoded, shaEncodedHex);
 	reg_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
 
-	return callregisterSub(utility::conversions::to_string_t(url), reg_json, callregisterCB, userdata);
+	return callregisterSub(utility::conversions::to_string_t(url), reg_json, callregisterCB, userdata,timeout);
 }
-int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata)
+int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata, int timeout)
 {
 	std::string ret;
 
 	http::uri uri = http::uri(url);
-	http_client client(uri);
+	http_client_config config;
+	config.set_timeout(utility::seconds(timeout));
+	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
 	postRequest.set_body(postParameters);
@@ -215,11 +221,13 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 }
 
 
-int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, unsigned long userdata)
+int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, unsigned long userdata, int timeout)
 {
 	utility::string_t urlstr = utility::conversions::to_string_t(url);
 	http::uri uri = http::uri(urlstr);
-	http_client client(uri);
+	http_client_config config;
+	config.set_timeout(utility::seconds(timeout));
+	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
 	try {

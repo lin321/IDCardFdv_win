@@ -54,15 +54,17 @@ IplImage *BMP2Ipl(unsigned char *src, int FileSize)
 		return NULL;//不支持压缩算法
 
 					//数据大小
-	unsigned int dataByteSize = bmpheader->biSizeImage;//实际位图数据大小
+	//unsigned int dataByteSize = bmpheader->biSizeImage;//实际位图数据大小  (读卡器读出数据可能出现biSizeImage是0的情况)
+	unsigned int dataByteSize = FileSize - Fileheader->bfOffBits; //实际位图数据大小
 	unsigned int rowByteSize = dataByteSize / height;//对齐的每行数据
 
 	IplImage *img = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, bmpheader->biBitCount / 8);
 	//拷贝实际数据无颜色表
-	img->origin = IPL_ORIGIN_BL;
-	memcpy(img->imageData, src + Fileheader->bfOffBits, FileSize - Fileheader->bfOffBits);
+	//img->origin = IPL_ORIGIN_BL;
+	//memcpy(img->imageData, src + Fileheader->bfOffBits, FileSize - Fileheader->bfOffBits);
 
-	/*
+	//*
+	img->origin = IPL_ORIGIN_TL;
 	unsigned char *gc = src + FileSize - rowByteSize;
 	char *p = img->imageData;
 	for (int i = 0; i<height; ++i)

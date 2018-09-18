@@ -6,6 +6,9 @@
 
 #include "CvvImage.h"
 #include "InfoDlg.h"
+#ifdef NDEBUG
+#include "AiFdrWrap.h"
+#endif
 
 // CIDCardFdvDlg ¶Ô»°¿ò
 class CIDCardFdvDlg : public CDialogEx
@@ -58,14 +61,22 @@ public:
 	// fdv
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
+#ifdef NDEBUG
+	fdr_model_wrap* m_pfrmwrap;
+#endif
+	std::string m_photoFaceFeat;
+	std::vector < std::string> m_frameFaceFeats;
 
 	// capture
 	bool m_bCmdCapture;
 	IplImage* m_CaptureImage;
+	IplImage* m_CaptureImageHide;
 	CEvent m_eCaptureEnd;
 	std::string m_sCaptureBase64;
 	bool m_bFaceGot;
 	bool m_bIsAliveSample;
+	IplImage* m_iplImgTestImage;	//test
+	IplImage* m_iplImgTestImage2;	//test
 
 	// idcard
 	char m_IdCardId[256];

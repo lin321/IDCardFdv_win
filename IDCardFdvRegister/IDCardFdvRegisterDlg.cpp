@@ -24,7 +24,7 @@ UINT CameraShowThread(LPVOID lpParam);
 
 static void __stdcall RegisterCB(int err_no, std::string err_msg, std::string RegisteredNo, unsigned long userdata)
 {
-	if (-1 == err_no) {
+	if (MTLIBNETWORK_NETWORK_ERROR == err_no) {
 		AfxMessageBox(_T("network error!")); 
 		return;
 	}
@@ -569,6 +569,8 @@ UINT CameraShowThread(LPVOID lpParam)
 
 		IplImage* newframe = cvCloneImage(cFrame);
 		//if (pDlg->m_bCmdCapture) {
+		//	if(pDlg->m_CaptureImage)
+		//		cvReleaseImage(&(pDlg->m_CaptureImage));
 		//	pDlg->m_CaptureImage = cvCloneImage(cFrame);
 		//	pDlg->m_bCmdCapture = false;
 		//	SetEvent(pDlg->m_eCaptureEnd);

@@ -14,3 +14,10 @@ qrencode/qrencode.vcxproj.user
 IDCardFdvSetup/IDCardFdvSetup/Express/SingleImage/LogFiles/
 IDCardFdvSetup/IDCardFdvSetup/Express/SingleImage/Reports/
 IDCardFdvSetup/IDCardFdvSetup/Express/
+MTLibIDCardReader/MTLibIDCardReader.vcxproj.user
+others/modelsc.dat
+others/modelcc.dat
+others/markscc.dat
+bin/opencv_imgproc400.dll
+bin/opencv_imgcodecs400.dll
+bin/opencv_core400.dll

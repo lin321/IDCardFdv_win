@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -96,10 +96,11 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Rpcrt4.lib;opencv_core247d.lib;opencv_highgui247d.lib;opencv_imgproc247d.lib;MTLibIDCardReader.lib;MTLibNetworkd.lib;MTLibCameraLibd.lib</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core247d.lib;opencv_highgui247d.lib;opencv_imgproc247d.lib;MTLibIDCardReader.lib;MTLibNetworkd.lib;MTLibCameraLibd.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -148,7 +149,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Rpcrt4.lib;opencv_core247.lib;opencv_highgui247.lib;opencv_imgproc247.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core247.lib;opencv_highgui247.lib;opencv_imgproc247.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

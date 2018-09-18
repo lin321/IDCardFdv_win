@@ -34,10 +34,45 @@ void sha256(const std::string &srcStr, std::string &encodedStr, std::string &enc
 	encodedHexStr = std::string(buf);
 }
 
+// pre define
+int __stdcall MTLibCallVerifyMain(json::value& verify_json, std::string shastr,
+	std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
+	std::string macId, std::string registeredNo,
+	std::string idcardId, std::string idcardIssuedate,
+	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout);
 int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters,
 				CallVerifyCallback callverifyCB, unsigned long userdata, int timeout);
+/////////////////////
 
 int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
+	std::string macId, std::string registeredNo,
+	std::string idcardId, std::string idcardIssuedate,
+	std::string idcardPhoto, std::vector < std::string> verifyPhotos, int verifyPhotoNum,
+	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
+{
+	json::value verify_json = json::value::object();
+
+	std::string shastr = "";
+
+	utility::string_t b64str = utility::conversions::to_string_t(idcardPhoto);
+	verify_json[U("idcard_face_info")] = json::value::string(b64str);
+	shastr += utility::conversions::to_utf8string(b64str);
+
+	verify_json[U("verify_face_infos")] = json::value::array();
+	for (int i = 0; i < verifyPhotoNum; i++) {
+		utility::string_t b64str = utility::conversions::to_string_t(verifyPhotos[i]);
+		verify_json[U("verify_face_infos")][i] = json::value::string(b64str);
+		shastr += utility::conversions::to_utf8string(b64str);
+	}
+
+	return MTLibCallVerifyMain(verify_json, shastr,
+		url, appId, apiKey, secretKey, uuid,
+		macId, registeredNo,
+		idcardId, idcardIssuedate,
+		callverifyCB, userdata, timeout);
+}
+
+int __stdcall MTLibCallVerify_Image(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
 	std::vector<unsigned char> idcardPhoto, std::vector<unsigned char> verifyPhotos[], int verifyPhotoNum,
@@ -46,8 +81,31 @@ int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string ap
 	json::value verify_json = json::value::object();
 
 	std::string shastr = "";
-	
 
+	utility::string_t b64str = U("data:image/bmp;base64,") + utility::conversions::to_base64(idcardPhoto);
+	verify_json[U("idcard_photo")] = json::value::string(b64str);
+	shastr += utility::conversions::to_utf8string(b64str);
+
+	verify_json[U("verify_photos")] = json::value::array();
+	for (int i = 0; i < verifyPhotoNum; i++) {
+		utility::string_t b64str = U("data:image/png;base64,") + utility::conversions::to_base64(verifyPhotos[i]);
+		verify_json[U("verify_photos")][i] = json::value::string(b64str);
+		shastr += utility::conversions::to_utf8string(b64str);
+	}
+
+	return MTLibCallVerifyMain(verify_json, shastr,
+		url, appId, apiKey, secretKey, uuid,
+		macId, registeredNo,
+		idcardId, idcardIssuedate,
+		callverifyCB, userdata, timeout);
+}
+
+int __stdcall MTLibCallVerifyMain(json::value& verify_json, std::string shastr,
+	std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
+	std::string macId, std::string registeredNo,
+	std::string idcardId, std::string idcardIssuedate,
+	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
+{
 	verify_json[U("appId")] = json::value::string(utility::conversions::to_string_t(appId));
 	verify_json[U("apiKey")] = json::value::string(utility::conversions::to_string_t(apiKey));
 	verify_json[U("secretKey")] = json::value::string(utility::conversions::to_string_t(secretKey));
@@ -70,23 +128,12 @@ int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string ap
 	shastr += idcardId;
 	shastr += idcardIssuedate;
 
-	utility::string_t b64str = U("data:image/bmp;base64,") + utility::conversions::to_base64(idcardPhoto);
-	verify_json[U("idcard_photo")] = json::value::string(b64str);
-	shastr += utility::conversions::to_utf8string(b64str);
-
-	verify_json[U("verify_photos")] = json::value::array();
-	for (int i = 0; i < verifyPhotoNum; i++) {
-		utility::string_t b64str = U("data:image/jpeg;base64,") + utility::conversions::to_base64(verifyPhotos[i]);
-		verify_json[U("verify_photos")][i] = json::value::string(b64str);
-		shastr += utility::conversions::to_utf8string(b64str);
-	}
-
 	std::string shaEncoded;
 	std::string shaEncodedHex;
 	sha256(shastr, shaEncoded, shaEncodedHex);
 	verify_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
 
-	return CallVerifySub(utility::conversions::to_string_t(url), verify_json, callverifyCB,userdata, timeout);
+	return CallVerifySub(utility::conversions::to_string_t(url), verify_json, callverifyCB, userdata, timeout);
 }
 
 int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters, 
@@ -115,11 +162,12 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 				ret = utility::conversions::to_utf8string(err_msg);
 				//AfxMessageBox(err_msg.c_str());
 				//printf("%ls\n", err_msg.c_str());
+				assert(err_no != MTLIBNETWORK_NETWORK_ERROR);
 				callverifyCB(err_no, ret, -1, userdata);
 				return -1;
 			}
 			else {
-				double sim = jobj.at(L"Similarity").as_double() * 100;
+				double sim = jobj.at(L"Similarity").as_double();
 				//CString csTemp;
 				//csTemp.Format("%.2f", sim);
 				//ret = csTemp.GetString();
@@ -132,7 +180,7 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 		ret = "network error!";
 		//AfxMessageBox(_T("network error!"));
 		//printf("network error!\n");
-		callverifyCB(-1, ret, -1, userdata);
+		callverifyCB(MTLIBNETWORK_NETWORK_ERROR, ret, -1, userdata);
 		return -1;
 	}
 
@@ -197,6 +245,7 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 				ret = utility::conversions::to_utf8string(err_msg);
 				//AfxMessageBox(ret.c_str());
 				//printf("%ls\n", err_msg.c_str());
+				assert(err_no != MTLIBNETWORK_NETWORK_ERROR);	
 				std::string regno = "";
 				callregisterCB(err_no, ret, regno, userdata);
 				return -1;
@@ -213,7 +262,7 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 		ret = "network error!";
 		//printf("network error!\n");
 		std::string regno = "";
-		callregisterCB(-1, ret, regno, userdata);
+		callregisterCB(MTLIBNETWORK_NETWORK_ERROR, ret, regno, userdata);
 		return -1;
 	}
 
@@ -243,7 +292,7 @@ int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, unsigned 
 	}
 	catch (...) {
 		//printf("network error!\n");
-		testurlCB(-1, userdata);
+		testurlCB(MTLIBNETWORK_NETWORK_ERROR, userdata);
 		return -1;
 	}
 

@@ -5,3 +5,4 @@ EXPORTS
 MTLibCallVerify @ 1
 MTLibCallRegister @ 2
 MTLibTestUrl @ 3
+MTLibCallVerify_Image @ 4

@@ -237,7 +237,7 @@ void CInfoDlg::drawIdcardImage(IplImage* img)
 	ImgOrgSize.height = img->height;
 	IplImage *iplImgTemp = cvCreateImage(ImgOrgSize, IPL_DEPTH_8U, 3);
 	cvCopy(img, iplImgTemp);
-	iplImgTemp->origin = IPL_ORIGIN_BL;
+	iplImgTemp->origin = img->origin;
 	cv::Mat imgMat(iplImgTemp);
 	Mat_<Vec3b>::iterator it = imgMat.begin<Vec3b>();
 	Mat_<Vec3b>::iterator itend = imgMat.end<Vec3b>();

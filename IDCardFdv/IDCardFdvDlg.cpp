@@ -23,7 +23,7 @@ using namespace cv;
 #endif
 
 
-#define OPENCV_CAPTURE 0
+#define OPENCV_CAPTURE 1
 
 #define CLEAR_INFOIMG_TIMER 1
 
@@ -110,13 +110,13 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	camdevid = 0;
+	//camdevid = 0;
 	m_bCameraRun = false;
 	m_thCamera = NULL;
 	ResetEvent(m_eCameraEnd);
 	m_iplImgDisplay = NULL;
 	m_iplImgTemp = NULL;
-	m_bFlip = true;
+	m_bFlip = false;
 
 	m_bCmdCapture = false;
 	m_CaptureImage = NULL;
@@ -252,6 +252,8 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	std::string modelpath = m_strModulePath;
 	m_pfrmwrap = new fdr_model_wrap(modelpath);
 #endif
+
+	// opencv face detect
 
 	// config
 	m_cfgAppId = "10022245";
@@ -414,6 +416,10 @@ void CIDCardFdvDlg::showPreview(IplImage* img)
 	cimg.CopyOf(pImg, -1);							// 复制图片
 	cimg.DrawToHDC(hDC, &rect);				// 将图片绘制到显示控件的指定区域内
 
+	//CBrush base(RGB(255, 255, 255));
+	//CBrush color(RGB(0, 0, 255));
+	//pDC->FillRect(CRect(100, 100, 200, 200), &base);
+
 	ReleaseDC(pDC);
 }
 
@@ -500,23 +506,33 @@ void CIDCardFdvDlg::ProcessCapture()
 UINT CameraShowThread(LPVOID lpParam)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
-	IplImage* cFrame = NULL;
-	CvCapture* pCapture = cvCreateCameraCapture(2);// pDlg->camdevid
-	//int frameW = (int)cvGetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_WIDTH);
-	cvSetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_WIDTH, 1280);
-	cvSetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_HEIGHT, 720);
 
-	IplImage* cFrameHide = NULL;
-	CvCapture* pCaptureHide = cvCreateCameraCapture(0);
-	cvSetCaptureProperty(pCaptureHide, CV_CAP_PROP_FRAME_WIDTH, 1280);
-	cvSetCaptureProperty(pCaptureHide, CV_CAP_PROP_FRAME_HEIGHT, 720);
+	int mainDevIdx = getDeviceIndex("2AB8", "A101");
+	int hideDevIdx = getDeviceIndex("2AB8", "C101");
+	if (-1 == mainDevIdx)
+		mainDevIdx = 0;
 
-	Sleep(500);
-
-	if (pCapture == NULL) {
+	Mat cFrame;
+	VideoCapture captureMain;
+	captureMain.open(mainDevIdx, CAP_DSHOW);
+	if (!captureMain.isOpened()) {
 		SetEvent(pDlg->m_eCameraEnd);
 		return 0;
 	}
+	captureMain.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+	captureMain.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
+	Mat cFrameHide;
+	VideoCapture captureHide;;
+	if (hideDevIdx >= 0) {
+		captureHide.open(hideDevIdx, CAP_DSHOW);
+		if (captureHide.isOpened()) {
+			captureHide.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+			captureHide.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+		}
+	}
+
+	Sleep(500);
 
 	g_CriticalSection.Lock();
 	pDlg->m_bCameraRun = true;
@@ -528,73 +544,86 @@ UINT CameraShowThread(LPVOID lpParam)
 
 		wpl.length = sizeof(WINDOWPLACEMENT);
 		if (pDlg->GetWindowPlacement(&wpl) && (wpl.showCmd == SW_SHOWMINIMIZED)) {
-			if (pCapture) {
-				cvReleaseCapture(&pCapture);
-				pCapture = NULL;
+			if (!captureMain.isOpened()) {
+				captureMain.release();
+			}
+			if (!captureHide.isOpened()) {
+				captureHide.release();
 			}
 			Sleep(5);
 			continue;
 		}
 
-		if (pCapture == NULL) {
-			pCapture = cvCreateCameraCapture(pDlg->camdevid);
-			if (pCapture == NULL) {
+		if (!captureMain.isOpened()) {
+			captureMain.open(mainDevIdx);
+			if (!captureMain.isOpened()) {
 				Sleep(2000);
 				continue;
 			}
+			captureMain.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+			captureMain.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 			Sleep(200);
 		}
-		if (pCaptureHide == NULL) {
-			pCaptureHide = cvCreateCameraCapture(1);
-			if (pCaptureHide == NULL) {
+		if (hideDevIdx >= 0 && !captureHide.isOpened()) {
+			captureHide.open(hideDevIdx, CAP_DSHOW);
+			if (!captureHide.isOpened()) {
 				Sleep(2000);
 				continue;
 			}
+			captureHide.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+			captureHide.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 			Sleep(200);
 		}
 
-		cFrame = cvQueryFrame(pCapture);
-		if (!cFrame) {
+		captureMain.read(cFrame);
+		if (cFrame.empty()) {
 			//pDlg->MessageBox("读取图像帧错误！", "出错信息：", MB_ICONERROR | MB_OK);
 			continue;
 		}
 
-
-		IplImage* newframe = cvCloneImage(cFrame);
+		IplImage* newframe = &IplImage(cFrame);
 		if (pDlg->m_bCmdCapture) {
 			if (pDlg->m_CaptureImage)
 				cvReleaseImage(&(pDlg->m_CaptureImage));
-			pDlg->m_CaptureImage = cvCloneImage(cFrame);
+			pDlg->m_CaptureImage = cvCloneImage(newframe);
 
-			cFrameHide = cvQueryFrame(pCaptureHide);
-			if (cFrameHide) {
-				if (pDlg->m_CaptureImageHide)
-					cvReleaseImage(&(pDlg->m_CaptureImageHide));
-				pDlg->m_CaptureImageHide = cvCloneImage(cFrameHide);
+			if (pDlg->m_CaptureImageHide) {
+				cvReleaseImage(&(pDlg->m_CaptureImageHide));
+				pDlg->m_CaptureImageHide = NULL;
+			}
+			if (captureHide.isOpened()) {
+				captureHide.read(cFrameHide);
+				if (!cFrameHide.empty()) {
+					pDlg->m_CaptureImageHide = cvCloneImage(&IplImage(cFrameHide));
+				}
 			}
 
 			pDlg->m_bCmdCapture = false;
 			SetEvent(pDlg->m_eCaptureEnd);
 		}
 
+		/*/
+		clock_t time1 = clock();
+		std::vector < std::vector<int>> face_rects;
+		Mat matframe(newframe);
+		pDlg->m_pfrmwrap->dectect_faces(matframe, face_rects, 0, true);
+		clock_t dt = clock() - time1;
+		CString csTemp;
+		csTemp.Format("%d", dt);
+		AfxMessageBox(csTemp);
+		*/
+
 		//pDlg->drawCameraImage(pDlg->m_iplImgCameraImg);
 		pDlg->showPreview(newframe);
 
-		Sleep(7);
+		//Sleep(7);
 		//		int c=cvWaitKey(33);   // not work in MFC proj
-		cvReleaseImage(&newframe);
+
 		//		if(c==27)break;
 	}
 
-	if (pCapture) {
-		cvReleaseCapture(&pCapture);
-		pCapture = NULL;
-	}
-
-	if (pCaptureHide) {
-		cvReleaseCapture(&pCaptureHide);
-		pCaptureHide = NULL;
-	}
+	captureMain.release();
+	captureHide.release();
 
 	SetEvent(pDlg->m_eCameraEnd);
 	return 0;
@@ -657,19 +686,19 @@ UINT FdvThread(LPVOID lpParam)
 
 
 		// mat
-		Mat matframe(pDlg->m_CaptureImage, false);
+		Mat matframe = cvarrToMat(pDlg->m_CaptureImage);
 		//Mat matframe(pDlg->m_iplImgTestImage, false);
-		Mat matphoto(pDlg->m_iplImgPhoto, false);
+		Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
 
 #if OPENCV_CAPTURE
-		Mat matframehide(pDlg->m_CaptureImageHide, false);
+		Mat matframehide = cvarrToMat(pDlg->m_CaptureImageHide);
 
 		// Ai_Fdr_SC 活体检测
 		if (pDlg->m_CaptureImageHide) {
 			std::vector<int> tmpfacerect;
 			std::string tmpfacefeat;
-//			bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
-//			pDlg->m_bIsAliveSample = live;
+			bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
+			pDlg->m_bIsAliveSample = live;
 		}
 #endif
 
@@ -721,7 +750,6 @@ UINT FdvThread(LPVOID lpParam)
 		//Mat matphoto(pDlg->m_iplImgPhoto, false);
 
 		std::vector < std::vector<int>> face_rects, face_rects2;
-
 		
 		int photo_face_cnt = pDlg->m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
 		if (photo_face_cnt < 1) {

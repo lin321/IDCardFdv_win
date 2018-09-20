@@ -137,6 +137,12 @@ void  CvvImage::CopyOf( IplImage* img, int desired_color )
  }
 }
 
+//void  CvvImage::SetImage(IplImage* img)
+//{
+//	if (HG_IS_IMAGE(img))
+//		m_img = img;
+//}
+
 bool  CvvImage::Load( const char* filename, int desired_color )
 {
  IplImage* img = cvLoadImage( filename, desired_color );

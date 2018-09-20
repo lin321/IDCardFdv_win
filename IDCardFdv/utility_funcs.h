@@ -4,5 +4,7 @@
 #pragma once
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <Dshow.h>
 
 IplImage *BMP2Ipl(unsigned char *src, int FileSize);
+int getDeviceIndex(std::string vid, std::string pid);

@@ -4,6 +4,7 @@
 
 #pragma once
 
+//#include <opencv2/objdetect/objdetect.hpp>
 #include "CvvImage.h"
 #include "InfoDlg.h"
 #ifdef NDEBUG
@@ -50,7 +51,7 @@ public:
 	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
 
-	int camdevid;
+	//int camdevid;
 	bool m_bCameraRun;
 	CWinThread* m_thCamera;
 	CEvent m_eCameraEnd;
@@ -59,6 +60,7 @@ public:
 	IplImage* m_iplImgTemp;
 
 	// fdv
+//	CascadeClassifier faceCascade;
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
 #ifdef NDEBUG

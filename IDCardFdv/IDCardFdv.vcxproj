@@ -75,7 +75,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include\opencv-3.4.3;$(SolutionDir)\include\opencv-3.4.3\opencv;$(SolutionDir)\include\opencv-3.4.3\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\opencv-2.4.7;$(SolutionDir)\include\opencv-2.4.7\opencv;$(SolutionDir)\include\opencv-2.4.7\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include\opencv-3.4.3;$(SolutionDir)\include\opencv-3.4.3\opencv;$(SolutionDir)\include\opencv-3.4.3\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -100,7 +100,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core247d.lib;opencv_highgui247d.lib;opencv_imgproc247d.lib;MTLibIDCardReader.lib;MTLibNetworkd.lib;MTLibCameraLibd.lib</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core343d.lib;opencv_highgui343d.lib;opencv_imgproc343d.lib;opencv_imgcodecs343d.lib;opencv_videoio343d.lib;MTLibIDCardReader.lib;MTLibNetworkd.lib;MTLibCameraLibd.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -149,7 +149,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core247.lib;opencv_highgui247.lib;opencv_imgproc247.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core343.lib;opencv_highgui343.lib;opencv_imgproc343.lib;opencv_imgcodecs343.lib;opencv_videoio343.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -429,7 +429,7 @@ void CIDCardFdvRegisterDlg::showPreview(IplImage* img)
 		if (m_iplImgQRimgGray == NULL)
 			m_iplImgQRimgGray = cvCreateImage(ScanSize, img->depth, 1);
 		cvCvtColor(m_iplImgQRimg, m_iplImgQRimgGray, CV_BGR2GRAY);	// 转灰度图
-		string qrstr = GetQR(m_iplImgQRimgGray);
+		string qrstr = GetQR(cvarrToMat(m_iplImgQRimgGray));
 		if (!qrstr.empty()) {
 			const std::tr1::regex pattern("^[A-Fa-f0-9]{4}(-[A-Fa-f0-9]{4}){3}$");
 			bool match = std::regex_search(qrstr, pattern);			// 正则判断格式
@@ -521,18 +521,17 @@ void CIDCardFdvRegisterDlg::saveConfig()
 UINT CameraShowThread(LPVOID lpParam)
 {
 	CIDCardFdvRegisterDlg* pDlg = (CIDCardFdvRegisterDlg*)lpParam;
-	IplImage* cFrame = NULL;
-	CvCapture* pCapture = cvCreateCameraCapture(pDlg->camdevid);
-	//int frameW = (int)cvGetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_WIDTH);
-	cvSetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_WIDTH, 1280);
-	cvSetCaptureProperty(pCapture, CV_CAP_PROP_FRAME_HEIGHT, 720);
-
-	Sleep(500);
-
-	if (pCapture == NULL) {
+	Mat cFrame;
+	VideoCapture captureMain;
+	captureMain.open(pDlg->camdevid, CAP_DSHOW);
+	if (!captureMain.isOpened()) {
 		SetEvent(pDlg->m_eCameraEnd);
 		return 0;
 	}
+	captureMain.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+	captureMain.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
+	Sleep(500);
 
 	g_CriticalSection.Lock();
 	pDlg->m_bCameraRun = true;
@@ -544,51 +543,38 @@ UINT CameraShowThread(LPVOID lpParam)
 
 		wpl.length = sizeof(WINDOWPLACEMENT);
 		if (pDlg->GetWindowPlacement(&wpl) && (wpl.showCmd == SW_SHOWMINIMIZED)) {
-			if (pCapture) {
-				cvReleaseCapture(&pCapture);
-				pCapture = NULL;
+			if (!captureMain.isOpened()) {
+				captureMain.release();
 			}
 			Sleep(5);
 			continue;
 		}
 
-		if (pCapture == NULL) {
-			pCapture = cvCreateCameraCapture(pDlg->camdevid);
-			if (pCapture == NULL) {
+		if (!captureMain.isOpened()) {
+			captureMain.open(pDlg->camdevid);
+			if (!captureMain.isOpened()) {
 				Sleep(2000);
 				continue;
 			}
+			captureMain.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+			captureMain.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 			Sleep(200);
 		}
-		cFrame = cvQueryFrame(pCapture);
-		if (!cFrame) {
+		captureMain.read(cFrame);
+		if (cFrame.empty()) {
 			//pDlg->MessageBox("读取图像帧错误！", "出错信息：", MB_ICONERROR | MB_OK);
 			continue;
 		}
 
-
-		IplImage* newframe = cvCloneImage(cFrame);
-		//if (pDlg->m_bCmdCapture) {
-		//	if(pDlg->m_CaptureImage)
-		//		cvReleaseImage(&(pDlg->m_CaptureImage));
-		//	pDlg->m_CaptureImage = cvCloneImage(cFrame);
-		//	pDlg->m_bCmdCapture = false;
-		//	SetEvent(pDlg->m_eCaptureEnd);
-		//}
-
+		IplImage* newframe = &IplImage(cFrame);
 		pDlg->showPreview(newframe);
 
-
-		Sleep(7);
+		//Sleep(7);
 		//		int c=cvWaitKey(33);   // not work in MFC proj
-		cvReleaseImage(&newframe);
 		//		if(c==27)break;
 	}
 
-	if (pCapture) {
-		cvReleaseCapture(&pCapture);
-		pCapture = NULL;
-	}
+	captureMain.release();
 
 	SetEvent(pDlg->m_eCameraEnd);
 	return 0;

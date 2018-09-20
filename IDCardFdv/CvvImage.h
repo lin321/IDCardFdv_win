@@ -4,6 +4,7 @@
 #pragma once
 #ifndef CVVIMAGE_CLASS_DEF
 #define CVVIMAGE_CLASS_DEF
+
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -34,6 +35,7 @@ public:
  
  virtual void  CopyOf( CvvImage& image, int desired_color = -1 );
  virtual void  CopyOf( IplImage* img, int desired_color = -1 );
+// virtual void  SetImage(IplImage* img);
  IplImage* GetImage() { return m_img; };
  virtual void  Destroy(void);
  

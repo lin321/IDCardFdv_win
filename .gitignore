@@ -21,3 +21,4 @@ others/markscc.dat
 bin/opencv_imgproc400.dll
 bin/opencv_imgcodecs400.dll
 bin/opencv_core400.dll
+include/opencv-2.4.7/

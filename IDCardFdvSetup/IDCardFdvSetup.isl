@@ -353,9 +353,15 @@
 		<row><td>libcrypto_1_1.dll</td><td>{FE80F753-8E43-4FE5-8C8A-CBA0D058700E}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcrypto_1_1.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libiconv_2.dll</td><td>{BE6AD1A3-E517-4884-94BB-F5E58DA44C88}</td><td>INSTALLDIR</td><td>2</td><td/><td>libiconv_2.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libzbar_0.dll</td><td>{4C307237-900C-4D2F-8407-96D8920FE31B}</td><td>INSTALLDIR</td><td>2</td><td/><td>libzbar_0.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_core247.dll</td><td>{E71B5BF0-9AB9-49B3-A582-3AB631B5F7A9}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core247.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_highgui247.dll</td><td>{3098B2C2-59B9-4A86-BAC8-813DFFFF112F}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui247.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_imgproc247.dll</td><td>{3DE57BB5-3D16-443F-A800-2241180FA22F}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc247.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_core343.dll</td><td>{59D65FBB-FEE5-4F62-88B6-A3BC8C621CC6}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_core400.dll</td><td>{BD101359-C8B5-4195-A93F-C555738940EA}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_highgui343.dll</td><td>{1E593CAE-252D-4C6A-8ECD-43F6B2677F8D}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_imgcodecs343.dll</td><td>{DE51D61A-516F-40FB-9F39-FA3DFB93B8E7}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgcodecs343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_imgcodecs400.dll</td><td>{EACA78E1-3428-4F6B-A510-58BFC3F51EA2}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgcodecs400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_imgproc343.dll</td><td>{9655862A-E02F-4B07-9A0A-A42F73FEDFE8}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_imgproc400.dll</td><td>{44C4B7D0-A5E7-41B8-8CBA-F7D2B1543428}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_objdetect343.dll</td><td>{3A929C7A-C508-443C-BD05-A4FBD893143D}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_objdetect343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_videoio343.dll</td><td>{0FEE16B6-854D-487D-A739-0048F57978F6}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_videoio343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>termb.dll</td><td>{2FEEABC2-D43A-4B14-AECF-CD763F27D67C}</td><td>INSTALLDIR</td><td>2</td><td/><td>termb.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1079,9 +1085,15 @@
 		<row><td>INSTALLDIR</td><td>libcrypto_1_1.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libiconv_2.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libzbar_0.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_core247.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_highgui247.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_imgproc247.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_core343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_core400.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_highgui343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_imgcodecs343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_imgcodecs400.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_imgproc343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_imgproc400.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_objdetect343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_videoio343.dll</td></row>
 		<row><td>INSTALLDIR</td><td>termb.dll</td></row>
 	</table>
 
@@ -1908,9 +1920,15 @@
 		<row><td>AlwaysInstall</td><td>libcrypto_1_1.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libiconv_2.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libzbar_0.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_core247.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_highgui247.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_imgproc247.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_core343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_core400.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_highgui343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_imgcodecs343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_imgcodecs400.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_imgproc343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_imgproc400.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_objdetect343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_videoio343.dll</td></row>
 		<row><td>AlwaysInstall</td><td>termb.dll</td></row>
 	</table>
 
@@ -1931,16 +1949,26 @@
 		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\config.txt</td><td>1</td><td/></row>
 		<row><td>cpprest120_xp_2_8.dll</td><td>cpprest120_xp_2_8.dll</td><td>CPPRES~1.DLL|cpprest120_xp_2_8.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\cpprest120_xp_2_8.dll</td><td>1</td><td/></row>
 		<row><td>facerecognition.srcdat</td><td>ISX_DEFAULTCOMPONENT</td><td>FACERE~1.SRC|FaceRecognition.srcdat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\FaceRecognition.srcdat</td><td>1</td><td/></row>
+		<row><td>haarcascade_frontalface_defa</td><td>ISX_DEFAULTCOMPONENT</td><td>HAARCA~1.XML|haarcascade_frontalface_default.xml</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\haarcascade_frontalface_default.xml</td><td>1</td><td/></row>
 		<row><td>libcrypto_1_1.dll</td><td>libcrypto_1_1.dll</td><td>LIBCRY~1.DLL|libcrypto-1_1.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libcrypto-1_1.dll</td><td>1</td><td/></row>
 		<row><td>libiconv_2.dll</td><td>libiconv_2.dll</td><td>LIBICO~1.DLL|libiconv-2.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libiconv-2.dll</td><td>1</td><td/></row>
 		<row><td>libzbar_0.dll</td><td>libzbar_0.dll</td><td>LIBZBA~1.DLL|libzbar-0.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libzbar-0.dll</td><td>1</td><td/></row>
+		<row><td>markscc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>markscc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\markscc.dat</td><td>1</td><td/></row>
+		<row><td>modelcc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelcc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\modelcc.dat</td><td>1</td><td/></row>
+		<row><td>modelsc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelsc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\modelsc.dat</td><td>1</td><td/></row>
 		<row><td>mtlibcallverify.dll</td><td>MTLibCallVerify.dll</td><td>MTLIBC~1.DLL|MTLibCallVerify.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibCallVerify.dll</td><td>1</td><td/></row>
 		<row><td>mtlibcameralib.dll</td><td>MTLibCameraLib.dll</td><td>MTLIBC~1.DLL|MTLibCameraLib.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibCameraLib.dll</td><td>1</td><td/></row>
 		<row><td>mtlibidcardreader.dll</td><td>MTLibIDCardReader.dll</td><td>MTLIBI~1.DLL|MTLibIDCardReader.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibIDCardReader.dll</td><td>1</td><td/></row>
 		<row><td>mtlibnetwork.dll</td><td>MTLibNetwork.dll</td><td>MTLIBN~1.DLL|MTLibNetwork.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibNetwork.dll</td><td>1</td><td/></row>
-		<row><td>opencv_core247.dll</td><td>opencv_core247.dll</td><td>OPENCV~1.DLL|opencv_core247.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_core247.dll</td><td>1</td><td/></row>
-		<row><td>opencv_highgui247.dll</td><td>opencv_highgui247.dll</td><td>OPENCV~1.DLL|opencv_highgui247.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_highgui247.dll</td><td>1</td><td/></row>
-		<row><td>opencv_imgproc247.dll</td><td>opencv_imgproc247.dll</td><td>OPENCV~1.DLL|opencv_imgproc247.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgproc247.dll</td><td>1</td><td/></row>
+		<row><td>opencv_core343.dll</td><td>opencv_core343.dll</td><td>OPENCV~1.DLL|opencv_core343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_core343.dll</td><td>1</td><td/></row>
+		<row><td>opencv_core400.dll</td><td>opencv_core400.dll</td><td>OPENCV~1.DLL|opencv_core400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_core400.dll</td><td>1</td><td/></row>
+		<row><td>opencv_highgui343.dll</td><td>opencv_highgui343.dll</td><td>OPENCV~1.DLL|opencv_highgui343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_highgui343.dll</td><td>1</td><td/></row>
+		<row><td>opencv_imgcodecs343.dll</td><td>opencv_imgcodecs343.dll</td><td>OPENCV~1.DLL|opencv_imgcodecs343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgcodecs343.dll</td><td>1</td><td/></row>
+		<row><td>opencv_imgcodecs400.dll</td><td>opencv_imgcodecs400.dll</td><td>OPENCV~1.DLL|opencv_imgcodecs400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgcodecs400.dll</td><td>1</td><td/></row>
+		<row><td>opencv_imgproc343.dll</td><td>opencv_imgproc343.dll</td><td>OPENCV~1.DLL|opencv_imgproc343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgproc343.dll</td><td>1</td><td/></row>
+		<row><td>opencv_imgproc400.dll</td><td>opencv_imgproc400.dll</td><td>OPENCV~1.DLL|opencv_imgproc400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgproc400.dll</td><td>1</td><td/></row>
+		<row><td>opencv_objdetect343.dll</td><td>opencv_objdetect343.dll</td><td>OPENCV~1.DLL|opencv_objdetect343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_objdetect343.dll</td><td>1</td><td/></row>
+		<row><td>opencv_videoio343.dll</td><td>opencv_videoio343.dll</td><td>OPENCV~1.DLL|opencv_videoio343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_videoio343.dll</td><td>1</td><td/></row>
 		<row><td>right.png</td><td>ISX_DEFAULTCOMPONENT</td><td>right.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\right.png</td><td>1</td><td/></row>
 		<row><td>termb.dll</td><td>termb.dll</td><td>termb.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\termb.dll</td><td>1</td><td/></row>
 		<row><td>wrong.png</td><td>ISX_DEFAULTCOMPONENT</td><td>wrong.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\wrong.png</td><td>1</td><td/></row>
@@ -2101,9 +2129,15 @@
 		<row><td>libcrypto_1_1.dll</td><td/><td/><td>_0D840429_50BF_4185_8FA4_7A39D0857FA2_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libiconv_2.dll</td><td/><td/><td>_52F33BE4_59E5_4E0A_9FD8_7BA90E4984C3_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libzbar_0.dll</td><td/><td/><td>_FC410DB9_10A8_41B0_9FCF_6F738E7098C8_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_core247.dll</td><td/><td/><td>_04A2B74E_19E1_4F46_AB6B_970426C3692A_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_highgui247.dll</td><td/><td/><td>_AEADF90A_5925_4CF3_9786_A48CF9A0A50E_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_imgproc247.dll</td><td/><td/><td>_5D9412BB_C7F6_4DA6_AA42_73329E0E8E3B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_core343.dll</td><td/><td/><td>_C6CCA600_78AC_44D2_854C_F0ACCB4C2F20_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_core400.dll</td><td/><td/><td>_7B0B0E3B_881A_413A_9C29_B6A2CA9CF8E2_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_highgui343.dll</td><td/><td/><td>_C4552F97_7569_420C_B90E_47E9E2F459E0_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_imgcodecs343.dll</td><td/><td/><td>_67720A60_B96B_4E25_8DAC_F2D25F41AB29_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_imgcodecs400.dll</td><td/><td/><td>_3C8C8A24_1C6D_4A31_BD88_A4DA20E92C5B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_imgproc343.dll</td><td/><td/><td>_A77738E8_18AE_4A89_B072_421011A53D86_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_imgproc400.dll</td><td/><td/><td>_BEE55DA2_74CF_4A0A_ACBD_F4177AA937C1_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_objdetect343.dll</td><td/><td/><td>_BCA8D5B5_AD2C_497D_9F3C_BADE22877E70_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_videoio343.dll</td><td/><td/><td>_DED42751_9B07_478A_9727_C5911AECAD36_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>termb.dll</td><td/><td/><td>_673C1689_3286_4D9C_BA8D_668E12081233_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 

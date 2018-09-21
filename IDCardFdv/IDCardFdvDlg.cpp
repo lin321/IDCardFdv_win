@@ -254,6 +254,14 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 #endif
 
 	// opencv face detect
+	std::string faceCascadeFilename = m_strModulePath + "haarcascade_frontalface_default.xml";
+	try {
+		faceCascade.load(faceCascadeFilename);
+	}
+	catch (cv::Exception e) {}
+	if (faceCascade.empty()) {
+		AfxMessageBox("haarcascade_frontalface_default.xml加载出错！");
+	}
 
 	// config
 	m_cfgAppId = "10022245";
@@ -494,6 +502,10 @@ void CIDCardFdvDlg::ProcessCapture()
 	//m_pInfoDlg->clearResultIcon();
 	//m_pInfoDlg->setResultText("");
 
+#if OPENCV_CAPTURE
+	m_bCmdCapture = true;	// 确保在预览线程中调用ProcessCapture()后可立即处理截图
+	ResetEvent(m_eCaptureEnd);
+#endif
 	m_thFdv = AfxBeginThread(FdvThread, this);
 
 	if (NULL == m_thFdv)
@@ -581,26 +593,6 @@ UINT CameraShowThread(LPVOID lpParam)
 			continue;
 		}
 
-		IplImage* newframe = &IplImage(cFrame);
-		if (pDlg->m_bCmdCapture) {
-			if (pDlg->m_CaptureImage)
-				cvReleaseImage(&(pDlg->m_CaptureImage));
-			pDlg->m_CaptureImage = cvCloneImage(newframe);
-
-			if (pDlg->m_CaptureImageHide) {
-				cvReleaseImage(&(pDlg->m_CaptureImageHide));
-				pDlg->m_CaptureImageHide = NULL;
-			}
-			if (captureHide.isOpened()) {
-				captureHide.read(cFrameHide);
-				if (!cFrameHide.empty()) {
-					pDlg->m_CaptureImageHide = cvCloneImage(&IplImage(cFrameHide));
-				}
-			}
-
-			pDlg->m_bCmdCapture = false;
-			SetEvent(pDlg->m_eCaptureEnd);
-		}
 
 		/*/
 		clock_t time1 = clock();
@@ -612,6 +604,99 @@ UINT CameraShowThread(LPVOID lpParam)
 		csTemp.Format("%d", dt);
 		AfxMessageBox(csTemp);
 		*/
+		clock_t time1 = clock();
+		double scale = 2.0;
+		Mat imgGray, imgSamll;
+		cvtColor(cFrame, imgGray, CV_RGB2GRAY);
+		resize(imgGray, imgSamll, Size(), 1/scale, 1 / scale, INTER_NEAREST);
+		equalizeHist(imgSamll, imgSamll);	// 直方图均衡化，提高图像质量
+		vector<Rect> faces;
+		if (!pDlg->faceCascade.empty()) {
+			int flags = CASCADE_DO_CANNY_PRUNING |
+						CASCADE_SCALE_IMAGE |
+						CASCADE_FIND_BIGGEST_OBJECT |
+						CASCADE_DO_ROUGH_SEARCH;
+			pDlg->faceCascade.detectMultiScale(imgSamll, faces, 2.0, 2, flags, Size(30, 30));    // 检测人脸
+		}
+		clock_t dt = clock() - time1;
+		CString csTemp;
+		csTemp.Format("%d", dt);
+		//AfxMessageBox(csTemp);
+		if (faces.size()>0)
+		{
+			// 开启识别线程
+			pDlg->ProcessCapture();
+
+			// 防止人脸框频繁抖动
+			static Rect biggestface;
+			if (abs(faces[0].x - biggestface.x) < 5 && abs(faces[0].y - biggestface.y) < 5
+				&& abs((faces[0].x + faces[0].width) - (biggestface.x + biggestface.width)) < 5
+				&& abs((faces[0].y + faces[0].height) - (biggestface.y + biggestface.height)) < 5) {
+				faces[0] = biggestface;
+			}
+			else
+				biggestface = faces[0];
+		}
+
+
+		IplImage* newframe = &IplImage(cFrame);
+		if (pDlg->m_bCmdCapture && faces.size()>0) {
+			// 释放旧截图
+			if (pDlg->m_CaptureImage) {
+				cvReleaseImage(&(pDlg->m_CaptureImage));
+				pDlg->m_CaptureImage = NULL;
+			}
+			if (pDlg->m_CaptureImageHide) {
+				cvReleaseImage(&(pDlg->m_CaptureImageHide));
+				pDlg->m_CaptureImageHide = NULL;
+			}
+
+			// 截出人脸图
+			int cx = (int)(faces[0].x * scale);
+			int cy = (int)(faces[0].y * scale - faces[0].height * scale * 0.3);
+			if (cx < 0) cx = 0;
+			if (cy < 0) cy = 0;
+			CvSize ImgSize;
+			ImgSize.width = (int)(faces[0].width * scale * 1.0);
+			ImgSize.height = (int)(faces[0].height * scale * 1.5);
+			if (cx + ImgSize.width > newframe->width)
+				ImgSize.width = newframe->width - cx;
+			if (cy + ImgSize.height > newframe->height)
+				ImgSize.height = newframe->height - cy;
+			
+			pDlg->m_CaptureImage = cvCreateImage(ImgSize, newframe->depth, newframe->nChannels);			
+			cvSetImageROI(newframe, cvRect(cx, cy, ImgSize.width, ImgSize.height));
+			cvCopy(newframe, pDlg->m_CaptureImage);
+			cvResetImageROI(newframe);
+			// pDlg->m_CaptureImage = cvCloneImage(newframe);
+
+			if (captureHide.isOpened()) {
+				captureHide.read(cFrameHide);
+				if (!cFrameHide.empty()) {
+					IplImage* newframeHide = &IplImage(cFrameHide);
+					pDlg->m_CaptureImageHide = cvCreateImage(ImgSize, newframeHide->depth, newframeHide->nChannels);
+					cvSetImageROI(newframeHide, cvRect(cx, cy, ImgSize.width, ImgSize.height));
+					cvCopy(newframeHide, pDlg->m_CaptureImageHide);
+					cvResetImageROI(newframeHide);
+					//pDlg->m_CaptureImageHide = cvCloneImage(&IplImage(cFrameHide));
+				}
+			}
+
+			pDlg->m_bCmdCapture = false;
+			SetEvent(pDlg->m_eCaptureEnd);
+		}
+
+		// 画人脸框，需在截取人脸图后
+		if (faces.size() > 0) {
+			//for (int i = 0; i<faces.size(); i++)
+			{
+				int i = 0;
+				rectangle(cvarrToMat(newframe),
+					Point(faces[i].x, faces[i].y) * scale,
+					Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height) * scale,
+					Scalar(0, 255, 0), 2, LINE_8);    // 框出人脸
+			}
+		}
 
 		//pDlg->drawCameraImage(pDlg->m_iplImgCameraImg);
 		pDlg->showPreview(newframe);
@@ -641,8 +726,8 @@ UINT FdvThread(LPVOID lpParam)
 
 	
 #if OPENCV_CAPTURE
-	pDlg->m_bCmdCapture = true;
-	ResetEvent(pDlg->m_eCaptureEnd);
+	//pDlg->m_bCmdCapture = true;
+	//ResetEvent(pDlg->m_eCaptureEnd);
 	WaitForSingleObject(pDlg->m_eCaptureEnd, INFINITE);
 	pDlg->m_bIsAliveSample = true;
 #else
@@ -897,7 +982,7 @@ void CIDCardFdvDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	// test code
 #if OPENCV_CAPTURE
-	ProcessCapture();
+//	ProcessCapture();
 #endif
 	CDialogEx::OnLButtonDown(nFlags, point);
 }

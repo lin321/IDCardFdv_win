@@ -4,7 +4,7 @@
 
 #pragma once
 
-//#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
 #include "CvvImage.h"
 #include "InfoDlg.h"
 #ifdef NDEBUG
@@ -60,7 +60,7 @@ public:
 	IplImage* m_iplImgTemp;
 
 	// fdv
-//	CascadeClassifier faceCascade;
+	cv::CascadeClassifier faceCascade;
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
 #ifdef NDEBUG

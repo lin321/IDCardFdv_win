@@ -27,6 +27,8 @@ using namespace cv;
 
 #define CLEAR_INFOIMG_TIMER 1
 
+clock_t time_net=0;
+
 CCriticalSection g_CriticalSection;
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
@@ -99,6 +101,12 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 	}
 
 	pDlg->setClearTimer();
+
+	clock_t dt = clock() - time_net;
+	CString csTemp1;
+	csTemp1.Format("%d", dt);
+	//AfxMessageBox(csTemp1);
+	time_net = 0;
 }
 
 // CIDCardFdvDlg 对话框
@@ -515,6 +523,7 @@ void CIDCardFdvDlg::ProcessCapture()
 	}
 }
 
+
 UINT CameraShowThread(LPVOID lpParam)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
@@ -592,8 +601,12 @@ UINT CameraShowThread(LPVOID lpParam)
 			//pDlg->MessageBox("读取图像帧错误！", "出错信息：", MB_ICONERROR | MB_OK);
 			continue;
 		}
+		if (captureHide.isOpened()) {
+			// 避免其他处理用时造成的误差，先在此读入
+			captureHide.read(cFrameHide);
+		}
 
-
+		IplImage* newframe = &IplImage(cFrame);
 		/*/
 		clock_t time1 = clock();
 		std::vector < std::vector<int>> face_rects;
@@ -604,7 +617,7 @@ UINT CameraShowThread(LPVOID lpParam)
 		csTemp.Format("%d", dt);
 		AfxMessageBox(csTemp);
 		*/
-		clock_t time1 = clock();
+		//clock_t time1 = clock();
 		double scale = 2.0;
 		Mat imgGray, imgSamll;
 		cvtColor(cFrame, imgGray, CV_RGB2GRAY);
@@ -616,12 +629,15 @@ UINT CameraShowThread(LPVOID lpParam)
 						CASCADE_SCALE_IMAGE |
 						CASCADE_FIND_BIGGEST_OBJECT |
 						CASCADE_DO_ROUGH_SEARCH;
-			pDlg->faceCascade.detectMultiScale(imgSamll, faces, 2.0, 2, flags, Size(30, 30));    // 检测人脸
+			pDlg->faceCascade.detectMultiScale(imgSamll, faces, 2.0, 2, flags, Size(60, 60));    // 检测人脸
 		}
-		clock_t dt = clock() - time1;
-		CString csTemp;
-		csTemp.Format("%d", dt);
+		//clock_t dt = clock() - time1;
+		//CString csTemp;
+		//csTemp.Format("%d", dt);
 		//AfxMessageBox(csTemp);
+
+		int facex, facey;
+		CvSize FaceImgSize;
 		if (faces.size()>0)
 		{
 			// 开启识别线程
@@ -636,10 +652,18 @@ UINT CameraShowThread(LPVOID lpParam)
 			}
 			else
 				biggestface = faces[0];
+
+			facex = (int)(faces[0].x * scale);
+			facey = (int)(faces[0].y * scale - faces[0].height * scale * 0.1);
+			if (facex < 0) facex = 0;
+			if (facey < 0) facey = 0;
+
+			FaceImgSize.width = (int)(faces[0].width * scale * 1.0);
+			FaceImgSize.height = (int)(faces[0].height * scale * 1.2);
 		}
 
 
-		IplImage* newframe = &IplImage(cFrame);
+		
 		if (pDlg->m_bCmdCapture && faces.size()>0) {
 			// 释放旧截图
 			if (pDlg->m_CaptureImage) {
@@ -652,33 +676,25 @@ UINT CameraShowThread(LPVOID lpParam)
 			}
 
 			// 截出人脸图
-			int cx = (int)(faces[0].x * scale);
-			int cy = (int)(faces[0].y * scale - faces[0].height * scale * 0.3);
-			if (cx < 0) cx = 0;
-			if (cy < 0) cy = 0;
-			CvSize ImgSize;
-			ImgSize.width = (int)(faces[0].width * scale * 1.0);
-			ImgSize.height = (int)(faces[0].height * scale * 1.5);
-			if (cx + ImgSize.width > newframe->width)
-				ImgSize.width = newframe->width - cx;
-			if (cy + ImgSize.height > newframe->height)
-				ImgSize.height = newframe->height - cy;
-			
-			pDlg->m_CaptureImage = cvCreateImage(ImgSize, newframe->depth, newframe->nChannels);			
-			cvSetImageROI(newframe, cvRect(cx, cy, ImgSize.width, ImgSize.height));
+			pDlg->m_CaptureImage = cvCreateImage(FaceImgSize, newframe->depth, newframe->nChannels);
+			cvSetImageROI(newframe, cvRect(facex, facey, FaceImgSize.width, FaceImgSize.height));
 			cvCopy(newframe, pDlg->m_CaptureImage);
 			cvResetImageROI(newframe);
-			// pDlg->m_CaptureImage = cvCloneImage(newframe);
+			//pDlg->m_CaptureImage = cvCloneImage(newframe);
+			//string fn = pDlg->m_strModulePath + "frame0.png";
+			//imwrite(fn.c_str(), cvarrToMat(pDlg->m_CaptureImage));
 
 			if (captureHide.isOpened()) {
-				captureHide.read(cFrameHide);
+				//captureHide.read(cFrameHide);
 				if (!cFrameHide.empty()) {
 					IplImage* newframeHide = &IplImage(cFrameHide);
-					pDlg->m_CaptureImageHide = cvCreateImage(ImgSize, newframeHide->depth, newframeHide->nChannels);
-					cvSetImageROI(newframeHide, cvRect(cx, cy, ImgSize.width, ImgSize.height));
+					pDlg->m_CaptureImageHide = cvCreateImage(FaceImgSize, newframeHide->depth, newframeHide->nChannels);
+					cvSetImageROI(newframeHide, cvRect(facex, facey, FaceImgSize.width, FaceImgSize.height));
 					cvCopy(newframeHide, pDlg->m_CaptureImageHide);
 					cvResetImageROI(newframeHide);
 					//pDlg->m_CaptureImageHide = cvCloneImage(&IplImage(cFrameHide));
+					//string fn = pDlg->m_strModulePath + "frame1.png";
+					//imwrite(fn.c_str(), cvarrToMat(pDlg->m_CaptureImageHide));
 				}
 			}
 
@@ -692,8 +708,8 @@ UINT CameraShowThread(LPVOID lpParam)
 			{
 				int i = 0;
 				rectangle(cvarrToMat(newframe),
-					Point(faces[i].x, faces[i].y) * scale,
-					Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height) * scale,
+					Point(facex, facey),
+					Point(facex + FaceImgSize.width, facey + FaceImgSize.height),
 					Scalar(0, 255, 0), 2, LINE_8);    // 框出人脸
 			}
 		}
@@ -782,7 +798,14 @@ UINT FdvThread(LPVOID lpParam)
 		if (pDlg->m_CaptureImageHide) {
 			std::vector<int> tmpfacerect;
 			std::string tmpfacefeat;
+
+			//clock_t time1 = clock();
 			bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
+			//clock_t dt = clock() - time1;
+			//CString csTemp;
+			//csTemp.Format("%d", dt);
+			//AfxMessageBox(csTemp);
+
 			pDlg->m_bIsAliveSample = live;
 		}
 #endif
@@ -829,11 +852,15 @@ UINT FdvThread(LPVOID lpParam)
 		}
 		std::string uuid = std::string(struuid);
 	
-		
+		time_net = clock();
 #ifdef NDEBUG
-		//*
-		//Mat matphoto(pDlg->m_iplImgPhoto, false);
+		//MTLibCallVerify_Image("http://192.168.1.201:8004/idcardfdv",
+		//	pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
+		//	pDlg->m_macId, pDlg->m_cfgRegisteredNo,
+		//	pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
+		//	VerifyCB, (unsigned long)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 
+		//*	
 		std::vector < std::vector<int>> face_rects, face_rects2;
 		
 		int photo_face_cnt = pDlg->m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
@@ -856,6 +883,7 @@ UINT FdvThread(LPVOID lpParam)
 		//	logfile2 << ltrb << endl;
 		//logfile2.close();
 
+		
 		MTLibCallVerify(pDlg->m_cfgUrl,
 			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
@@ -887,16 +915,6 @@ void CIDCardFdvDlg::setClearTimer()
 BOOL CIDCardFdvDlg::DestroyWindow()
 {
 	// TODO: Add your specialized code here and/or call the base class
-#if OPENCV_CAPTURE
-	stopCameraThread();
-	Sleep(20);
-#else
-	m_pInfoDlg->ShowWindow(SW_HIDE);
-	MTLibCloseCamera();
-	MTLibUnloadCamera();
-#endif
-	// IDCardReader
-	UnloadIDCardReader();
 
 	if (m_iplImgDisplay != NULL) {
 		cvReleaseImage(&m_iplImgDisplay);
@@ -970,6 +988,17 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 void CIDCardFdvDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+#if OPENCV_CAPTURE
+	stopCameraThread();
+	Sleep(20);
+#else
+	m_pInfoDlg->ShowWindow(SW_HIDE);
+	MTLibCloseCamera();
+	MTLibUnloadCamera();
+#endif
+
+	// IDCardReader
+	UnloadIDCardReader();
 
 	CDialogEx::OnClose();
 }

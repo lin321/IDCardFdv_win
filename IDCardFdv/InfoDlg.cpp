@@ -177,12 +177,16 @@ HBRUSH CInfoDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void CInfoDlg::drawImage(IplImage* img, UINT ID, int type, bool clearArea)
 {
-	CDC* pDC = GetDlgItem(ID)->GetDC();		// 获得显示控件的 DC
+	CWnd* pWnd = GetDlgItem(ID);
+	if (NULL == pWnd)
+		return;
+
+	CDC* pDC = pWnd->GetDC();		// 获得显示控件的 DC
 	HDC hDC = pDC->GetSafeHdc();				// 获取 HDC(设备句柄) 来进行绘图操作
 
 	CRect rect;
 
-	GetDlgItem(ID)->GetClientRect(&rect);
+	pWnd->GetClientRect(&rect);
 	int rw = rect.right - rect.left;			// 求出图片控件的宽和高
 	int rh = rect.bottom - rect.top;
 
@@ -286,12 +290,16 @@ void CInfoDlg::drawResultIcon(IplImage* img)
 
 void CInfoDlg::setResultText(std::string result)
 {
-	GetDlgItem(IDC_SIMILARITY)->SetWindowText(result.c_str());
+	CWnd* pWnd = GetDlgItem(IDC_SIMILARITY);
+	if(pWnd)
+		pWnd->SetWindowText(result.c_str());
 }
 
 void CInfoDlg::setThresholdText(std::string text)
 {
-	GetDlgItem(IDC_THRESHOLD)->SetWindowText(text.c_str());
+	CWnd* pWnd = GetDlgItem(IDC_THRESHOLD);
+	if (pWnd)
+		pWnd->SetWindowText(text.c_str());
 }
 
 void CInfoDlg::OnBnClickedBtnThresholdSet()

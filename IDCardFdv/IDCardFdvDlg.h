@@ -63,6 +63,7 @@ public:
 	cv::CascadeClassifier faceCascade;
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
+	CEvent m_eFdvEnd;
 #ifdef NDEBUG
 	fdr_model_wrap* m_pfrmwrap;
 #endif

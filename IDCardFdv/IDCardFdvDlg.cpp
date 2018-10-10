@@ -24,6 +24,7 @@ using namespace cv;
 
 
 #define OPENCV_CAPTURE 1
+#define TEST_CAMERA		0
 
 #define CLEAR_INFOIMG_TIMER 1
 
@@ -72,7 +73,10 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 		// 超时或其他网络错误处理
 #ifdef NDEBUG
 		double sim = 0.0;
+#if TEST_CAMERA
+#else
 		int simret = pDlg->m_pfrmwrap->ai_fdr_similarity(pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats[0], sim);
+#endif
 		VerifyCB(0, "", sim, userdata);
 		return;
 #endif
@@ -258,7 +262,10 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	//ai_fdr
 #if NDEBUG
 	std::string modelpath = m_strModulePath;
+#if TEST_CAMERA
+#else
 	m_pfrmwrap = new fdr_model_wrap(modelpath);
+#endif
 #endif
 
 	// opencv face detect
@@ -737,175 +744,185 @@ UINT CameraShowThread(LPVOID lpParam)
 // capture thread
 UINT FdvThread(LPVOID lpParam)
 {
-	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
-	pDlg->m_bFdvRun = true;
+	try {
 
-	char szPath[1024] = { 0 };
-	GetModuleFileName(NULL, szPath, MAX_PATH);
-	std::string strModulePath = ExtractFilePath(szPath);
+		CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
+		pDlg->m_bFdvRun = true;
 
-	
+		char szPath[1024] = { 0 };
+		GetModuleFileName(NULL, szPath, MAX_PATH);
+		std::string strModulePath = ExtractFilePath(szPath);
+
+
 #if OPENCV_CAPTURE
-	//pDlg->m_bCmdCapture = true;
-	//ResetEvent(pDlg->m_eCaptureEnd);
-	WaitForSingleObject(pDlg->m_eCaptureEnd, INFINITE);
-	pDlg->m_bIsAliveSample = true;
+		//pDlg->m_bCmdCapture = true;
+		//ResetEvent(pDlg->m_eCaptureEnd);
+		WaitForSingleObject(pDlg->m_eCaptureEnd, INFINITE);
+		pDlg->m_bIsAliveSample = true;
 #else
-	// 获取摄像头人脸
-	std::string facedatastr;
-	Base64::Decode(pDlg->m_sCaptureBase64, &facedatastr);
-	std::vector<uchar> facebuff(facedatastr.begin(), facedatastr.end());
-	cv::Mat facemat = cv::imdecode(facebuff, CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
-	IplImage imgTmp = facemat;
-	pDlg->m_CaptureImage = cvCloneImage(&imgTmp);
+		// 获取摄像头人脸
+		std::string facedatastr;
+		Base64::Decode(pDlg->m_sCaptureBase64, &facedatastr);
+		std::vector<uchar> facebuff(facedatastr.begin(), facedatastr.end());
+		cv::Mat facemat = cv::imdecode(facebuff, CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
+		IplImage imgTmp = facemat;
+		pDlg->m_CaptureImage = cvCloneImage(&imgTmp);
 #endif
 
-	// read idcard
-	int iopen = OpenIDCardReader();
-	if (iopen < 0) {
-		pDlg->m_bFdvRun = false;
-		return 0;
-	}
-	else
-	{
-		// 获取身份证号
-		long len = IDCardReader_GetPeopleIDCode(pDlg->m_IdCardId, sizeof(pDlg->m_IdCardId));
-		// 获取身份证有效期
-		len = IDCardReader_GetStartDate(pDlg->m_IdCardIssuedate, sizeof(pDlg->m_IdCardIssuedate));
-
-		// 获取照片
-		long lenbmp = IDCardReader_GetPhotoBMP(pDlg->m_IdCardPhoto, sizeof(pDlg->m_IdCardPhoto));
-		CloseIDCardReader();
-		{
-			if (pDlg->m_iplImgPhoto)
-				cvReleaseImage(&(pDlg->m_iplImgPhoto));	// 先释放
-
-			vector<char>  vcBuf;
-			vcBuf.insert(vcBuf.end(), pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
-			Mat matphoto = cv::imdecode(vcBuf, CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
-			IplImage imgTmp = matphoto;
-			
-			pDlg->m_iplImgPhoto = cvCloneImage(&imgTmp);
-			//pDlg->m_iplImgPhoto = BMP2Ipl((unsigned char*)pDlg->m_IdCardPhoto, lenbmp);
-		}
-
-
-		// mat
-		Mat matframe = cvarrToMat(pDlg->m_CaptureImage);
-		//Mat matframe(pDlg->m_iplImgTestImage, false);
-		Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
-
-#if OPENCV_CAPTURE
-		Mat matframehide = cvarrToMat(pDlg->m_CaptureImageHide);
-
-		// Ai_Fdr_SC 活体检测
-		if (pDlg->m_CaptureImageHide) {
-			std::vector<int> tmpfacerect;
-			std::string tmpfacefeat;
-
-			clock_t time1 = clock();
-			bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
-			clock_t dt = clock() - time1;
-			CString csTemp;
-			csTemp.Format("%d", dt);
-			//AfxMessageBox(csTemp);
-
-			//pDlg->m_bIsAliveSample = live;
-		}
-#endif
-
-		// 显示
-		pDlg->m_pInfoDlg->clearResultIcon();  // 验证结果图标清空
-		pDlg->m_pInfoDlg->drawCameraImage(pDlg->m_CaptureImage);
-		pDlg->m_pInfoDlg->drawIdcardImage(pDlg->m_iplImgPhoto);
-		if (false == pDlg->m_bIsAliveSample) {
-			// 非活体警告
-			pDlg->m_pInfoDlg->setResultTextSize(60);
-			pDlg->m_pInfoDlg->setResultText("非活体！");
-			pDlg->setClearTimer();
+		// read idcard
+		int iopen = OpenIDCardReader();
+		if (iopen < 0) {
 			pDlg->m_bFdvRun = false;
 			return 0;
 		}
-		pDlg->m_pInfoDlg->setResultTextSize(60);
-		pDlg->m_pInfoDlg->setResultText("--%");
-
-		//std::vector<uchar> idcardPhoto;
-		std::vector<uchar> idcardPhoto(pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
-		std::vector<uchar> verifyPhotos[1];
-#if OPENCV_CAPTURE
-		vector<int> param = vector<int>(2);
-		//param.push_back(CV_IMWRITE_JPEG_QUALITY);
-		//param.push_back(9); //image quality
-		//					 //param[0] = CV_IMWRITE_PNG_COMPRESSION;
-		//					 //param[1] = 3; //default(3)  0-9.
-		cv::imencode(".png", matframe, verifyPhotos[0], param);
-#else
-		verifyPhotos[0] = facebuff;
-#endif
-		// uuid
-		CString struuid(L"error");
-		RPC_CSTR guidStr;
-		GUID guid;
-		if (UuidCreateSequential(&guid) == RPC_S_OK)
+		else
 		{
-			if (UuidToString(&guid, &guidStr) == RPC_S_OK)
+			// 获取身份证号
+			long len = IDCardReader_GetPeopleIDCode(pDlg->m_IdCardId, sizeof(pDlg->m_IdCardId));
+			// 获取身份证有效期
+			len = IDCardReader_GetStartDate(pDlg->m_IdCardIssuedate, sizeof(pDlg->m_IdCardIssuedate));
+
+			// 获取照片
+			long lenbmp = IDCardReader_GetPhotoBMP(pDlg->m_IdCardPhoto, sizeof(pDlg->m_IdCardPhoto));
+			CloseIDCardReader();
 			{
-				struuid = (LPTSTR)guidStr;
-				RpcStringFree(&guidStr);
+				if (pDlg->m_iplImgPhoto)
+					cvReleaseImage(&(pDlg->m_iplImgPhoto));	// 先释放
+
+				vector<char>  vcBuf;
+				vcBuf.insert(vcBuf.end(), pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
+				Mat matphoto = cv::imdecode(vcBuf, CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
+				IplImage imgTmp = matphoto;
+
+				pDlg->m_iplImgPhoto = cvCloneImage(&imgTmp);
+				//pDlg->m_iplImgPhoto = BMP2Ipl((unsigned char*)pDlg->m_IdCardPhoto, lenbmp);
 			}
-		}
-		std::string uuid = std::string(struuid);
-	
-		time_net = clock();
-#ifdef NDEBUG
-		//MTLibCallVerify_Image("http://192.168.1.201:8004/idcardfdv",
-		//	pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
-		//	pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-		//	pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
-		//	VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 
-		//*	
-		std::vector < std::vector<int>> face_rects, face_rects2;
-		
-		int photo_face_cnt = pDlg->m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
-		if (photo_face_cnt < 1) {
-			face_rects.push_back({ 10,0,92,110 }); // l t r b
-			//face_rects.push_back({ 0,0,102,126 });
-		}
-		pDlg->m_photoFaceFeat.clear();
-		pDlg->m_pfrmwrap->ai_fdr_edge_descriptor(matphoto, face_rects[0], pDlg->m_photoFaceFeat);
 
-		pDlg->m_frameFaceFeats.clear();
-		pDlg->m_frameFaceFeats.shrink_to_fit();
-		int frame_face_cnt = pDlg->m_pfrmwrap->ai_fdr_edge_descriptors(matframe, face_rects2, pDlg->m_frameFaceFeats, 0, true);
-		
-		//std::ofstream logfile(strModulePath + "des_photo.txt");
-		//logfile << pDlg->m_photoFaceFeat;
-		//logfile.close();
-		//std::ofstream logfile2(strModulePath + "des_frame.txt");
-		//for (auto ltrb : pDlg->m_frameFaceFeats)
-		//	logfile2 << ltrb << endl;
-		//logfile2.close();
+			// mat
+			Mat matframe = cvarrToMat(pDlg->m_CaptureImage);
+			//Mat matframe(pDlg->m_iplImgTestImage, false);
+			Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
 
-		
-		MTLibCallVerify(pDlg->m_cfgUrl,
-			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
-			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats, 1,
-			VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
-		//*/
+#if OPENCV_CAPTURE
+			Mat matframehide = cvarrToMat(pDlg->m_CaptureImageHide);
+
+			// Ai_Fdr_SC 活体检测
+			if (pDlg->m_CaptureImageHide) {
+				std::vector<int> tmpfacerect;
+				std::string tmpfacefeat;
+
+#if TEST_CAMERA
 #else
-		//*
-		MTLibCallVerify_Image(pDlg->m_cfgUrl,
-			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
-			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
-			VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
-		/**/
-#endif
-	}
+				clock_t time1 = clock();
+				bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
+				clock_t dt = clock() - time1;
+				CString csTemp;
+				csTemp.Format("%d", dt);
+				//AfxMessageBox(csTemp);
 
-	pDlg->m_bFdvRun = false;
+				pDlg->m_bIsAliveSample = live;
+#endif
+			}
+#endif
+
+			// 显示
+			pDlg->m_pInfoDlg->clearResultIcon();  // 验证结果图标清空
+			pDlg->m_pInfoDlg->drawCameraImage(pDlg->m_CaptureImage);
+			pDlg->m_pInfoDlg->drawIdcardImage(pDlg->m_iplImgPhoto);
+			if (false == pDlg->m_bIsAliveSample) {
+				// 非活体警告
+				pDlg->m_pInfoDlg->setResultTextSize(60);
+				pDlg->m_pInfoDlg->setResultText("非活体！");
+				pDlg->setClearTimer();
+				pDlg->m_bFdvRun = false;
+				return 0;
+			}
+			pDlg->m_pInfoDlg->setResultTextSize(60);
+			pDlg->m_pInfoDlg->setResultText("--%");
+
+			//std::vector<uchar> idcardPhoto;
+			std::vector<uchar> idcardPhoto(pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
+			std::vector<uchar> verifyPhotos[1];
+#if OPENCV_CAPTURE
+			vector<int> param = vector<int>(2);
+			//param.push_back(CV_IMWRITE_JPEG_QUALITY);
+			//param.push_back(9); //image quality
+			//					 //param[0] = CV_IMWRITE_PNG_COMPRESSION;
+			//					 //param[1] = 3; //default(3)  0-9.
+			cv::imencode(".png", matframe, verifyPhotos[0], param);
+#else
+			verifyPhotos[0] = facebuff;
+#endif
+			// uuid
+			CString struuid(L"error");
+			RPC_CSTR guidStr;
+			GUID guid;
+			if (UuidCreateSequential(&guid) == RPC_S_OK)
+			{
+				if (UuidToString(&guid, &guidStr) == RPC_S_OK)
+				{
+					struuid = (LPTSTR)guidStr;
+					RpcStringFree(&guidStr);
+				}
+			}
+			std::string uuid = std::string(struuid);
+
+			time_net = clock();
+#ifdef NDEBUG
+#if TEST_CAMERA
+			MTLibCallVerify_Image("http://192.168.1.201:8004/idcardfdv",
+				pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
+				pDlg->m_macId, pDlg->m_cfgRegisteredNo,
+				pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
+				VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+#else
+			//*	
+			std::vector < std::vector<int>> face_rects, face_rects2;
+
+			int photo_face_cnt = pDlg->m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
+			if (photo_face_cnt < 1) {
+				face_rects.push_back({ 10,0,92,110 }); // l t r b
+				//face_rects.push_back({ 0,0,102,126 });
+			}
+			pDlg->m_photoFaceFeat.clear();
+			pDlg->m_pfrmwrap->ai_fdr_edge_descriptor(matphoto, face_rects[0], pDlg->m_photoFaceFeat);
+
+			pDlg->m_frameFaceFeats.clear();
+			pDlg->m_frameFaceFeats.shrink_to_fit();
+			int frame_face_cnt = pDlg->m_pfrmwrap->ai_fdr_edge_descriptors(matframe, face_rects2, pDlg->m_frameFaceFeats, 0, true);
+
+			//std::ofstream logfile(strModulePath + "des_photo.txt");
+			//logfile << pDlg->m_photoFaceFeat;
+			//logfile.close();
+			//std::ofstream logfile2(strModulePath + "des_frame.txt");
+			//for (auto ltrb : pDlg->m_frameFaceFeats)
+			//	logfile2 << ltrb << endl;
+			//logfile2.close();
+
+
+			MTLibCallVerify(pDlg->m_cfgUrl,
+				pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
+				pDlg->m_macId, pDlg->m_cfgRegisteredNo,
+				pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats, 1,
+				VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+			//*/
+#endif
+#else
+			//*
+			MTLibCallVerify_Image(pDlg->m_cfgUrl,
+				pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
+				pDlg->m_macId, pDlg->m_cfgRegisteredNo,
+				pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
+				VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+			/**/
+#endif
+		}
+		pDlg->m_bFdvRun = false;
+
+	}
+	catch (cv::Exception e) {}
+	
 	return 0;
 }
 

@@ -64,7 +64,7 @@ static void __stdcall FaceResultCB(HWND hWnd, LONG result, ULONG_PTR userdata)
 #endif
 
 // 识别callback
-static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarity, unsigned long userdata)
+static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarity, MTLIBPTR userdata)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)userdata;
 
@@ -610,14 +610,14 @@ UINT CameraShowThread(LPVOID lpParam)
 		/*/
 		clock_t time1 = clock();
 		std::vector < std::vector<int>> face_rects;
-		Mat matframe(newframe);
-		pDlg->m_pfrmwrap->dectect_faces(matframe, face_rects, 0, true);
+		Mat matframe(cvarrToMat(newframe));
+		pDlg->m_pfrmwrap->dectect_faces(matframe, face_rects, -1, true);
 		clock_t dt = clock() - time1;
 		CString csTemp;
 		csTemp.Format("%d", dt);
 		AfxMessageBox(csTemp);
-		*/
-		//clock_t time1 = clock();
+		//*/
+//*		//clock_t time1 = clock();
 		double scale = 2.0;
 		Mat imgGray, imgSamll;
 		cvtColor(cFrame, imgGray, CV_RGB2GRAY);
@@ -659,7 +659,11 @@ UINT CameraShowThread(LPVOID lpParam)
 			if (facey < 0) facey = 0;
 
 			FaceImgSize.width = (int)(faces[0].width * scale * 1.0);
+			if (facex + FaceImgSize.width > 1280)
+				FaceImgSize.width = 1280 - facex;
 			FaceImgSize.height = (int)(faces[0].height * scale * 1.2);
+			if (facey + FaceImgSize.height > (720-0))
+				FaceImgSize.height = (720-0) - facey;
 		}
 
 
@@ -713,7 +717,7 @@ UINT CameraShowThread(LPVOID lpParam)
 					Scalar(0, 255, 0), 2, LINE_8);    // 框出人脸
 			}
 		}
-
+//*/
 		//pDlg->drawCameraImage(pDlg->m_iplImgCameraImg);
 		pDlg->showPreview(newframe);
 
@@ -799,14 +803,14 @@ UINT FdvThread(LPVOID lpParam)
 			std::vector<int> tmpfacerect;
 			std::string tmpfacefeat;
 
-			//clock_t time1 = clock();
+			clock_t time1 = clock();
 			bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
-			//clock_t dt = clock() - time1;
-			//CString csTemp;
-			//csTemp.Format("%d", dt);
+			clock_t dt = clock() - time1;
+			CString csTemp;
+			csTemp.Format("%d", dt);
 			//AfxMessageBox(csTemp);
 
-			pDlg->m_bIsAliveSample = live;
+			//pDlg->m_bIsAliveSample = live;
 		}
 #endif
 
@@ -858,7 +862,7 @@ UINT FdvThread(LPVOID lpParam)
 		//	pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 		//	pDlg->m_macId, pDlg->m_cfgRegisteredNo,
 		//	pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
-		//	VerifyCB, (unsigned long)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+		//	VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 
 		//*	
 		std::vector < std::vector<int>> face_rects, face_rects2;
@@ -888,7 +892,7 @@ UINT FdvThread(LPVOID lpParam)
 			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
 			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats, 1,
-			VerifyCB, (unsigned long)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+			VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 		//*/
 #else
 		//*
@@ -896,7 +900,7 @@ UINT FdvThread(LPVOID lpParam)
 			pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 			pDlg->m_macId, pDlg->m_cfgRegisteredNo,
 			pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
-			VerifyCB, (unsigned long)pDlg, ::stoi(pDlg->m_cfgTimeOut));
+			VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 		/**/
 #endif
 	}

@@ -39,16 +39,16 @@ int __stdcall MTLibCallVerifyMain(json::value& verify_json, std::string shastr,
 	std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
-	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout);
+	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout);
 int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters,
-				CallVerifyCallback callverifyCB, unsigned long userdata, int timeout);
+				CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout);
 /////////////////////
 
 int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
 	std::string idcardPhoto, std::vector < std::string> verifyPhotos, int verifyPhotoNum,
-	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
+	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout)
 {
 	json::value verify_json = json::value::object();
 
@@ -76,7 +76,7 @@ int __stdcall MTLibCallVerify_Image(std::string url, std::string appId, std::str
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
 	std::vector<unsigned char> idcardPhoto, std::vector<unsigned char> verifyPhotos[], int verifyPhotoNum,
-	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
+	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout)
 {
 	json::value verify_json = json::value::object();
 
@@ -104,7 +104,7 @@ int __stdcall MTLibCallVerifyMain(json::value& verify_json, std::string shastr,
 	std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
-	CallVerifyCallback callverifyCB, unsigned long userdata, int timeout)
+	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout)
 {
 	verify_json[U("appId")] = json::value::string(utility::conversions::to_string_t(appId));
 	verify_json[U("apiKey")] = json::value::string(utility::conversions::to_string_t(apiKey));
@@ -137,7 +137,7 @@ int __stdcall MTLibCallVerifyMain(json::value& verify_json, std::string shastr,
 }
 
 int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParameters, 
-							CallVerifyCallback callverifyCB, unsigned long userdata,
+							CallVerifyCallback callverifyCB, MTLIBPTR userdata,
 							int timeout )
 {
 	std::string ret;
@@ -190,10 +190,10 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 
 
 //==========================================
-int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata, int timeout);
+int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, MTLIBPTR userdata, int timeout);
 int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string productsn, std::string macId,
-	CallRegisterCallback callregisterCB, unsigned long userdata, int timeout)
+	CallRegisterCallback callregisterCB, MTLIBPTR userdata, int timeout)
 {
 	json::value reg_json = json::value::object();
 
@@ -221,7 +221,7 @@ int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string 
 
 	return callregisterSub(utility::conversions::to_string_t(url), reg_json, callregisterCB, userdata,timeout);
 }
-int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, unsigned long userdata, int timeout)
+int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, MTLIBPTR userdata, int timeout)
 {
 	std::string ret;
 
@@ -270,7 +270,7 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 }
 
 
-int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, unsigned long userdata, int timeout)
+int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, MTLIBPTR userdata, int timeout)
 {
 	utility::string_t urlstr = utility::conversions::to_string_t(url);
 	http::uri uri = http::uri(urlstr);

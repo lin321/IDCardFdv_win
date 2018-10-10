@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include\opencv-3.4.3;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)Lib</TargetName>
   </PropertyGroup>
@@ -139,6 +139,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>dll.def</ModuleDefinitionFile>
+      <AdditionalDependencies>Ai_Fdr_SC.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copytodir.bat</Command>
@@ -166,13 +167,16 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CvvImage.h" />
     <ClInclude Include="MTLibCamera.h" />
     <ClInclude Include="MTLibCameraLib.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utility_funcs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="MTLibCamera.cpp" />
     <ClCompile Include="MTLibCameraLib.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -181,6 +185,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="utility_funcs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MTLibCamera.rc" />

@@ -235,6 +235,9 @@ void CInfoDlg::drawImage(IplImage* img, UINT ID, int type, bool clearArea)
 
 void CInfoDlg::drawIdcardImage(IplImage* img)
 {
+	if (!img)
+		return;
+
 //	clock_t time1 = clock();
 	CvSize ImgOrgSize;
 	ImgOrgSize.width = img->width;
@@ -258,6 +261,9 @@ void CInfoDlg::drawIdcardImage(IplImage* img)
 
 void CInfoDlg::drawCameraImage(IplImage* img)
 {
+	if (!img)
+		return;
+
 //	clock_t time1 = clock();
 	CvSize ImgOrgSize;
 	ImgOrgSize.width = img->width;
@@ -285,6 +291,9 @@ void CInfoDlg::clearResultIcon() { drawImage(m_iplImgClearImg, IDC_RESULT_ICON, 
 
 void CInfoDlg::drawResultIcon(IplImage* img)
 {
+	if (!img)
+		return;
+
 	drawImage(img, IDC_RESULT_ICON, DRAW_TYPE_CENTER);
 }
 

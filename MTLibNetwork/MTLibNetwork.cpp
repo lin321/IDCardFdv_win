@@ -47,7 +47,7 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
-	std::string idcardPhoto, std::vector < std::string> verifyPhotos, int verifyPhotoNum,
+	std::string idcardPhoto, std::vector < std::string> &verifyPhotos, int verifyPhotoNum,
 	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout)
 {
 	json::value verify_json = json::value::object();
@@ -75,7 +75,7 @@ int __stdcall MTLibCallVerify(std::string url, std::string appId, std::string ap
 int __stdcall MTLibCallVerify_Image(std::string url, std::string appId, std::string apiKey, std::string secretKey, std::string uuid,
 	std::string macId, std::string registeredNo,
 	std::string idcardId, std::string idcardIssuedate,
-	std::vector<unsigned char> idcardPhoto, std::vector<unsigned char> verifyPhotos[], int verifyPhotoNum,
+	std::vector<unsigned char> &idcardPhoto, std::vector<unsigned char> verifyPhotos[], int verifyPhotoNum,
 	CallVerifyCallback callverifyCB, MTLIBPTR userdata, int timeout)
 {
 	json::value verify_json = json::value::object();

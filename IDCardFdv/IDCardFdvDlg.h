@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include <opencv2/objdetect/objdetect.hpp>
 #include "CvvImage.h"
 #include "InfoDlg.h"
 #ifdef NDEBUG
 #include "AiFdrWrap.h"
+#else
+#include <opencv2/objdetect/objdetect.hpp>
 #endif
 
 // CIDCardFdvDlg ¶Ô»°¿ò
@@ -44,12 +45,24 @@ public:
 	std::string m_macId;
 
 	//config data
+	std::string m_cfgCameraVid;
+	std::string m_cfgCameraPid;
+	std::string m_cfgCameraHideVid;
+	std::string m_cfgCameraHidePid;
 	std::string m_cfgAppId;
 	std::string m_cfgApiKey;
 	std::string m_cfgSecretKey;
 	std::string m_cfgUrl;
 	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
+
+	// face detect thread
+	bool m_bFaceDetectRun;
+	CWinThread* m_thFaceDetect;
+	CEvent m_eFaceDetectEnd;
+	CEvent m_eCaptureForDetect;
+	bool m_bCmdDetect;
+	std::vector<cv::Rect> m_faces;
 
 	//int camdevid;
 	bool m_bCameraRun;
@@ -60,12 +73,13 @@ public:
 	IplImage* m_iplImgTemp;
 
 	// fdv
-	cv::CascadeClassifier faceCascade;
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
 	CEvent m_eFdvEnd;
 #ifdef NDEBUG
 	fdr_model_wrap* m_pfrmwrap;
+#else
+	cv::CascadeClassifier faceCascade;
 #endif
 	std::string m_photoFaceFeat;
 	std::vector < std::string> m_frameFaceFeats;
@@ -80,6 +94,8 @@ public:
 	bool m_bIsAliveSample;
 	IplImage* m_iplImgTestImage;	//test
 	IplImage* m_iplImgTestImage2;	//test
+
+	bool m_bMainWinClose;
 
 	// idcard
 	char m_IdCardId[256];
@@ -96,12 +112,14 @@ public:
 	double m_dThreshold;
 public:
 	void showPreview(IplImage* img);
-	void startCameraThread();
-	void stopCameraThread();
-
 	void drawCameraImage(IplImage* img);
 
-	void ProcessCapture();
+	void startCameraThread();
+	void stopCameraThread();
+	void startFaceDetectThread();
+	void stopFaceDetectThread();
+	void startFdvThread();
+	void waitFdvThreadStopped();
 	void setClearTimer();
 
 	virtual BOOL DestroyWindow();

@@ -141,8 +141,8 @@ int getDeviceIndex(std::string vid, std::string pid)
 					_bstr_t bstr_t(varName.bstrVal);
 					std::string strVal(bstr_t);
 					
-					vidfind = strVal.find(str_vid);
-					pidfind = strVal.find(str_pid);
+					vidfind = (int)strVal.find(str_vid);
+					pidfind = (int)strVal.find(str_pid);
 
 					printf("SETUP: %i) %s \n", deviceCounter, strVal.c_str());
 				}

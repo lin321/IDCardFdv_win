@@ -16,10 +16,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qrencode", "qrencode\qrencode.vcxproj", "{C70AC535-305F-43A2-AAF8-6464A1A20B3D}"
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "IDCardFdvSetup", "IDCardFdvSetup\IDCardFdvSetup.isproj", "{286389C9-54C7-4F44-9D49-A5B43195AE70}"
-	ProjectSection(ProjectDependencies) = postProject
-		{42070137-7C84-4B0E-9B3A-0569320541B7} = {42070137-7C84-4B0E-9B3A-0569320541B7}
-		{4E13108A-6E77-451D-AB02-57EB8DB57B98} = {4E13108A-6E77-451D-AB02-57EB8DB57B98}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

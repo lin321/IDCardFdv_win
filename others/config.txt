@@ -1,6 +1,10 @@
+cameraVid=2AB8
+cameraPid=A101
+cameraHideVid=2AB8
+cameraHidePid=C101
 appId=10022245
 apiKey=MGRhNjEyYWExOTdhYzYxNTkx
 secretKey=NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw
 url=http://192.168.1.201:8004/calcsimilarity
-timeout=15
+timeout=5
 registeredNo=0

@@ -28,14 +28,5 @@
 		</TaggedOutputs> -->
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2015Limited\InstallShield.targets"/>
-	<ItemGroup>
-		<ProjectReference Include="..\IDCardFdv\IDCardFdv.vcxproj">
-			<Name>IDCardFdv</Name>
-			<Project>{4E13108A-6E77-451D-AB02-57EB8DB57B98}</Project>
-		</ProjectReference>
-		<ProjectReference Include="..\IDCardFdvRegister\IDCardFdvRegister.vcxproj">
-			<Name>IDCardFdvRegister</Name>
-			<Project>{42070137-7C84-4B0E-9B3A-0569320541B7}</Project>
-		</ProjectReference>
-	</ItemGroup>
+	<ItemGroup/>
 </Project>

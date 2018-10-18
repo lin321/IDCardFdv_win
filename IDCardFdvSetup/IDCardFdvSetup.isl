@@ -52,7 +52,7 @@
 	<summary>
 		<codepage>1252</codepage>
 		<title>Installation Database</title>
-		<subject></subject>
+		<subject>IDCardFdv</subject>
 		<author>##ID_STRING2##</author>
 		<keywords>Installer,MSI,Database</keywords>
 		<comments>Contact:  Your local administrator</comments>
@@ -340,29 +340,18 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
-		<row><td>Component</td><td>{7E316ADA-3816-4EE7-9527-8E8CA0051E6E}</td><td>INSTALLDIR</td><td>2</td><td/><td>File</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Component1</td><td>{7C0F8258-D506-45AA-8140-FBAD986C3044}</td><td>INSTALLDIR</td><td>2</td><td/><td>File1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Ai_Fdr_SC.dll</td><td>{341468D3-F6FC-4696-887F-DE865EB3168C}</td><td>INSTALLDIR</td><td>2</td><td/><td>ai_fdr_sc.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>IDCardFdv.exe</td><td>{F6C250ED-6226-4230-B922-D33C0871B8E8}</td><td>INSTALLDIR</td><td>2</td><td/><td>idcardfdv.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{8963F741-0752-4066-9DE0-2DC2CF7A2FCA}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MTLibCallVerify.dll</td><td>{D68990DA-7029-4023-B1F8-A12F0EC0BFB6}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibcallverify.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MTLibCameraLib.dll</td><td>{5EF9F709-4C4A-4429-8A15-FFDBB6F7033A}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibcameralib.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MTLibIDCardReader.dll</td><td>{EF04A64B-8228-4C94-B34D-1878B5FCED6A}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibidcardreader.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MTLibNetwork.dll</td><td>{C9EB061B-E2D9-4ADA-88BC-D3C89EB5173D}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibnetwork.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ZZBase.dll</td><td>{CE09CFDB-C572-4EBA-B080-61A9501FCCE3}</td><td>INSTALLDIR</td><td>2</td><td/><td>zzbase.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ZZLibrary.dll</td><td>{15BFE681-FED8-417A-8BE5-891946C1B018}</td><td>INSTALLDIR</td><td>2</td><td/><td>zzlibrary.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>cpprest120_xp_2_8.dll</td><td>{A1E919D7-9B0E-46F1-8812-1F7D277AEDE9}</td><td>INSTALLDIR</td><td>2</td><td/><td>cpprest120_xp_2_8.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>libcrypto_1_1.dll</td><td>{FE80F753-8E43-4FE5-8C8A-CBA0D058700E}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcrypto_1_1.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>libiconv_2.dll</td><td>{BE6AD1A3-E517-4884-94BB-F5E58DA44C88}</td><td>INSTALLDIR</td><td>2</td><td/><td>libiconv_2.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>libzbar_0.dll</td><td>{4C307237-900C-4D2F-8407-96D8920FE31B}</td><td>INSTALLDIR</td><td>2</td><td/><td>libzbar_0.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_core343.dll</td><td>{59D65FBB-FEE5-4F62-88B6-A3BC8C621CC6}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_core400.dll</td><td>{BD101359-C8B5-4195-A93F-C555738940EA}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_highgui343.dll</td><td>{1E593CAE-252D-4C6A-8ECD-43F6B2677F8D}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_imgcodecs343.dll</td><td>{DE51D61A-516F-40FB-9F39-FA3DFB93B8E7}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgcodecs343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_imgcodecs400.dll</td><td>{EACA78E1-3428-4F6B-A510-58BFC3F51EA2}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgcodecs400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_imgproc343.dll</td><td>{9655862A-E02F-4B07-9A0A-A42F73FEDFE8}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_imgproc400.dll</td><td>{44C4B7D0-A5E7-41B8-8CBA-F7D2B1543428}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc400.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_objdetect343.dll</td><td>{3A929C7A-C508-443C-BD05-A4FBD893143D}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_objdetect343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>opencv_videoio343.dll</td><td>{0FEE16B6-854D-487D-A739-0048F57978F6}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_videoio343.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>termb.dll</td><td>{2FEEABC2-D43A-4B14-AECF-CD763F27D67C}</td><td>INSTALLDIR</td><td>2</td><td/><td>termb.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MTLibIDCardReader.dll</td><td>{090B3406-5C5A-4685-A80B-C6CD2292C92E}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibidcardreader.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MTLibNetwork.dll</td><td>{8E9BB675-545A-4D50-99A9-8F28673F249A}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibnetwork.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>cpprest140_xp_2_10.dll</td><td>{4E380AC4-D6DA-4B56-BD58-745856462F01}</td><td>INSTALLDIR</td><td>2</td><td/><td>cpprest140_xp_2_10.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>libcrypto_1_1_x64.dll</td><td>{3CE34F06-4DF1-477C-A378-1364AA378993}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcrypto_1_1_x64.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>openblas.dll</td><td>{6709C892-717F-4E08-AD28-9CD0FD5D1938}</td><td>INSTALLDIR</td><td>2</td><td/><td>openblas.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_core249.dll</td><td>{87CEE46F-72AD-4B5E-B68B-773FA6F92F59}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_highgui249.dll</td><td>{2B1462B9-EDB9-4211-9B95-C8FF4F9CB9F5}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>opencv_imgproc249.dll</td><td>{ABF714C2-3871-4836-B463-FEADB45986C1}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>termb.dll</td><td>{E6EDA85C-21D2-4B73-B798-95B492EA518C}</td><td>INSTALLDIR</td><td>2</td><td/><td>termb.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1072,28 +1061,17 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
-		<row><td>INSTALLDIR</td><td>Component</td></row>
-		<row><td>INSTALLDIR</td><td>Component1</td></row>
+		<row><td>INSTALLDIR</td><td>Ai_Fdr_SC.dll</td></row>
+		<row><td>INSTALLDIR</td><td>IDCardFdv.exe</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
-		<row><td>INSTALLDIR</td><td>MTLibCallVerify.dll</td></row>
-		<row><td>INSTALLDIR</td><td>MTLibCameraLib.dll</td></row>
 		<row><td>INSTALLDIR</td><td>MTLibIDCardReader.dll</td></row>
 		<row><td>INSTALLDIR</td><td>MTLibNetwork.dll</td></row>
-		<row><td>INSTALLDIR</td><td>ZZBase.dll</td></row>
-		<row><td>INSTALLDIR</td><td>ZZLibrary.dll</td></row>
-		<row><td>INSTALLDIR</td><td>cpprest120_xp_2_8.dll</td></row>
-		<row><td>INSTALLDIR</td><td>libcrypto_1_1.dll</td></row>
-		<row><td>INSTALLDIR</td><td>libiconv_2.dll</td></row>
-		<row><td>INSTALLDIR</td><td>libzbar_0.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_core343.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_core400.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_highgui343.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_imgcodecs343.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_imgcodecs400.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_imgproc343.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_imgproc400.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_objdetect343.dll</td></row>
-		<row><td>INSTALLDIR</td><td>opencv_videoio343.dll</td></row>
+		<row><td>INSTALLDIR</td><td>cpprest140_xp_2_10.dll</td></row>
+		<row><td>INSTALLDIR</td><td>libcrypto_1_1_x64.dll</td></row>
+		<row><td>INSTALLDIR</td><td>openblas.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_core249.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_highgui249.dll</td></row>
+		<row><td>INSTALLDIR</td><td>opencv_imgproc249.dll</td></row>
 		<row><td>INSTALLDIR</td><td>termb.dll</td></row>
 	</table>
 
@@ -1215,7 +1193,8 @@
 		<row><td>USERPROFILE</td><td>TARGETDIR</td><td>.:USERPR~1|UserProfile</td><td/><td>0</td><td/></row>
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
-		<row><td>newfolder1</td><td>ProgramMenuFolder</td><td>##ID_STRING4##</td><td/><td>1</td><td/></row>
+		<row><td>company_name</td><td>ProgramMenuFolder</td><td>杭州马~1|杭州马太数字技术有限公司</td><td/><td>1</td><td/></row>
+		<row><td>newfolder1</td><td>company_name</td><td>##ID_STRING4##</td><td/><td>1</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -1907,28 +1886,17 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
-		<row><td>AlwaysInstall</td><td>Component</td></row>
-		<row><td>AlwaysInstall</td><td>Component1</td></row>
+		<row><td>AlwaysInstall</td><td>Ai_Fdr_SC.dll</td></row>
+		<row><td>AlwaysInstall</td><td>IDCardFdv.exe</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
-		<row><td>AlwaysInstall</td><td>MTLibCallVerify.dll</td></row>
-		<row><td>AlwaysInstall</td><td>MTLibCameraLib.dll</td></row>
 		<row><td>AlwaysInstall</td><td>MTLibIDCardReader.dll</td></row>
 		<row><td>AlwaysInstall</td><td>MTLibNetwork.dll</td></row>
-		<row><td>AlwaysInstall</td><td>ZZBase.dll</td></row>
-		<row><td>AlwaysInstall</td><td>ZZLibrary.dll</td></row>
-		<row><td>AlwaysInstall</td><td>cpprest120_xp_2_8.dll</td></row>
-		<row><td>AlwaysInstall</td><td>libcrypto_1_1.dll</td></row>
-		<row><td>AlwaysInstall</td><td>libiconv_2.dll</td></row>
-		<row><td>AlwaysInstall</td><td>libzbar_0.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_core343.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_core400.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_highgui343.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_imgcodecs343.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_imgcodecs400.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_imgproc343.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_imgproc400.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_objdetect343.dll</td></row>
-		<row><td>AlwaysInstall</td><td>opencv_videoio343.dll</td></row>
+		<row><td>AlwaysInstall</td><td>cpprest140_xp_2_10.dll</td></row>
+		<row><td>AlwaysInstall</td><td>libcrypto_1_1_x64.dll</td></row>
+		<row><td>AlwaysInstall</td><td>openblas.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_core249.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_highgui249.dll</td></row>
+		<row><td>AlwaysInstall</td><td>opencv_imgproc249.dll</td></row>
 		<row><td>AlwaysInstall</td><td>termb.dll</td></row>
 	</table>
 
@@ -1944,37 +1912,24 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>File</td><td>Component</td><td>IDCardFdv.主输出</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;IDCardFdv&gt;|Built</td><td>3</td><td/></row>
-		<row><td>File1</td><td>Component1</td><td>IDCardFdvRegister.主输出</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;IDCardFdvRegister&gt;|Built</td><td>3</td><td/></row>
-		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\config.txt</td><td>1</td><td/></row>
-		<row><td>cpprest120_xp_2_8.dll</td><td>cpprest120_xp_2_8.dll</td><td>CPPRES~1.DLL|cpprest120_xp_2_8.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\cpprest120_xp_2_8.dll</td><td>1</td><td/></row>
-		<row><td>facerecognition.srcdat</td><td>ISX_DEFAULTCOMPONENT</td><td>FACERE~1.SRC|FaceRecognition.srcdat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\FaceRecognition.srcdat</td><td>1</td><td/></row>
-		<row><td>haarcascade_frontalface_defa</td><td>ISX_DEFAULTCOMPONENT</td><td>HAARCA~1.XML|haarcascade_frontalface_default.xml</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\haarcascade_frontalface_default.xml</td><td>1</td><td/></row>
-		<row><td>libcrypto_1_1.dll</td><td>libcrypto_1_1.dll</td><td>LIBCRY~1.DLL|libcrypto-1_1.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libcrypto-1_1.dll</td><td>1</td><td/></row>
-		<row><td>libiconv_2.dll</td><td>libiconv_2.dll</td><td>LIBICO~1.DLL|libiconv-2.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libiconv-2.dll</td><td>1</td><td/></row>
-		<row><td>libzbar_0.dll</td><td>libzbar_0.dll</td><td>LIBZBA~1.DLL|libzbar-0.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\libzbar-0.dll</td><td>1</td><td/></row>
-		<row><td>markscc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>markscc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\markscc.dat</td><td>1</td><td/></row>
-		<row><td>modelcc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelcc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\modelcc.dat</td><td>1</td><td/></row>
-		<row><td>modelsc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelsc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\modelsc.dat</td><td>1</td><td/></row>
-		<row><td>mtlibcallverify.dll</td><td>MTLibCallVerify.dll</td><td>MTLIBC~1.DLL|MTLibCallVerify.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibCallVerify.dll</td><td>1</td><td/></row>
-		<row><td>mtlibcameralib.dll</td><td>MTLibCameraLib.dll</td><td>MTLIBC~1.DLL|MTLibCameraLib.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibCameraLib.dll</td><td>1</td><td/></row>
-		<row><td>mtlibidcardreader.dll</td><td>MTLibIDCardReader.dll</td><td>MTLIBI~1.DLL|MTLibIDCardReader.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibIDCardReader.dll</td><td>1</td><td/></row>
-		<row><td>mtlibnetwork.dll</td><td>MTLibNetwork.dll</td><td>MTLIBN~1.DLL|MTLibNetwork.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\MTLibNetwork.dll</td><td>1</td><td/></row>
-		<row><td>opencv_core343.dll</td><td>opencv_core343.dll</td><td>OPENCV~1.DLL|opencv_core343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_core343.dll</td><td>1</td><td/></row>
-		<row><td>opencv_core400.dll</td><td>opencv_core400.dll</td><td>OPENCV~1.DLL|opencv_core400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_core400.dll</td><td>1</td><td/></row>
-		<row><td>opencv_highgui343.dll</td><td>opencv_highgui343.dll</td><td>OPENCV~1.DLL|opencv_highgui343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_highgui343.dll</td><td>1</td><td/></row>
-		<row><td>opencv_imgcodecs343.dll</td><td>opencv_imgcodecs343.dll</td><td>OPENCV~1.DLL|opencv_imgcodecs343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgcodecs343.dll</td><td>1</td><td/></row>
-		<row><td>opencv_imgcodecs400.dll</td><td>opencv_imgcodecs400.dll</td><td>OPENCV~1.DLL|opencv_imgcodecs400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgcodecs400.dll</td><td>1</td><td/></row>
-		<row><td>opencv_imgproc343.dll</td><td>opencv_imgproc343.dll</td><td>OPENCV~1.DLL|opencv_imgproc343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgproc343.dll</td><td>1</td><td/></row>
-		<row><td>opencv_imgproc400.dll</td><td>opencv_imgproc400.dll</td><td>OPENCV~1.DLL|opencv_imgproc400.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_imgproc400.dll</td><td>1</td><td/></row>
-		<row><td>opencv_objdetect343.dll</td><td>opencv_objdetect343.dll</td><td>OPENCV~1.DLL|opencv_objdetect343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_objdetect343.dll</td><td>1</td><td/></row>
-		<row><td>opencv_videoio343.dll</td><td>opencv_videoio343.dll</td><td>OPENCV~1.DLL|opencv_videoio343.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\opencv_videoio343.dll</td><td>1</td><td/></row>
-		<row><td>right.png</td><td>ISX_DEFAULTCOMPONENT</td><td>right.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\right.png</td><td>1</td><td/></row>
-		<row><td>termb.dll</td><td>termb.dll</td><td>termb.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\termb.dll</td><td>1</td><td/></row>
-		<row><td>wrong.png</td><td>ISX_DEFAULTCOMPONENT</td><td>wrong.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\wrong.png</td><td>1</td><td/></row>
-		<row><td>zzbase.dll</td><td>ZZBase.dll</td><td>ZZBase.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\ZZBase.dll</td><td>1</td><td/></row>
-		<row><td>zzcamera.cfg</td><td>ISX_DEFAULTCOMPONENT</td><td>ZZCamera.cfg</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\ZZCamera.cfg</td><td>1</td><td/></row>
-		<row><td>zzlibrary.dll</td><td>ZZLibrary.dll</td><td>ZZLIBR~1.DLL|ZZLibrary.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\Release\ZZLibrary.dll</td><td>1</td><td/></row>
+		<row><td>ai_fdr_sc.dll</td><td>Ai_Fdr_SC.dll</td><td>AI_FDR~1.DLL|Ai_Fdr_SC.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Ai_Fdr_SC.dll</td><td>1</td><td/></row>
+		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\config.txt</td><td>1</td><td/></row>
+		<row><td>cpprest140_xp_2_10.dll</td><td>cpprest140_xp_2_10.dll</td><td>CPPRES~1.DLL|cpprest140_xp_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cpprest140_xp_2_10.dll</td><td>1</td><td/></row>
+		<row><td>idcardfdv.exe</td><td>IDCardFdv.exe</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>1</td><td/></row>
+		<row><td>libcrypto_1_1_x64.dll</td><td>libcrypto_1_1_x64.dll</td><td>LIBCRY~1.DLL|libcrypto-1_1-x64.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\libcrypto-1_1-x64.dll</td><td>1</td><td/></row>
+		<row><td>markscc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>markscc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\markscc.dat</td><td>1</td><td/></row>
+		<row><td>modelcc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelcc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modelcc.dat</td><td>1</td><td/></row>
+		<row><td>modeld.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modeld.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modeld.dat</td><td>1</td><td/></row>
+		<row><td>modelsc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelsc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modelsc.dat</td><td>1</td><td/></row>
+		<row><td>mtlibidcardreader.dll</td><td>MTLibIDCardReader.dll</td><td>MTLIBI~1.DLL|MTLibIDCardReader.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibIDCardReader.dll</td><td>1</td><td/></row>
+		<row><td>mtlibnetwork.dll</td><td>MTLibNetwork.dll</td><td>MTLIBN~1.DLL|MTLibNetwork.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibNetwork.dll</td><td>1</td><td/></row>
+		<row><td>openblas.dll</td><td>openblas.dll</td><td>openblas.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\openblas.dll</td><td>1</td><td/></row>
+		<row><td>opencv_core249.dll</td><td>opencv_core249.dll</td><td>OPENCV~1.DLL|opencv_core249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_core249.dll</td><td>1</td><td/></row>
+		<row><td>opencv_highgui249.dll</td><td>opencv_highgui249.dll</td><td>OPENCV~1.DLL|opencv_highgui249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_highgui249.dll</td><td>1</td><td/></row>
+		<row><td>opencv_imgproc249.dll</td><td>opencv_imgproc249.dll</td><td>OPENCV~1.DLL|opencv_imgproc249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_imgproc249.dll</td><td>1</td><td/></row>
+		<row><td>right.png</td><td>ISX_DEFAULTCOMPONENT</td><td>right.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\right.png</td><td>1</td><td/></row>
+		<row><td>termb.dll</td><td>termb.dll</td><td>termb.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\termb.dll</td><td>1</td><td/></row>
+		<row><td>wrong.png</td><td>ISX_DEFAULTCOMPONENT</td><td>wrong.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\wrong.png</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2116,29 +2071,18 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
-		<row><td>Component</td><td/><td/><td>_65C4AB03_4F8F_4E71_9ABF_96FF650B550A_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Component1</td><td/><td/><td>_A4C39F45_6B6F_4AE1_BDCB_F359727B7694_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Ai_Fdr_SC.dll</td><td/><td/><td>_7AB51C05_BA12_4106_B768_5A1E5F0608BB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>IDCardFdv.exe</td><td/><td/><td>_49354528_C158_4FF9_B126_32814F57684A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_58FAD179_27FF_4F28_A8BF_EED700BDECED_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MTLibCallVerify.dll</td><td/><td/><td>_CDE1D379_7539_4392_9AE4_08202C5E5ED6_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MTLibCameraLib.dll</td><td/><td/><td>_E65DB0BD_FC31_49D6_83DB_18B855FC63D9_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MTLibIDCardReader.dll</td><td/><td/><td>_29240D28_8FD6_48AF_9FD6_955483962939_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MTLibNetwork.dll</td><td/><td/><td>_A3A946B8_5B0D_4932_A7FA_BA035BB6EAEF_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>ZZBase.dll</td><td/><td/><td>_772006EE_6AB0_4EC1_B6B7_96B61D0AFC98_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>ZZLibrary.dll</td><td/><td/><td>_D20AE435_A32B_4A3B_9138_1A1A3BCABC7E_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>cpprest120_xp_2_8.dll</td><td/><td/><td>_C9B05F6B_B314_4B9B_9B44_130CE050A61F_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>libcrypto_1_1.dll</td><td/><td/><td>_0D840429_50BF_4185_8FA4_7A39D0857FA2_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>libiconv_2.dll</td><td/><td/><td>_52F33BE4_59E5_4E0A_9FD8_7BA90E4984C3_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>libzbar_0.dll</td><td/><td/><td>_FC410DB9_10A8_41B0_9FCF_6F738E7098C8_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_core343.dll</td><td/><td/><td>_C6CCA600_78AC_44D2_854C_F0ACCB4C2F20_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_core400.dll</td><td/><td/><td>_7B0B0E3B_881A_413A_9C29_B6A2CA9CF8E2_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_highgui343.dll</td><td/><td/><td>_C4552F97_7569_420C_B90E_47E9E2F459E0_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_imgcodecs343.dll</td><td/><td/><td>_67720A60_B96B_4E25_8DAC_F2D25F41AB29_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_imgcodecs400.dll</td><td/><td/><td>_3C8C8A24_1C6D_4A31_BD88_A4DA20E92C5B_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_imgproc343.dll</td><td/><td/><td>_A77738E8_18AE_4A89_B072_421011A53D86_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_imgproc400.dll</td><td/><td/><td>_BEE55DA2_74CF_4A0A_ACBD_F4177AA937C1_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_objdetect343.dll</td><td/><td/><td>_BCA8D5B5_AD2C_497D_9F3C_BADE22877E70_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>opencv_videoio343.dll</td><td/><td/><td>_DED42751_9B07_478A_9727_C5911AECAD36_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>termb.dll</td><td/><td/><td>_673C1689_3286_4D9C_BA8D_668E12081233_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MTLibIDCardReader.dll</td><td/><td/><td>_82F2F149_5228_4416_B2F6_94C7912A1DF4_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MTLibNetwork.dll</td><td/><td/><td>_55E4C8D9_D0CF_4927_8A97_9BE43D0C67CA_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>cpprest140_xp_2_10.dll</td><td/><td/><td>_CF71570C_69FD_4E94_89A0_A87D7F9B9699_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>libcrypto_1_1_x64.dll</td><td/><td/><td>_707F4739_0DD9_44B9_BBA4_8DE39EA5D27A_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>openblas.dll</td><td/><td/><td>_E2AB78F3_185A_49FC_9612_869DF598D079_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_core249.dll</td><td/><td/><td>_74891FF1_1D52_4675_A8C1_7F72686E3350_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_highgui249.dll</td><td/><td/><td>_F78E8C6E_73A1_455A_B7B2_FC2D8131E677_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>opencv_imgproc249.dll</td><td/><td/><td>_FD4B79C3_F911_4E09_BD3E_D4C54CEE92AD_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>termb.dll</td><td/><td/><td>_B67D8311_0291_41C8_AB0E_DFF142581AB0_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -2697,7 +2641,7 @@
 		<col def="I2">Order</col>
 		<col def="I2">ISSetupLocation</col>
 		<col def="S255">ISReleaseFlags</col>
-		<row><td>_41C3FF97_A4E1_440B_A9ED_3F2FCF65EBA4_</td><td>Microsoft Visual C++ 2015 Redistributable Package (x86).prq</td><td/><td/><td/></row>
+		<row><td>_451BCBC7_2B7B_4831_8A80_37C8BBE13582_</td><td>Microsoft Visual C++ 2015 Redistributable Package (x64).prq</td><td/><td/><td/></row>
 	</table>
 
 	<table name="ISSetupType">
@@ -3543,6 +3487,8 @@
 		<row><td>IDS_PROGMSG_XML_UPDATE_FILE</td><td>2052</td><td>正在更新 XML 文件 %s...</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS_SETUPEXE_EXPIRE_MSG</td><td>2052</td><td>本安装程序的使用期到 %s 结束。安装程序现在将退出。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS_SETUPEXE_LAUNCH_COND_E</td><td>2052</td><td>本安装程序内建有 InstallShield 的评估版，只能用 setup.exe 文件启动。</td><td>0</td><td/><td>883322218</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td/><td>0</td><td/><td>-1926888528</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>2052</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td>-1926864719</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>2052</td><td>从以下服务器列表中选择要连接的数据库服务器。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>2052</td><td>从以下的编录名称列表中，选择您希望将其作为目标的数据库编录。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>2052</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>883322218</td></row>
@@ -3843,6 +3789,8 @@
 		<row><td>ID_STRING6</td><td>2052</td><td>IDCARD~1|IDCardFdvRegister</td><td>0</td><td/><td>883343018</td></row>
 		<row><td>ID_STRING7</td><td>1033</td><td>NEWSHO~1|NewShortcut4</td><td>0</td><td/><td>883351210</td></row>
 		<row><td>ID_STRING7</td><td>2052</td><td>Uninstall</td><td>0</td><td/><td>883351210</td></row>
+		<row><td>ID_STRING8</td><td>1033</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td>-1926862671</td></row>
+		<row><td>ID_STRING8</td><td>2052</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td>-1926862671</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>2052</td><td>系统将不安装此功能。</td><td>0</td><td/><td>883322218</td></row>
 	</table>
 
@@ -3957,6 +3905,8 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
+		<row><td>IDCardFdv.exe1_9A0365387AEA47A6A773E70223C3963D.exe</td><td/><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>0</td></row>
+		<row><td>IDCardFdv.exe_0CF00637CB754B6E9FE067EC74D802BC.exe</td><td/><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>0</td></row>
 		<row><td>NewShortcut4_DA2D9A596C4144F2A0F684391D1183F7.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2015LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
 	</table>
 
@@ -4090,7 +4040,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{9375D42B-A6E7-49EB-8CB9-7E657A0CA038}</td></row>
 		<row><td>ISUSSignature</td><td>{99C04130-07A9-418F-ABCA-C8BB76C7D495}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewObjects,viewShortcuts,viewAppFiles,viewUI,viewTextMessages,viewSystemSearch,viewRelease,viewFileExtensions</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewObjects,viewShortcuts,viewAppFiles,viewUI,viewTextMessages,viewSystemSearch,viewRelease,viewFileExtensions,viewEnvironmentVariables</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4434,7 +4384,6 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>IS_SQLSERVER_SERVER</td><td/><td/></row>
 		<row><td>IS_SQLSERVER_USERNAME</td><td>sa</td><td/></row>
 		<row><td>InstallChoice</td><td>AR</td><td/></row>
-		<row><td>LAUNCHPROGRAM</td><td>1</td><td/></row>
 		<row><td>LAUNCHPROGRAMCOMPCODE</td><td>{7C0F8258-D506-45AA-8140-FBAD986C3044}</td><td/></row>
 		<row><td>LAUNCHPROGRAMFILEKEY</td><td>File1</td><td/></row>
 		<row><td>LAUNCHREADME</td><td>1</td><td/></row>
@@ -4466,7 +4415,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]IDCardFdvRegister.主输出</td><td/></row>
 		<row><td>ProductCode</td><td>{42113A37-6A1C-4BE2-A489-76FBD81F3125}</td><td/></row>
-		<row><td>ProductName</td><td>IDCardFdvSetup</td><td/></row>
+		<row><td>ProductName</td><td>IDCardFdv</td><td/></row>
 		<row><td>ProductVersion</td><td>1.00.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
@@ -4479,7 +4428,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>RestartManagerOption</td><td>CloseRestart</td><td/></row>
 		<row><td>SERIALNUMBER</td><td/><td/></row>
 		<row><td>SERIALNUMVALSUCCESSRETVAL</td><td>1</td><td/></row>
-		<row><td>SHOWLAUNCHPROGRAM</td><td>-1</td><td/></row>
+		<row><td>SHOWLAUNCHPROGRAM</td><td>0</td><td/></row>
 		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR</td><td/></row>
 		<row><td>SelectedSetupType</td><td>##IDS__DisplayName_Typical##</td><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
@@ -4543,8 +4492,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="L255">FileName</col>
 		<col def="s72">DirProperty</col>
 		<col def="i2">InstallMode</col>
-		<row><td>NewShortcut2</td><td>Component</td><td/><td>newfolder1</td><td>2</td></row>
-		<row><td>NewShortcut3</td><td>Component1</td><td/><td>newfolder1</td><td>2</td></row>
+		<row><td>FileKey1</td><td>IDCardFdv.exe</td><td/><td>company_name</td><td>2</td></row>
+		<row><td>FileKey2</td><td>IDCardFdv.exe</td><td/><td>idcard_1_idcardfdvsetup</td><td>2</td></row>
+		<row><td>IDCardFdv.exe1</td><td>IDCardFdv.exe</td><td/><td>newfolder1</td><td>2</td></row>
 		<row><td>NewShortcut4</td><td>ISX_DEFAULTCOMPONENT</td><td/><td>newfolder1</td><td>2</td></row>
 	</table>
 
@@ -4631,9 +4581,8 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>NewShortcut1</td><td>DesktopFolder</td><td>##ID_STRING3##</td><td>Component</td><td>AlwaysInstall</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>NewShortcut2</td><td>newfolder1</td><td>##ID_STRING5##</td><td>Component</td><td>AlwaysInstall</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>NewShortcut3</td><td>newfolder1</td><td>##ID_STRING6##</td><td>Component1</td><td>AlwaysInstall</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>IDCardFdv.exe</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME1##</td><td>IDCardFdv.exe</td><td>AlwaysInstall</td><td/><td/><td/><td>IDCardFdv.exe_0CF00637CB754B6E9FE067EC74D802BC.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>IDCardFdv.exe1</td><td>newfolder1</td><td>##ID_STRING8##</td><td>IDCardFdv.exe</td><td>AlwaysInstall</td><td/><td/><td/><td>IDCardFdv.exe1_9A0365387AEA47A6A773E70223C3963D.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>NewShortcut4</td><td>newfolder1</td><td>##ID_STRING7##</td><td>ISX_DEFAULTCOMPONENT</td><td>[SystemFolder]MsiExec.exe</td><td>/x [ProductCode]</td><td/><td/><td>NewShortcut4_DA2D9A596C4144F2A0F684391D1183F7.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 

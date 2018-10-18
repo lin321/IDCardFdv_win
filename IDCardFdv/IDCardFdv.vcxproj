@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\opencv-3.4.3;$(SolutionDir)\include\opencv-3.4.3\opencv;$(SolutionDir)\include\opencv-3.4.3\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include\opencv-2.4.9;$(SolutionDir)\include\opencv-2.4.9\opencv;$(SolutionDir)\include\opencv-2.4.9\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -168,7 +168,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -178,7 +178,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core343.lib;opencv_highgui343.lib;opencv_imgproc343.lib;opencv_imgcodecs343.lib;opencv_videoio343.lib;opencv_objdetect343.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

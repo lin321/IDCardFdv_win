@@ -40,6 +40,10 @@ public:
 	std::string m_strModulePath;
 
 	//config data
+	std::string m_cfgCameraVid;
+	std::string m_cfgCameraPid;
+	std::string m_cfgCameraHideVid;
+	std::string m_cfgCameraHidePid;
 	std::string m_cfgAppId;
 	std::string m_cfgApiKey;
 	std::string m_cfgSecretKey;

@@ -27,10 +27,10 @@ void sha256(const std::string &srcStr, std::string &encodedStr, std::string &enc
 	char tmp[3] = { 0 };
 	for (int i = 0; i < 32; i++)
 	{
-		sprintf_s(tmp, "%02x", mdStr[i]);
+		sprintf_s(tmp, "%02X", mdStr[i]);
 		strcat_s(buf, tmp);
 	}
-	buf[32] = '\0'; // 后面都是0，从32字节截断    
+	buf[64] = '\0'; 
 	encodedHexStr = std::string(buf);
 }
 
@@ -201,15 +201,16 @@ int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string 
 
 	reg_json[U("appId")] = json::value::string(utility::conversions::to_string_t(appId));
 	reg_json[U("apiKey")] = json::value::string(utility::conversions::to_string_t(apiKey));
-	//reg_json[U("secretKey")] = json::value::string(utility::conversions::to_string_t(secretKey));
-	reg_json[U("uuid")] = json::value::string(utility::conversions::to_string_t(uuid));
+	reg_json[U("secretKey")] = json::value::string(utility::conversions::to_string_t(secretKey));
 	shastr += appId;
 	shastr += apiKey;
 	shastr += secretKey;
-	shastr += uuid;
 
 	reg_json[U("MacId")] = json::value::string(utility::conversions::to_string_t(macId));
 	shastr += macId;
+
+	reg_json[U("uuid")] = json::value::string(utility::conversions::to_string_t(uuid));
+	shastr += uuid;
 
 	reg_json[U("productsn")] = json::value::string(utility::conversions::to_string_t(productsn));
 	shastr += productsn;
@@ -218,7 +219,6 @@ int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string 
 	std::string shaEncodedHex;
 	sha256(shastr, shaEncoded, shaEncodedHex);
 	reg_json[U("checksum")] = json::value::string(utility::conversions::to_string_t(shaEncodedHex));
-
 	return callregisterSub(utility::conversions::to_string_t(url), reg_json, callregisterCB, userdata,timeout);
 }
 int __stdcall callregisterSub(utility::string_t& url, web::json::value& postParameters, CallRegisterCallback callregisterCB, MTLIBPTR userdata, int timeout)

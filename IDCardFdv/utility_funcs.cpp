@@ -193,3 +193,23 @@ void MatAlphaBlend(cv::Mat &dst, cv::Mat &scr)
 	}
 	merge(dstt_channels, dst);
 }
+
+// function:阻塞并等待,但处理消息
+void WaitObjectAndMsg(HANDLE hEvent, DWORD dwMilliseconds) {
+	BOOL bWait = TRUE;
+	DWORD dwResult = 0;
+
+	while (bWait)
+	{
+		DWORD dwResult = ::MsgWaitForMultipleObjects(1, &hEvent, FALSE, dwMilliseconds, QS_ALLINPUT);
+
+		if (WAIT_OBJECT_0 == dwResult) {
+			break;
+		}
+		else {
+			MSG msg;
+			PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+			DispatchMessage(&msg);
+		}
+	}
+}

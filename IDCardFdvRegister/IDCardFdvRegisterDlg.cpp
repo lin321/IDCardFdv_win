@@ -10,6 +10,7 @@
 #include "LocalMac.h"
 #include "MTLibNetwork.h"
 #include "QRFuncs.h"
+#include "utility_funcs.h"
 
 #include <fstream>
 #include <sstream>
@@ -22,7 +23,7 @@ using namespace cv;
 CCriticalSection g_CriticalSection;
 UINT CameraShowThread(LPVOID lpParam);
 
-static void __stdcall RegisterCB(int err_no, std::string err_msg, std::string RegisteredNo, unsigned long userdata)
+static void __stdcall RegisterCB(int err_no, std::string err_msg, std::string RegisteredNo, MTLIBPTR userdata)
 {
 	if (MTLIBNETWORK_NETWORK_ERROR == err_no) {
 		AfxMessageBox(_T("network error!")); 
@@ -49,7 +50,7 @@ static void __stdcall RegisterCB(int err_no, std::string err_msg, std::string Re
 	}
 }
 
-static void __stdcall TestUrlCB(int err_no, unsigned long userdata)
+static void __stdcall TestUrlCB(int err_no, MTLIBPTR userdata)
 {
 	if(0 == err_no)
 		AfxMessageBox(_T("URL 可用!"));
@@ -95,10 +96,9 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
+
+
 // CIDCardFdvRegisterDlg 对话框
-
-
-
 CIDCardFdvRegisterDlg::CIDCardFdvRegisterDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_IDCARDFDVREGISTER_DIALOG, pParent)
 {
@@ -134,6 +134,7 @@ BEGIN_MESSAGE_MAP(CIDCardFdvRegisterDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_QRSCAN, &CIDCardFdvRegisterDlg::OnBnClickedBtnQrscan)
 	ON_WM_SHOWWINDOW()
 	ON_WM_MOVE()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 string ExtractFilePath(const string& szFile)
@@ -235,13 +236,15 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 	confFile.close();
 	m_cfgRegisteredNo = "";
 
-	int idx = m_cfgUrl.find_last_of('/');
+	size_t idx = m_cfgUrl.find_last_of('/');
 	std::string regurl = m_cfgUrl.substr(0, idx);
 	regurl = regurl + "/registerproduct";
 	GetDlgItem(IDC_URL_EDIT)->SetWindowText(regurl.c_str());
 
 	CButton* check_reg = (CButton*)GetDlgItem(IDC_CHECK_REG);
 	check_reg->SetCheck(1);
+
+	camdevid = getDeviceIndex(m_cfgCameraVid, m_cfgCameraPid);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -332,7 +335,7 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnTest()
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(str);
 	std::string url = str.GetString();
 
-	MTLibTestUrl(url, TestUrlCB, (unsigned long)this, ::stoi(m_cfgTimeOut));
+	MTLibTestUrl(url, TestUrlCB, (MTLIBPTR)this, ::stoi(m_cfgTimeOut));
 
 }
 
@@ -350,15 +353,15 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnReg()
 
 	GetDlgItem(IDC_REG_EDIT2)->GetWindowText(editstr);
 	editstr.Remove(' ');
-	productsn = productsn + "-" + editstr.GetString();
+	productsn = productsn + editstr.GetString();
 
 	GetDlgItem(IDC_REG_EDIT3)->GetWindowText(editstr);
 	editstr.Remove(' ');
-	productsn = productsn + "-" + editstr.GetString();
+	productsn = productsn + editstr.GetString();
 
 	GetDlgItem(IDC_REG_EDIT4)->GetWindowText(editstr);
 	editstr.Remove(' ');
-	productsn = productsn + "-" + editstr.GetString();
+	productsn = productsn + editstr.GetString();
 
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(editstr);
 	std::string url = editstr.GetString();
@@ -381,7 +384,7 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnReg()
 	}
 	std::string uuid = std::string(struuid);
 
-	MTLibCallRegister(url, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, uuid, productsn, macId,RegisterCB,(unsigned long)this, ::stoi(m_cfgTimeOut));
+	MTLibCallRegister(url, m_cfgAppId, m_cfgApiKey, m_cfgSecretKey, uuid, productsn, macId,RegisterCB,(MTLIBPTR)this, ::stoi(m_cfgTimeOut));
 
 	btn_reg->EnableWindow(true);
 }
@@ -443,7 +446,7 @@ void CIDCardFdvRegisterDlg::showPreview(IplImage* img)
 		cvCvtColor(m_iplImgQRimg, m_iplImgQRimgGray, CV_BGR2GRAY);	// 转灰度图
 		string qrstr = GetQR(cvarrToMat(m_iplImgQRimgGray));
 		if (!qrstr.empty()) {
-			const std::tr1::regex pattern("^[A-Fa-f0-9]{4}(-[A-Fa-f0-9]{4}){3}$");
+			const std::tr1::regex pattern("^[A-Fa-f0-9]{4}(-?[A-Fa-f0-9]{4}){3}$");
 			bool match = std::regex_search(qrstr, pattern);			// 正则判断格式
 			if (match) {
 				setProductSnText(qrstr);
@@ -488,32 +491,48 @@ void CIDCardFdvRegisterDlg::startCameraThread()
 
 void CIDCardFdvRegisterDlg::stopCameraThread()
 {
-	g_CriticalSection.Lock();
-	m_bCameraRun = false;
-	g_CriticalSection.Unlock();
-	if (m_thCamera) {
-		WaitForSingleObject(m_eCameraEnd, INFINITE);
-		ResetEvent(m_eCameraEnd);
-	}
+	if (m_thCamera && m_bCameraRun) {
+		g_CriticalSection.Lock();
+		m_bCameraRun = false;
+		g_CriticalSection.Unlock();
 
-	m_thCamera = NULL;
+		WaitObjectAndMsg(m_eCameraEnd, INFINITE);
+		ResetEvent(m_eCameraEnd);
+
+		m_thCamera = NULL;
+	}
 }
 
 void CIDCardFdvRegisterDlg::setProductSnText(std::string str)
 {
 	string strbuf = str;
 	string text;
-	text = strbuf.substr(0, strbuf.find('-'));
-	GetDlgItem(IDC_REG_EDIT1)->SetWindowText(text.c_str());
-	strbuf = strbuf.substr(strbuf.find('-')+1);
+	if (strbuf.find('-') == string::npos) {
+		text = strbuf.substr(0, 4);
+		GetDlgItem(IDC_REG_EDIT1)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(4);
 
-	text = strbuf.substr(0, strbuf.find('-'));
-	GetDlgItem(IDC_REG_EDIT2)->SetWindowText(text.c_str());
-	strbuf = strbuf.substr(strbuf.find('-') + 1);
+		text = strbuf.substr(0, 4);
+		GetDlgItem(IDC_REG_EDIT2)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(4);
 
-	text = strbuf.substr(0, strbuf.find('-'));
-	GetDlgItem(IDC_REG_EDIT3)->SetWindowText(text.c_str());
-	strbuf = strbuf.substr(strbuf.find('-') + 1);
+		text = strbuf.substr(0, 4);
+		GetDlgItem(IDC_REG_EDIT3)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(4);
+	}
+	else {
+		text = strbuf.substr(0, strbuf.find('-'));
+		GetDlgItem(IDC_REG_EDIT1)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(strbuf.find('-') + 1);
+
+		text = strbuf.substr(0, strbuf.find('-'));
+		GetDlgItem(IDC_REG_EDIT2)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(strbuf.find('-') + 1);
+
+		text = strbuf.substr(0, strbuf.find('-'));
+		GetDlgItem(IDC_REG_EDIT3)->SetWindowText(text.c_str());
+		strbuf = strbuf.substr(strbuf.find('-') + 1);
+	}
 
 	GetDlgItem(IDC_REG_EDIT4)->SetWindowText(strbuf.c_str());
 }
@@ -539,7 +558,7 @@ UINT CameraShowThread(LPVOID lpParam)
 	CIDCardFdvRegisterDlg* pDlg = (CIDCardFdvRegisterDlg*)lpParam;
 	Mat cFrame;
 	VideoCapture captureMain;
-	captureMain.open(pDlg->camdevid, CAP_DSHOW);
+	captureMain.open(pDlg->camdevid);//, CAP_DSHOW);
 	if (!captureMain.isOpened()) {
 		SetEvent(pDlg->m_eCameraEnd);
 		return 0;
@@ -597,15 +616,19 @@ UINT CameraShowThread(LPVOID lpParam)
 }
 
 
+void CIDCardFdvRegisterDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	stopCameraThread();
+	Sleep(20);
 
+	CDialogEx::OnClose();
+}
 
 
 BOOL CIDCardFdvRegisterDlg::DestroyWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	stopCameraThread();
-	Sleep(20);
-
 	if (m_iplImgDisplay != NULL) {
 		cvReleaseImage(&m_iplImgDisplay);
 		m_iplImgDisplay = NULL;
@@ -656,8 +679,6 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnQrscan()
 		m_iQRbtnState = 0;
 	}
 }
-
-
 
 
 

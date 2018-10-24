@@ -539,26 +539,6 @@ void CIDCardFdvDlg::drawScanRect(cv::Mat frame)
 	MatAlphaBlend(newframe_bbr, bbr);
 }
 
-// function:阻塞并等待,但处理消息
-void WaitObjectAndMsg(HANDLE hEvent, DWORD dwMilliseconds) {
-	BOOL bWait = TRUE;
-	DWORD dwResult = 0;
-
-	while (bWait)
-	{
-		DWORD dwResult = ::MsgWaitForMultipleObjects(1, &hEvent, FALSE, dwMilliseconds, QS_ALLINPUT);
-
-		if (WAIT_OBJECT_0 == dwResult) {
-			break;
-		}
-		else {
-			MSG msg;
-			PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
-			DispatchMessage(&msg);
-		}
-	}
-}
-
 void CIDCardFdvDlg::startIdcardDetectThread()
 {
 	ResetEvent(m_eIdcardDetectEnd);
@@ -1016,16 +996,17 @@ UINT CameraShowThread(LPVOID lpParam)
 		}
 
 		// 画人脸框，需在截取人脸图后
-		if (pDlg->m_faces.size() > 0) {
-			//for (int i = 0; i<faces.size(); i++)
-			{
-				int i = 0;
-				rectangle(cFrame,
-					Point(facex, facey),
-					Point(facex + FaceImgSize.width, facey + FaceImgSize.height),
-					Scalar(0, 255, 0), 2);    // 框出人脸
-			}
-		}
+		//if (pDlg->m_faces.size() > 0) {
+		//	//for (int i = 0; i<faces.size(); i++)
+		//	{
+		//		int i = 0;
+		//		rectangle(cFrame,
+		//			Point(facex, facey),
+		//			Point(facex + FaceImgSize.width, facey + FaceImgSize.height),
+		//			Scalar(0, 255, 0), 2);    // 框出人脸
+		//	}
+		//}
+
 		
 		// 扫描框
 		pDlg->drawScanRect(cFrame);

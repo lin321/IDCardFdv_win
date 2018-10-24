@@ -49,7 +49,7 @@ string GetQR(Mat img)
 {
 	Mat binImg;
 	//在otsu二值结果的基础上，不断增加阈值，用于识别模糊图像
-	int thre = threshold(img, binImg, 0, 255, cv::THRESH_OTSU);
+	int thre = (int)threshold(img, binImg, 0, 255, cv::THRESH_OTSU);
 	string result;
 	while (result.empty() && thre<255)
 	{

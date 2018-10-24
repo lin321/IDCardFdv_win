@@ -9,3 +9,4 @@
 IplImage *BMP2Ipl(unsigned char *src, int FileSize);
 int getDeviceIndex(std::string vid, std::string pid);
 void MatAlphaBlend(cv::Mat &dst, cv::Mat &scr);
+void WaitObjectAndMsg(HANDLE hEvent, DWORD dwMilliseconds);

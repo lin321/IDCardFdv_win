@@ -53,4 +53,6 @@ public:
 	void setResultText(std::string result);
 	void setResultTextSize(int size) { m_iResultTextSize = size; }
 	void setThresholdText(std::string text);
+	void getInfoDlgScreenRect(cv::Rect &rect);
+	void getCameraImageRect(cv::Rect &rect);
 };

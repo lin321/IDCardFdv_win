@@ -311,6 +311,27 @@ void CInfoDlg::setThresholdText(std::string text)
 		pWnd->SetWindowText(text.c_str());
 }
 
+void CInfoDlg::getInfoDlgScreenRect(cv::Rect &rect)
+{
+	rect.x = m_iScreenX;
+	rect.y = m_iScreenY;
+	rect.width = m_iWidth;
+	rect.height = m_iHeight;
+}
+
+void CInfoDlg::getCameraImageRect(cv::Rect &rect)
+{
+	CWnd* pWnd = GetDlgItem(IDC_CAMERA_IMG);
+	if (pWnd) {
+		CRect r;
+		pWnd->GetClientRect(&r);
+		rect.x = r.left;
+		rect.y = r.top;
+		rect.width = r.right - r.left;
+		rect.height = r.bottom - r.top;
+	}
+}
+
 void CInfoDlg::OnBnClickedBtnThresholdSet()
 {
 	// TODO: 在此添加控件通知处理程序代码

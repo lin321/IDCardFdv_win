@@ -68,21 +68,34 @@ int __stdcall OpenIDCardReader()
 		return -1;
 	}
 
+	return usbport;
+}
+
+int __stdcall Authenticate_Idcard()
+{
+	if (NULL == MTLib_pIdCardReader)
+		return -1;
+
 	int li_ret = MTLib_pIdCardReader->Authenticate();
-	li_ret = 1;
 	if (li_ret <= 0) {
 		// "身份证验证失败!"
-		MTLib_pIdCardReader->CloseComm();
 		return -1;
 	}
+
+	return 1;
+}
+
+int __stdcall Authenticate_Content()
+{
+	if (NULL == MTLib_pIdCardReader)
+		return -1;
 
 	if (1 != MTLib_pIdCardReader->Read_Content(1)) {
 		// "身份证信息读取失败!"
-		MTLib_pIdCardReader->CloseComm();
 		return -1;
 	}
 
-	return usbport;
+	return 1;
 }
 
 int __stdcall IDCardReader_GetPeopleIDCode(char* pData, unsigned int iDataLen)

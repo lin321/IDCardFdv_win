@@ -4,8 +4,10 @@ EXPORTS
 
 LoadIDCardReader @ 1
 OpenIDCardReader @ 2
-IDCardReader_GetPeopleIDCode @ 3
-IDCardReader_GetStartDate @ 4
-IDCardReader_GetPhotoBMP @ 5
-CloseIDCardReader @ 6
-UnloadIDCardReader @ 7
+Authenticate_Idcard @ 3
+Authenticate_Content @ 4
+IDCardReader_GetPeopleIDCode @ 5
+IDCardReader_GetStartDate @ 6
+IDCardReader_GetPhotoBMP @ 7
+CloseIDCardReader @ 8
+UnloadIDCardReader @ 9

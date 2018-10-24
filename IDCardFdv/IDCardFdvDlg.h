@@ -56,6 +56,13 @@ public:
 	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
 
+	// idcard detect thread
+	bool m_bIdcardDetectRun;
+	CWinThread* m_thIdcardDetect;
+	CEvent m_eIdcardDetectEnd;
+	CEvent m_eResumeIdcardDetect;
+	IplImage* m_iplImgHelpImg;
+
 	// face detect thread
 	bool m_bFaceDetectRun;
 	CWinThread* m_thFaceDetect;
@@ -63,7 +70,10 @@ public:
 	CEvent m_eCaptureForDetect;
 	bool m_bCmdDetect;
 	std::vector<cv::Rect> m_faces;
+	IplImage* m_iplImgCameraImg;
+	IplImage* m_iplImgCameraHideImg;
 
+	// camera preview
 	//int camdevid;
 	bool m_bCameraRun;
 	CWinThread* m_thCamera;
@@ -71,10 +81,15 @@ public:
 	bool m_bFlip;
 	IplImage* m_iplImgDisplay;
 	IplImage* m_iplImgTemp;
+	cv::Mat m_MatScan;
+	cv::Mat m_MatScanBorder;
+	int m_iPreviewWidth;
+	int m_iPreviewHeight;
 
 	// fdv
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
+	bool m_bCmdFdvStop;
 	CEvent m_eFdvEnd;
 #ifdef NDEBUG
 	fdr_model_wrap* m_pfrmwrap;
@@ -106,19 +121,21 @@ public:
 	// info panel
 	CInfoDlg* m_pInfoDlg;
 	HBITMAP m_hBIconCamera;	// test
-	IplImage* m_iplImgCameraImg;
 	IplImage* m_iplImgResultIconRight;
 	IplImage* m_iplImgResultIconWrong;
 	double m_dThreshold;
 public:
 	void showPreview(IplImage* img);
-	void drawCameraImage(IplImage* img);
+	void drawHelpImage(IplImage* img);
+	void drawScanRect(cv::Mat frame);
 
+	void startIdcardDetectThread();
+	void stopIdcardDetectThread();
 	void startCameraThread();
 	void stopCameraThread();
 	void startFaceDetectThread();
 	void stopFaceDetectThread();
-	void startFdvThread();
+	void startFdvThread(std::string feat, bool live);
 	void waitFdvThreadStopped();
 	void setClearTimer();
 

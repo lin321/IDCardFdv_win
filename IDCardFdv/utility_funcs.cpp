@@ -175,3 +175,21 @@ int getDeviceIndex(std::string vid, std::string pid)
 	return retIdx;
 }
 
+void MatAlphaBlend(cv::Mat &dst, cv::Mat &scr)
+{
+	if (dst.channels() != 3 || scr.channels() != 4)
+		return;
+	
+	std::vector<cv::Mat>scr_channels;
+	std::vector<cv::Mat>dstt_channels;
+	split(scr, scr_channels);
+	split(dst, dstt_channels);
+	CV_Assert(scr_channels.size() == 4 && dstt_channels.size() == 3);
+
+	for (int i = 0; i < 3; i++)
+	{
+		dstt_channels[i] = dstt_channels[i].mul(255.0 - scr_channels[3], 1.0 / 255.0);
+		dstt_channels[i] += scr_channels[i].mul(scr_channels[3], 1.0 / 255.0);
+	}
+	merge(dstt_channels, dst);
+}

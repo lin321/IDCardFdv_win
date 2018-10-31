@@ -51,6 +51,9 @@
     <ClInclude Include="LocalMac.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ImgUploadMgt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IDCardFdv.cpp">
@@ -75,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LocalMac.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImgUploadMgt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

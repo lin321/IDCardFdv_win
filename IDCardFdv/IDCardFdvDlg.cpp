@@ -30,10 +30,12 @@ using namespace cv;
 clock_t time_net=0;
 
 CCriticalSection g_CriticalSection;
+CCriticalSection g_CriticalSectionAiFdr;
 UINT IdcardDetectThread(LPVOID lpParam);
 UINT FaceDetectThread(LPVOID lpParam);
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
+UINT ImgUploadThread(LPVOID lpParam);
 
 #if OPENCV_CAPTURE
 #else
@@ -66,7 +68,7 @@ static void __stdcall FaceResultCB(HWND hWnd, LONG result, ULONG_PTR userdata)
 #endif
 
 // 识别callback
-static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarity, MTLIBPTR userdata)
+static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarity, std::string serial_no, MTLIBPTR userdata)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)userdata;
 
@@ -74,8 +76,10 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 		// 超时或其他网络错误处理
 #ifdef NDEBUG
 		double sim = 0.0;
+		g_CriticalSectionAiFdr.Lock();
 		int simret = pDlg->m_pfrmwrap->ai_fdr_similarity(pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats[0], sim);
-		VerifyCB(0, "", sim, userdata);
+		g_CriticalSectionAiFdr.Unlock();
+		VerifyCB(0, "", sim, serial_no, userdata);
 		return;
 #endif
 	}
@@ -104,6 +108,15 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 
 	pDlg->setClearTimer();
 
+	// 对比图插入上传队列
+	if (serial_no != "") {
+		bool bInsert = pDlg->m_imgUploadMgt->insert(serial_no, pDlg->m_iplImgUploadCopyFrame, pDlg->m_iplImgUploadCopyPhoto);
+		if (bInsert) {
+			pDlg->m_iplImgUploadCopyFrame = NULL;
+			pDlg->m_iplImgUploadCopyPhoto = NULL;
+		}
+	}
+
 	clock_t dt = clock() - time_net;
 	CString csTemp1;
 	csTemp1.Format("%d", dt);
@@ -124,6 +137,8 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_iplImgDisplay = NULL;
 	m_iplImgTemp = NULL;
 	m_bFlip = false;
+	m_bMainFrameSuccess = false;
+	m_bHideFrameSuccess = false;
 
 	m_bIdcardDetectRun = false;
 	m_thIdcardDetect = NULL;
@@ -137,6 +152,13 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_faces.clear();
 	m_iplImgCameraImg = NULL;
 	m_iplImgCameraHideImg = NULL;
+
+	m_bImgUploadRun = false;
+	m_thImgUpload = NULL;
+	ResetEvent(m_eImgUploadEnd);
+	m_imgUploadMgt = NULL;
+	m_iplImgUploadCopyFrame = NULL;
+	m_iplImgUploadCopyPhoto = NULL;
 
 	m_bCmdCapture = false;
 	m_CaptureImage = NULL;
@@ -208,6 +230,8 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
+	//char sbuf[1024];
+	//GetSystemDirectory(sbuf,1024);
 
 	//获得电脑显示器的像素宽度和像素高度
 	//int ax = GetDC()->GetDeviceCaps(HORZRES);
@@ -299,6 +323,7 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_cfgApiKey = "MGRhNjEyYWExOTdhYzYxNTkx";
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
+	m_cfgUploadUrl = "http://192.168.1.201:8008/idfdv_complete";
 	m_cfgTimeOut = "15";
 	m_cfgRegisteredNo = "0";
 	std::ifstream confFile(m_strModulePath + "config.txt");
@@ -328,6 +353,8 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 					m_cfgSecretKey = value;
 				if (key == "url")
 					m_cfgUrl = value;
+				if (key == "uploadurl")
+					m_cfgUploadUrl = value;
 				if (key == "timeout")
 					m_cfgTimeOut = value;
 				if (key == "registeredNo")
@@ -344,13 +371,12 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 
 
 #if OPENCV_CAPTURE
-	ResetEvent(m_eIdcardDetectEnd);
 	startIdcardDetectThread();
 	//ResetEvent(m_eCameraEnd);
 	//startCameraThread();
 
-	ResetEvent(m_eFaceDetectEnd);
 	startFaceDetectThread();
+	startImgUploadThread();
 #else
 	MTLibLoadCamera();
 	MTLibOpenCamera(GetDlgItem(IDC_PREVIEW_IMG)->m_hWnd,
@@ -643,6 +669,8 @@ void CIDCardFdvDlg::startFdvThread(std::string feat, bool live)
 	m_frameFaceFeats.shrink_to_fit();
 	m_frameFaceFeats.push_back(feat);
 	m_bIsAliveSample = live;
+	if(NULL == m_iplImgUploadCopyFrame)
+		m_iplImgUploadCopyFrame = cvCloneImage(m_iplImgCameraImg);
 
 	m_bCmdCapture = true;
 	ResetEvent(m_eCaptureEnd);
@@ -666,10 +694,36 @@ void CIDCardFdvDlg::waitFdvThreadStopped()
 		SetEvent(m_eCaptureEnd);	// 释放截图等待
 		WaitObjectAndMsg(m_eFdvEnd, INFINITE);
 		ResetEvent(m_eFdvEnd);
-	}
+		m_bCmdFdvStop = false;
+		m_thFdv = NULL;
+	}	
+}
 
-	m_thFdv = NULL;
-	m_bCmdFdvStop = false;
+void CIDCardFdvDlg::startImgUploadThread()
+{
+	ResetEvent(m_eImgUploadEnd);
+
+	if (m_thImgUpload == NULL) {
+		m_thImgUpload = AfxBeginThread(ImgUploadThread, this);
+		if (NULL == m_thImgUpload)
+		{
+			TRACE("创建新的线程出错！\n");
+			return;
+		}
+	}
+}
+
+void CIDCardFdvDlg::stopImgUploadThread()
+{
+	if (m_thImgUpload && m_bImgUploadRun) {
+		g_CriticalSection.Lock();
+		m_bImgUploadRun = false;
+		g_CriticalSection.Unlock();
+		WaitObjectAndMsg(m_eImgUploadEnd, INFINITE);
+		ResetEvent(m_eImgUploadEnd);
+
+		m_thImgUpload = NULL;
+	}
 }
 
 // idcard detect thread
@@ -748,7 +802,9 @@ UINT FaceDetectThread(LPVOID lpParam)
 		Mat matframe(cvarrToMat(pDlg->m_iplImgCameraImg));
 		Mat matframehide(cvarrToMat(pDlg->m_iplImgCameraHideImg));
 
+		g_CriticalSectionAiFdr.Lock();
 		bool live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
+		g_CriticalSectionAiFdr.Unlock();
 		//clock_t dt = clock() - time1;
 		//CString csTemp;
 		//csTemp.Format("%d", dt);
@@ -843,6 +899,8 @@ UINT CameraShowThread(LPVOID lpParam)
 	pDlg->m_bCameraRun = true;
 	g_CriticalSection.Unlock();
 
+	pDlg->m_bMainFrameSuccess = false;
+	pDlg->m_bHideFrameSuccess = false;
 	while (pDlg->m_bCameraRun)
 	{
 		WINDOWPLACEMENT wpl;
@@ -883,17 +941,30 @@ UINT CameraShowThread(LPVOID lpParam)
 		captureMain.read(cFrame);
 		if (cFrame.empty()) {
 			//AfxMessageBox("读取图像帧错误！");
-			//captureMain.release();
+			int tmpIdx = getDeviceIndex(pDlg->m_cfgCameraVid, pDlg->m_cfgCameraPid);
+			if (pDlg->m_bMainFrameSuccess && hideDevIdx == tmpIdx){
+				captureMain.release();
+				pDlg->m_bMainFrameSuccess = false;
+			}
 			continue;
 		}
+		else
+			pDlg->m_bMainFrameSuccess = true;
+
 		if (captureHide.isOpened()) {
 			// 避免其他处理用时造成的误差，先在此读入
 			captureHide.read(cFrameHide);
 			if (cFrameHide.empty()) {
 				//AfxMessageBox("红外摄像头读取图像帧错误！");
-				//captureHide.release();
+				int tmpIdx = getDeviceIndex(pDlg->m_cfgCameraHideVid, pDlg->m_cfgCameraHidePid);
+				if (pDlg->m_bHideFrameSuccess && tmpIdx){
+					captureHide.release();
+					pDlg->m_bHideFrameSuccess = false;
+				}
 				continue;
 			}
+			else
+				pDlg->m_bHideFrameSuccess = true;
 		}
 
 		IplImage* newframe = &IplImage(cFrame);
@@ -1084,6 +1155,8 @@ UINT FdvThread(LPVOID lpParam)
 				IplImage imgTmp = matphoto;
 
 				pDlg->m_iplImgPhoto = cvCloneImage(&imgTmp);
+				if(NULL == pDlg->m_iplImgUploadCopyPhoto)
+					pDlg->m_iplImgUploadCopyPhoto = cvCloneImage(&imgTmp);
 				//pDlg->m_iplImgPhoto = BMP2Ipl((unsigned char*)pDlg->m_IdCardPhoto, lenbmp);
 			}
 
@@ -1108,12 +1181,12 @@ UINT FdvThread(LPVOID lpParam)
 			pDlg->m_pInfoDlg->setResultTextSize(60);
 			pDlg->m_pInfoDlg->setResultText("--%");
 
-			//std::vector<uchar> idcardPhoto;
-			std::vector<uchar> idcardPhoto(pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
-			std::vector<uchar> verifyPhotos[1];
 #if OPENCV_CAPTURE
 #ifdef NDEBUG
 #else
+			std::vector<uchar> idcardPhoto(pDlg->m_IdCardPhoto, pDlg->m_IdCardPhoto + lenbmp);
+			std::vector<uchar> verifyPhotos[1];
+
 			// debug
 			verifyPhotos[0] = vector<uchar>(256000);
 			vector<int> param = vector<int>(2);
@@ -1142,20 +1215,26 @@ UINT FdvThread(LPVOID lpParam)
 			//*	
 			std::vector < std::vector<int>> face_rects, face_rects2;
 
+			g_CriticalSectionAiFdr.Lock();
 			int photo_face_cnt = pDlg->m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
+			g_CriticalSectionAiFdr.Unlock();
 			if (photo_face_cnt < 1) {
 				face_rects.push_back({ 10,0,92,110 }); // l t r b
 				//face_rects.push_back({ 0,0,102,126 });
 			}
 			pDlg->m_photoFaceFeat.clear();
 			pDlg->m_photoFaceFeat.shrink_to_fit();
+			g_CriticalSectionAiFdr.Lock();
 			pDlg->m_pfrmwrap->ai_fdr_edge_descriptor(matphoto, face_rects[0], pDlg->m_photoFaceFeat);
+			g_CriticalSectionAiFdr.Unlock();
 
 			if (NULL == pDlg->m_iplImgCameraHideImg) {
 				// 由于活体检测时可得到feat，只在没做活体检测情况下取feat
 				pDlg->m_frameFaceFeats.clear();
 				pDlg->m_frameFaceFeats.shrink_to_fit();
+				g_CriticalSectionAiFdr.Lock();
 				int frame_face_cnt = pDlg->m_pfrmwrap->ai_fdr_edge_descriptors(matframe, face_rects2, pDlg->m_frameFaceFeats, 0, true);
+				g_CriticalSectionAiFdr.Unlock();
 			}
 			//std::ofstream logfile(strModulePath + "des_photo.txt");
 			//logfile << pDlg->m_photoFaceFeat;
@@ -1194,6 +1273,36 @@ UINT FdvThread(LPVOID lpParam)
 	return 0;
 }
 
+// idcard detect thread
+UINT ImgUploadThread(LPVOID lpParam)
+{
+	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
+
+	g_CriticalSection.Lock();
+	pDlg->m_bImgUploadRun = true;
+	g_CriticalSection.Unlock();
+
+	pDlg->m_imgUploadMgt = new CImgUploadMgt();
+	CImgUploadMgt* mgt = pDlg->m_imgUploadMgt;
+	while (pDlg->m_bImgUploadRun)
+	{
+		if (!mgt->isQueueEmpty()) {
+			mgt->upload(pDlg->m_cfgUploadUrl,
+				pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, 
+				pDlg->m_macId, pDlg->m_cfgRegisteredNo, 
+				pDlg->m_IdCardId, pDlg->m_IdCardIssuedate,
+				::stoi(pDlg->m_cfgTimeOut));
+		}
+	}
+
+	delete pDlg->m_imgUploadMgt;
+	pDlg->m_imgUploadMgt = NULL;
+	SetEvent(pDlg->m_eImgUploadEnd);
+	return 0;
+}
+
+
+
 void CIDCardFdvDlg::setClearTimer()
 {
 	KillTimer(CLEAR_INFOIMG_TIMER);
@@ -1204,6 +1313,7 @@ void CIDCardFdvDlg::setClearTimer()
 BOOL CIDCardFdvDlg::DestroyWindow()
 {
 	// TODO: Add your specialized code here and/or call the base class
+	stopImgUploadThread();
 
 	if (m_iplImgHelpImg != NULL) {
 		cvReleaseImage(&m_iplImgHelpImg);
@@ -1298,6 +1408,9 @@ void CIDCardFdvDlg::OnClose()
 	if (true == m_bMainWinClose)
 		return;
 	m_bMainWinClose = true;	// 关闭主窗口->全部退出，只允许处理一次
+
+	m_pInfoDlg->ShowWindow(SW_HIDE);
+	KillTimer(CLEAR_INFOIMG_TIMER);
 
 #if OPENCV_CAPTURE
 	stopFaceDetectThread(); // 停止预览线程前先停止检测

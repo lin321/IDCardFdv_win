@@ -200,6 +200,7 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 	m_cfgApiKey = "MGRhNjEyYWExOTdhYzYxNTkx";
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
+	m_cfgUploadUrl = "http://192.168.1.201:8008/idfdv_complete";
 	m_cfgTimeOut = "15";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
@@ -228,6 +229,8 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 					m_cfgSecretKey = value;
 				if (key == "url")
 					m_cfgUrl = value;
+				if (key == "uploadurl")
+					m_cfgUploadUrl = value;
 				if (key == "timeout")
 					m_cfgTimeOut = value;
 			}
@@ -548,6 +551,7 @@ void CIDCardFdvRegisterDlg::saveConfig()
 	confFile << "apiKey=" << m_cfgApiKey << endl;
 	confFile << "secretKey=" << m_cfgSecretKey << endl;
 	confFile << "url=" << m_cfgUrl << endl;
+	confFile << "uploadurl=" << m_cfgUploadUrl << endl;
 	confFile << "timeout=" << m_cfgTimeOut << endl;
 	confFile << "registeredNo=" << m_cfgRegisteredNo << endl;
 	confFile.close();

@@ -6,6 +6,7 @@
 
 #include "CvvImage.h"
 #include "InfoDlg.h"
+#include "ImgUploadMgt.h"
 #ifdef NDEBUG
 #include "AiFdrWrap.h"
 #else
@@ -53,6 +54,7 @@ public:
 	std::string m_cfgApiKey;
 	std::string m_cfgSecretKey;
 	std::string m_cfgUrl;
+	std::string m_cfgUploadUrl;
 	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
 
@@ -85,6 +87,8 @@ public:
 	cv::Mat m_MatScanBorder;
 	int m_iPreviewWidth;
 	int m_iPreviewHeight;
+	bool m_bMainFrameSuccess;	// 用于帧读取错误的重启
+	bool m_bHideFrameSuccess;
 
 	// fdv
 	CWinThread* m_thFdv;
@@ -98,6 +102,15 @@ public:
 #endif
 	std::string m_photoFaceFeat;
 	std::vector < std::string> m_frameFaceFeats;
+
+	// images upload thread
+	bool m_bImgUploadRun;
+	CWinThread* m_thImgUpload;
+	CEvent m_eImgUploadEnd;
+	CImgUploadMgt* m_imgUploadMgt;
+	IplImage* m_iplImgUploadCopyFrame;
+	IplImage* m_iplImgUploadCopyPhoto;
+
 
 	// capture
 	bool m_bCmdCapture;
@@ -137,6 +150,8 @@ public:
 	void stopFaceDetectThread();
 	void startFdvThread(std::string feat, bool live);
 	void waitFdvThreadStopped();
+	void startImgUploadThread();
+	void stopImgUploadThread();
 	void setClearTimer();
 
 	virtual BOOL DestroyWindow();

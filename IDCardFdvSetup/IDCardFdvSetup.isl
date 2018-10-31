@@ -1166,19 +1166,27 @@
 		<row><td>CommonFilesFolder</td><td>TARGETDIR</td><td>.:Common</td><td/><td>0</td><td/></row>
 		<row><td>DATABASEDIR</td><td>ISYourDataBaseDir</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY</td><td>ProgramFilesFolder</td><td>杭州马太数字~1|杭州马太数字技术有限公司</td><td/><td>0</td><td/></row>
+		<row><td>DIRPROPERTY1</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>DIRPROPERTY2</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DesktopFolder</td><td>TARGETDIR</td><td>.:Desktop</td><td/><td>3</td><td/></row>
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
 		<row><td>IDCARDFDV</td><td>ProgramFilesFolder</td><td>IDCARD~1|IDCardFdv</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>IDCARDFDV</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>IDCARDFDV1</td><td>MTDT</td><td>IDCARD~1|IDCardFdv</td><td/><td>0</td><td/></row>
+		<row><td>IDCARDFDV2</td><td>MTDT1</td><td>IDCARD~1|IDCardFdv</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>IDCARDFDV2</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>ISYourDataBaseDir</td><td>INSTALLDIR</td><td>Database</td><td/><td>0</td><td/></row>
 		<row><td>LocalAppDataFolder</td><td>TARGETDIR</td><td>.:LocalA~1|LocalAppData</td><td/><td>0</td><td/></row>
+		<row><td>MTDT</td><td>DIRPROPERTY1</td><td>mtdt</td><td/><td>0</td><td/></row>
+		<row><td>MTDT1</td><td>DIRPROPERTY2</td><td>mtdt</td><td/><td>0</td><td/></row>
 		<row><td>MY_PRODUCT_NAME</td><td>DIRECTORY</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
+		<row><td>NEW_DIRECTORY1</td><td>ProgramFiles64Folder</td><td>mtdt</td><td/><td>0</td><td/></row>
+		<row><td>NEW_DIRECTORY2</td><td>NEW_DIRECTORY1</td><td>IDCARD~1|IDCardFdv</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
 		<row><td>PersonalFolder</td><td>TARGETDIR</td><td>.:Personal</td><td/><td>0</td><td/></row>
 		<row><td>PrimaryVolumePath</td><td>TARGETDIR</td><td>.:Primar~1|PrimaryVolumePath</td><td/><td>0</td><td/></row>
@@ -2659,7 +2667,7 @@
 		<col def="I2">Order</col>
 		<col def="I2">ISSetupLocation</col>
 		<col def="S255">ISReleaseFlags</col>
-		<row><td>_451BCBC7_2B7B_4831_8A80_37C8BBE13582_</td><td>Microsoft Visual C++ 2015 Redistributable Package (x64).prq</td><td/><td/><td/></row>
+		<row><td>_BBB87F2D_9DEF_4C3F_8216_003220E28344_</td><td>Microsoft Visual C++ 2015 Redistributable Package (x64).prq</td><td/><td>1</td><td/></row>
 	</table>
 
 	<table name="ISSetupType">
@@ -2693,7 +2701,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>2052</td><td>杭州马太数字技术有限公司</td><td>0</td><td/><td>883333710</td></row>
+		<row><td>COMPANY_NAME</td><td>2052</td><td>杭州马太数字技术有限公司</td><td>0</td><td/><td>-316253008</td></row>
 		<row><td>DN_AlwaysInstall</td><td>2052</td><td>始终安装</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>2052</td><td>系统颜色设置不足以运行 [ProductName]。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_OS</td><td>2052</td><td>操作系统不足以运行 [ProductName]。</td><td>0</td><td/><td>883322218</td></row>
@@ -3797,8 +3805,8 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>2052</td><td>对于运行 [ProductName] 处理器不足。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>2052</td><td>对于运行 [ProductName] 内存量不足。</td><td>0</td><td/><td>883322218</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>2052</td><td>对于运行 [ProductName] 屏幕分辨率不足。</td><td>0</td><td/><td>883322218</td></row>
-		<row><td>ID_STRING1</td><td>2052</td><td>http://www.杭州马太数字技术有限公司.com</td><td>0</td><td/><td>883299215</td></row>
-		<row><td>ID_STRING2</td><td>2052</td><td>杭州马太数字技术有限公司</td><td>0</td><td/><td>883333710</td></row>
+		<row><td>ID_STRING1</td><td>2052</td><td>http://www.杭州马太数字技术有限公司.com</td><td>0</td><td/><td>-316253008</td></row>
+		<row><td>ID_STRING2</td><td>2052</td><td>杭州马太数字技术有限公司</td><td>0</td><td/><td>-316253008</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>NEWSHO~1|NewShortcut1</td><td>0</td><td/><td>883326602</td></row>
 		<row><td>ID_STRING3</td><td>2052</td><td>IDCARD~1|IDCardFdv</td><td>0</td><td/><td>883338890</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>NEWFOL~1|newfolder1</td><td>0</td><td/><td>883295914</td></row>
@@ -4372,6 +4380,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ARPURLINFOABOUT</td><td>##ID_STRING1##</td><td/></row>
 		<row><td>AgreeToLicense</td><td>No</td><td/></row>
 		<row><td>ApplicationUsers</td><td>AllUsers</td><td/></row>
+		<row><td>DIRPROPERTY2</td><td>C:\</td><td/></row>
 		<row><td>DWUSINTERVAL</td><td>30</td><td/></row>
 		<row><td>DWUSLINK</td><td>CEAC37C89EABC79FE9AC809F8E4C978F4E7BD78F59BC8708CEEB40C8B9ACE0B889FCD72F1EAC</td><td/></row>
 		<row><td>DefaultUIFont</td><td>ExpressDefault</td><td/></row>

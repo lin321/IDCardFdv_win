@@ -168,7 +168,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -199,6 +199,7 @@
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="IDCardFdv.h" />
     <ClInclude Include="IDCardFdvDlg.h" />
+    <ClInclude Include="ImgUploadMgt.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LocalMac.h" />
     <ClInclude Include="Resource.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="IDCardFdv.cpp" />
     <ClCompile Include="IDCardFdvDlg.cpp" />
+    <ClCompile Include="ImgUploadMgt.cpp" />
     <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="LocalMac.cpp" />
     <ClCompile Include="stdafx.cpp">

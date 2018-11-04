@@ -84,10 +84,6 @@ public:
 	int m_iHideDevIdx;
 	cv::VideoCapture m_vcapMain;
 	cv::VideoCapture m_vcapHide;
-	bool m_bOpenCameraMainRun;
-	CWinThread* m_thOpenCameraMain;
-	bool m_bOpenCameraHideRun;
-	CWinThread* m_thOpenCameraHide;
 	bool m_bFlip;
 	IplImage* m_iplImgDisplay;
 	IplImage* m_iplImgTemp;
@@ -168,8 +164,6 @@ public:
 	void waitFdvThreadStopped();
 	void startImgUploadThread();
 	void stopImgUploadThread();
-	void startOpenCameraMainThread();
-	void startOpenCameraHideThread();
 	void setClearTimer(int sec = 10);
 
 	virtual BOOL DestroyWindow();

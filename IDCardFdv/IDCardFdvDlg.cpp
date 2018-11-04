@@ -36,8 +36,6 @@ UINT FaceDetectThread(LPVOID lpParam);
 UINT CameraShowThread(LPVOID lpParam);
 UINT FdvThread(LPVOID lpParam);
 UINT ImgUploadThread(LPVOID lpParam);
-UINT OpenCameraMainThread(LPVOID lpParam);
-UINT OpenCameraHideThread(LPVOID lpParam);
 
 #if OPENCV_CAPTURE
 #else
@@ -147,10 +145,6 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	ResetEvent(m_eCameraEnd);
 	m_iMainDevIdx = -1;
 	m_iHideDevIdx = -1;
-	m_bOpenCameraMainRun = false;
-	m_thOpenCameraMain = NULL;
-	m_bOpenCameraHideRun = false;
-	m_thOpenCameraHide = NULL;
 	m_iplImgDisplay = NULL;
 	m_iplImgTemp = NULL;
 	m_bFlip = false;
@@ -805,36 +799,6 @@ void CIDCardFdvDlg::stopImgUploadThread()
 	}
 }
 
-void CIDCardFdvDlg::startOpenCameraMainThread()
-{
-	if (m_bOpenCameraMainRun)
-		return;
-
-	{
-		m_thOpenCameraMain = AfxBeginThread(OpenCameraMainThread, this);
-		if (NULL == m_thOpenCameraMain)
-		{
-			TRACE("创建新的线程出错！\n");
-			return;
-		}
-	}
-}
-
-void CIDCardFdvDlg::startOpenCameraHideThread()
-{
-	if (m_bOpenCameraHideRun)
-		return;
-
-	{
-		m_thOpenCameraHide = AfxBeginThread(OpenCameraHideThread, this);
-		if (NULL == m_thOpenCameraHide)
-		{
-			TRACE("创建新的线程出错！\n");
-			return;
-		}
-	}
-}
-
 // idcard detect thread
 UINT IdcardDetectThread(LPVOID lpParam)
 {
@@ -997,49 +961,6 @@ UINT FaceDetectThread(LPVOID lpParam)
 
 //====================================
 // camera preview
-UINT OpenCameraMainThread(LPVOID lpParam)
-{
-	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
-	g_CriticalSection.Lock();
-	pDlg->m_bOpenCameraMainRun = true;
-	g_CriticalSection.Unlock();
-	if (!pDlg->m_vcapMain.isOpened()) {
-		pDlg->m_vcapMain.open(pDlg->m_iMainDevIdx); // m_vcapMain.open(m_iMainDevIdx, CAP_DSHOW);	
-		if (pDlg->m_vcapMain.isOpened()) {
-			pDlg->m_vcapMain.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-			pDlg->m_vcapMain.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-		}
-
-	}
-	g_CriticalSection.Lock();
-	pDlg->m_bOpenCameraMainRun = false;
-	g_CriticalSection.Unlock();
-
-	return 0;
-}
-
-UINT OpenCameraHideThread(LPVOID lpParam)
-{
-	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
-	g_CriticalSection.Lock();
-	pDlg->m_bOpenCameraHideRun = true;
-	g_CriticalSection.Unlock();
-
-	if (!pDlg->m_vcapHide.isOpened()) {
-		pDlg->m_vcapHide.open(pDlg->m_iHideDevIdx);// m_vcapHide.open(m_iHideDevIdx, CAP_DSHOW);
-		if (pDlg->m_vcapHide.isOpened()) {
-			pDlg->m_vcapHide.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-			pDlg->m_vcapHide.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-		}
-	}
-
-	g_CriticalSection.Lock();
-	pDlg->m_bOpenCameraHideRun = false;
-	g_CriticalSection.Unlock();
-
-	return 0;
-}
-
 void CIDCardFdvDlg::checkAndOpenAllCamera()
 {
 	clock_t time_s,time_dt;
@@ -1049,12 +970,7 @@ void CIDCardFdvDlg::checkAndOpenAllCamera()
 		m_iHideDevIdx = getDeviceIndex(m_cfgCameraHideVid, m_cfgCameraHidePid);
 
 //	m_iHideDevIdx = 0;	// test
-	if (!m_vcapMain.isOpened())
-		startOpenCameraMainThread();	
-	if (m_iHideDevIdx >= 0 && !m_vcapHide.isOpened())
-		startOpenCameraHideThread();
 	time_s = clock();
-#if 0
 	if (!m_vcapMain.isOpened()) {
 		m_vcapMain.open(m_iMainDevIdx); // m_vcapMain.open(m_iMainDevIdx, CAP_DSHOW);	
 		if (m_vcapMain.isOpened()) {
@@ -1072,11 +988,6 @@ void CIDCardFdvDlg::checkAndOpenAllCamera()
 			}
 		}
 	}
-#endif
-
-	
-	WaitForSingleObject(m_thOpenCameraMain->m_hThread, INFINITE);
-	WaitForSingleObject(m_thOpenCameraHide->m_hThread, INFINITE);
 	time_dt = clock() - time_s;
 }
 

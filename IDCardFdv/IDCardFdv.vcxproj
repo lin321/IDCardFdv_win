@@ -168,7 +168,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -178,7 +178,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Rpcrt4.lib;strmiids.lib;opencv_core249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;winmm.lib;strmiids.lib;opencv_core249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;MTLibIDCardReader.lib;MTLibNetwork.lib;MTLibCameraLib.lib;Ai_Fdr_SC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

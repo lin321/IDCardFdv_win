@@ -350,6 +350,8 @@
 		<row><td>libcrypto_1_1_x64.dll</td><td>{3CE34F06-4DF1-477C-A378-1364AA378993}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcrypto_1_1_x64.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libiconv.dll</td><td>{B4A9EB8F-2A93-44E7-B114-2032A9D2652B}</td><td>INSTALLDIR</td><td>2</td><td/><td>libiconv.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libzbar64_0.dll</td><td>{33D6D39C-610C-4A4D-9299-4669EC6EE500}</td><td>INSTALLDIR</td><td>2</td><td/><td>libzbar64_0.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>msvcp120.dll</td><td>{CE2BCA3E-1FCB-465E-9CDE-267813A55C31}</td><td>INSTALLDIR</td><td>2</td><td/><td>msvcp120.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>msvcr120.dll</td><td>{132F1723-5715-47D5-B63C-1DC141B494EB}</td><td>INSTALLDIR</td><td>2</td><td/><td>msvcr120.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>openblas.dll</td><td>{6709C892-717F-4E08-AD28-9CD0FD5D1938}</td><td>INSTALLDIR</td><td>2</td><td/><td>openblas.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>opencv_core249.dll</td><td>{87CEE46F-72AD-4B5E-B68B-773FA6F92F59}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_core249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>opencv_highgui249.dll</td><td>{2B1462B9-EDB9-4211-9B95-C8FF4F9CB9F5}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1074,6 +1076,8 @@
 		<row><td>INSTALLDIR</td><td>libcrypto_1_1_x64.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libiconv.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libzbar64_0.dll</td></row>
+		<row><td>INSTALLDIR</td><td>msvcp120.dll</td></row>
+		<row><td>INSTALLDIR</td><td>msvcr120.dll</td></row>
 		<row><td>INSTALLDIR</td><td>openblas.dll</td></row>
 		<row><td>INSTALLDIR</td><td>opencv_core249.dll</td></row>
 		<row><td>INSTALLDIR</td><td>opencv_highgui249.dll</td></row>
@@ -1910,6 +1914,8 @@
 		<row><td>AlwaysInstall</td><td>libcrypto_1_1_x64.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libiconv.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libzbar64_0.dll</td></row>
+		<row><td>AlwaysInstall</td><td>msvcp120.dll</td></row>
+		<row><td>AlwaysInstall</td><td>msvcr120.dll</td></row>
 		<row><td>AlwaysInstall</td><td>openblas.dll</td></row>
 		<row><td>AlwaysInstall</td><td>opencv_core249.dll</td></row>
 		<row><td>AlwaysInstall</td><td>opencv_highgui249.dll</td></row>
@@ -1932,7 +1938,7 @@
 		<row><td>ai_fdr_sc.dll</td><td>Ai_Fdr_SC.dll</td><td>AI_FDR~1.DLL|Ai_Fdr_SC.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Ai_Fdr_SC.dll</td><td>1</td><td/></row>
 		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\config.txt</td><td>1</td><td/></row>
 		<row><td>cpprest140_xp_2_10.dll</td><td>cpprest140_xp_2_10.dll</td><td>CPPRES~1.DLL|cpprest140_xp_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cpprest140_xp_2_10.dll</td><td>1</td><td/></row>
-		<row><td>help.png</td><td>ISX_DEFAULTCOMPONENT</td><td>help.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\help.png</td><td>1</td><td/></row>
+		<row><td>help.jpg</td><td>ISX_DEFAULTCOMPONENT</td><td>help.jpg</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\help.jpg</td><td>1</td><td/></row>
 		<row><td>idcardfdv.exe</td><td>IDCardFdv.exe</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>1</td><td/></row>
 		<row><td>idcardfdvregister.exe</td><td>IDCardFdvRegister.exe</td><td>IDCARD~1.EXE|IDCardFdvRegister.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdvRegister.exe</td><td>1</td><td/></row>
 		<row><td>libcrypto_1_1_x64.dll</td><td>libcrypto_1_1_x64.dll</td><td>LIBCRY~1.DLL|libcrypto-1_1-x64.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\libcrypto-1_1-x64.dll</td><td>1</td><td/></row>
@@ -1942,6 +1948,8 @@
 		<row><td>modelcc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelcc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modelcc.dat</td><td>1</td><td/></row>
 		<row><td>modeld.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modeld.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modeld.dat</td><td>1</td><td/></row>
 		<row><td>modelsc.dat</td><td>ISX_DEFAULTCOMPONENT</td><td>modelsc.dat</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\modelsc.dat</td><td>1</td><td/></row>
+		<row><td>msvcp120.dll</td><td>msvcp120.dll</td><td>msvcp120.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\msvcp120.dll</td><td>1</td><td/></row>
+		<row><td>msvcr120.dll</td><td>msvcr120.dll</td><td>msvcr120.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\msvcr120.dll</td><td>1</td><td/></row>
 		<row><td>mtlibidcardreader.dll</td><td>MTLibIDCardReader.dll</td><td>MTLIBI~1.DLL|MTLibIDCardReader.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibIDCardReader.dll</td><td>1</td><td/></row>
 		<row><td>mtlibnetwork.dll</td><td>MTLibNetwork.dll</td><td>MTLIBN~1.DLL|MTLibNetwork.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibNetwork.dll</td><td>1</td><td/></row>
 		<row><td>openblas.dll</td><td>openblas.dll</td><td>openblas.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\openblas.dll</td><td>1</td><td/></row>
@@ -2104,6 +2112,8 @@
 		<row><td>libcrypto_1_1_x64.dll</td><td/><td/><td>_707F4739_0DD9_44B9_BBA4_8DE39EA5D27A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libiconv.dll</td><td/><td/><td>_5EBA0D52_B9C3_4EEE_9B13_0F5917253CBD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libzbar64_0.dll</td><td/><td/><td>_EE1B50F3_5084_4DDD_8CDD_A36138F3F8E4_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>msvcp120.dll</td><td/><td/><td>_4477B34B_C137_493F_8B39_F222DCB71C83_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>msvcr120.dll</td><td/><td/><td>_BAFD0E9C_BCF1_4AAC_B7B6_10716059FE47_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>openblas.dll</td><td/><td/><td>_E2AB78F3_185A_49FC_9612_869DF598D079_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>opencv_core249.dll</td><td/><td/><td>_74891FF1_1D52_4675_A8C1_7F72686E3350_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>opencv_highgui249.dll</td><td/><td/><td>_F78E8C6E_73A1_455A_B7B2_FC2D8131E677_FILTER</td><td/><td/><td/><td/></row>

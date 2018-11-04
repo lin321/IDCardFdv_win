@@ -62,7 +62,7 @@ public:
 	bool m_bIdcardDetectRun;
 	CWinThread* m_thIdcardDetect;
 	CEvent m_eIdcardDetectEnd;
-	CEvent m_eResumeIdcardDetect;
+	CEvent m_eIdcardDetectResume;
 	IplImage* m_iplImgHelpImg;
 
 	// face detect thread
@@ -73,16 +73,25 @@ public:
 	bool m_bCmdDetect;
 	std::vector<cv::Rect> m_faces;
 	IplImage* m_iplImgCameraImg;
-	IplImage* m_iplImgCameraHideImg;
+	IplImage* m_iplImgCameraImgHide;
 
 	// camera preview
 	//int camdevid;
 	bool m_bCameraRun;
 	CWinThread* m_thCamera;
 	CEvent m_eCameraEnd;
+	int m_iMainDevIdx;
+	int m_iHideDevIdx;
+	cv::VideoCapture m_vcapMain;
+	cv::VideoCapture m_vcapHide;
+	bool m_bOpenCameraMainRun;
+	CWinThread* m_thOpenCameraMain;
+	bool m_bOpenCameraHideRun;
+	CWinThread* m_thOpenCameraHide;
 	bool m_bFlip;
 	IplImage* m_iplImgDisplay;
 	IplImage* m_iplImgTemp;
+	bool m_bDrawScan;
 	cv::Mat m_MatScan;
 	cv::Mat m_MatScanBorder;
 	int m_iPreviewWidth;
@@ -105,18 +114,19 @@ public:
 
 	// images upload thread
 	bool m_bImgUploadRun;
+	bool m_bImgUploadPause;
 	CWinThread* m_thImgUpload;
 	CEvent m_eImgUploadEnd;
+	CEvent m_eImgUploadResume;
 	CImgUploadMgt* m_imgUploadMgt;
 	IplImage* m_iplImgUploadCopyFrame;
+	IplImage* m_iplImgUploadCopyFrameHide;
 	IplImage* m_iplImgUploadCopyPhoto;
 
 
 	// capture
-	bool m_bCmdCapture;
 	IplImage* m_CaptureImage;
 	IplImage* m_CaptureImageHide;
-	CEvent m_eCaptureEnd;
 	std::string m_sCaptureBase64;
 	bool m_bFaceGot;
 	bool m_bIsAliveSample;
@@ -137,7 +147,13 @@ public:
 	IplImage* m_iplImgResultIconRight;
 	IplImage* m_iplImgResultIconWrong;
 	double m_dThreshold;
+
+	// wav
+	char m_sndRight[100 * 1024];
+	char m_sndWrong[100 * 1024];
 public:
+	void checkAndOpenAllCamera();
+	void closeAllCamera();
 	void showPreview(IplImage* img);
 	void drawHelpImage(IplImage* img);
 	void drawScanRect(cv::Mat frame);
@@ -152,7 +168,9 @@ public:
 	void waitFdvThreadStopped();
 	void startImgUploadThread();
 	void stopImgUploadThread();
-	void setClearTimer();
+	void startOpenCameraMainThread();
+	void startOpenCameraHideThread();
+	void setClearTimer(int sec = 10);
 
 	virtual BOOL DestroyWindow();
 	afx_msg void OnClose();

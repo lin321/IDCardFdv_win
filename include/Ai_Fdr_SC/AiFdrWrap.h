@@ -10,9 +10,14 @@ using namespace std;
 		#define AI_FDR_LIBRARY_API __declspec(dllexport)
 	#else
 		#define AI_FDR_LIBRARY_API __declspec(dllimport)
-#endif
+	#endif
 #elif
-	#define AI_FDR_LIBRARY_API
+//	#define AI_FDR_LIBRARY_API
+	#ifdef AI_FDR_LIBRARY_EXPORTS
+		#define AI_FDR_LIBRARY_API __declspec(dllexport)
+	#else
+		#define AI_FDR_LIBRARY_API __declspec(dllimport)
+	#endif
 #endif
 
 
@@ -21,14 +26,14 @@ class face_recog_model
 {
 public:
 	virtual int ai_fdr_edge_descriptor(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		const std::vector<int> &infacerect,
 		std::string &outfacefeat
 	) = 0;
 
 
 	virtual int ai_fdr_edge_descriptors(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		std::vector<std::vector<int>> &outfacerects,
 		std::vector<std::string> &outfacefeats,
 		const int upscale = 0,
@@ -37,7 +42,7 @@ public:
 
 
 	virtual int dectect_faces(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		std::vector<std::vector<int>> &outfacerects,
 		const int upscale = 0,
 		bool btop = false
@@ -45,8 +50,8 @@ public:
 
 
 	virtual bool livecheck(
-		const cv::Mat& inimgmat1,
-		const cv::Mat& inimgmat2,
+		const IplImage& inimgmat1,
+		const IplImage& inimgmat2,
 		std::vector<int> &outfacerect,
 		std::string &outfacefeat,
 		const int upscale = 0
@@ -61,7 +66,7 @@ public:
 	fdr_model_wrap(const std::string& model_filename);
 
 	int ai_fdr_edge_descriptors(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		std::vector<std::vector<int>> &outfacerects,
 		std::vector<std::string> &outfacefeats,
 		const int upscale = 0,
@@ -69,21 +74,21 @@ public:
 	);
 	
 	int ai_fdr_edge_descriptor(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		const std::vector<int>& infacerect,
 		std::string &outfacefeat
 	);
 
 	int dectect_faces(
-		const cv::Mat& inimgmat,
+		const IplImage& inimgmat,
 		std::vector<std::vector<int>> &outfacerects,
 		const int upscale = 0,
 		bool btopface = false
 	);
 
 	virtual bool livecheck(
-		const cv::Mat& inimgmat1,
-		const cv::Mat& inimgmat2,
+		const IplImage& inimgmat1,
+		const IplImage& inimgmat2,
 		std::vector<int> &outfacerect,
 		std::string &outfacefeat,
 		const int upscale = 0
@@ -94,7 +99,7 @@ public:
 	~fdr_model_wrap();
 
 private:
-	face_recog_model* frm;
+	face_recog_model* m_frm;
 };
 
 #endif //__AI_FDR_WRAP__

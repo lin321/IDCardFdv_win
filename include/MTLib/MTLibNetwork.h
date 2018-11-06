@@ -40,3 +40,5 @@ int __stdcall MTLibCallRegister(std::string url, std::string appId, std::string 
 
 typedef void(__stdcall *TestUrlCallback)(int err_no, MTLIBPTR userdata);
 int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, MTLIBPTR userdata, int timeout);
+int __stdcall MTLibTestUrlIgnoreResp(std::string url, TestUrlCallback testurlCB, MTLIBPTR userdata, int timeout);
+

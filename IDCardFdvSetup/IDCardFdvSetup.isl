@@ -346,7 +346,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{8963F741-0752-4066-9DE0-2DC2CF7A2FCA}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MTLibIDCardReader.dll</td><td>{090B3406-5C5A-4685-A80B-C6CD2292C92E}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibidcardreader.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MTLibNetwork.dll</td><td>{8E9BB675-545A-4D50-99A9-8F28673F249A}</td><td>INSTALLDIR</td><td>2</td><td/><td>mtlibnetwork.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>cpprest140_xp_2_10.dll</td><td>{4E380AC4-D6DA-4B56-BD58-745856462F01}</td><td>INSTALLDIR</td><td>2</td><td/><td>cpprest140_xp_2_10.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>OpenAL32.dll</td><td>{3AFF16E3-5676-4B68-8C86-14FD38D32DAB}</td><td>INSTALLDIR</td><td>2</td><td/><td>openal32.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>alut.dll</td><td>{1F33B5A5-4DC8-4D30-BC0E-7CF431A14BA5}</td><td>INSTALLDIR</td><td>2</td><td/><td>alut.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>cpprest140_2_10.dll</td><td>{FC941E4E-4386-4A54-BD9F-AA2EF4F26E3B}</td><td>INSTALLDIR</td><td>2</td><td/><td>cpprest140_2_10.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libcrypto_1_1_x64.dll</td><td>{3CE34F06-4DF1-477C-A378-1364AA378993}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcrypto_1_1_x64.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libiconv.dll</td><td>{B4A9EB8F-2A93-44E7-B114-2032A9D2652B}</td><td>INSTALLDIR</td><td>2</td><td/><td>libiconv.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>libzbar64_0.dll</td><td>{33D6D39C-610C-4A4D-9299-4669EC6EE500}</td><td>INSTALLDIR</td><td>2</td><td/><td>libzbar64_0.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -357,6 +359,7 @@
 		<row><td>opencv_highgui249.dll</td><td>{2B1462B9-EDB9-4211-9B95-C8FF4F9CB9F5}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_highgui249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>opencv_imgproc249.dll</td><td>{ABF714C2-3871-4836-B463-FEADB45986C1}</td><td>INSTALLDIR</td><td>2</td><td/><td>opencv_imgproc249.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>termb.dll</td><td>{E6EDA85C-21D2-4B73-B798-95B492EA518C}</td><td>INSTALLDIR</td><td>2</td><td/><td>termb.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>wrap_oal.dll</td><td>{7F146ADD-41D7-4A49-86A8-CD5EA1309BB8}</td><td>INSTALLDIR</td><td>2</td><td/><td>wrap_oal.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1072,7 +1075,9 @@
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>INSTALLDIR</td><td>MTLibIDCardReader.dll</td></row>
 		<row><td>INSTALLDIR</td><td>MTLibNetwork.dll</td></row>
-		<row><td>INSTALLDIR</td><td>cpprest140_xp_2_10.dll</td></row>
+		<row><td>INSTALLDIR</td><td>OpenAL32.dll</td></row>
+		<row><td>INSTALLDIR</td><td>alut.dll</td></row>
+		<row><td>INSTALLDIR</td><td>cpprest140_2_10.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libcrypto_1_1_x64.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libiconv.dll</td></row>
 		<row><td>INSTALLDIR</td><td>libzbar64_0.dll</td></row>
@@ -1083,6 +1088,7 @@
 		<row><td>INSTALLDIR</td><td>opencv_highgui249.dll</td></row>
 		<row><td>INSTALLDIR</td><td>opencv_imgproc249.dll</td></row>
 		<row><td>INSTALLDIR</td><td>termb.dll</td></row>
+		<row><td>INSTALLDIR</td><td>wrap_oal.dll</td></row>
 	</table>
 
 	<table name="CustomAction">
@@ -1910,7 +1916,9 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>MTLibIDCardReader.dll</td></row>
 		<row><td>AlwaysInstall</td><td>MTLibNetwork.dll</td></row>
-		<row><td>AlwaysInstall</td><td>cpprest140_xp_2_10.dll</td></row>
+		<row><td>AlwaysInstall</td><td>OpenAL32.dll</td></row>
+		<row><td>AlwaysInstall</td><td>alut.dll</td></row>
+		<row><td>AlwaysInstall</td><td>cpprest140_2_10.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libcrypto_1_1_x64.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libiconv.dll</td></row>
 		<row><td>AlwaysInstall</td><td>libzbar64_0.dll</td></row>
@@ -1921,6 +1929,7 @@
 		<row><td>AlwaysInstall</td><td>opencv_highgui249.dll</td></row>
 		<row><td>AlwaysInstall</td><td>opencv_imgproc249.dll</td></row>
 		<row><td>AlwaysInstall</td><td>termb.dll</td></row>
+		<row><td>AlwaysInstall</td><td>wrap_oal.dll</td></row>
 	</table>
 
 	<table name="File">
@@ -1936,8 +1945,9 @@
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>ai_fdr_sc.dll</td><td>Ai_Fdr_SC.dll</td><td>AI_FDR~1.DLL|Ai_Fdr_SC.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Ai_Fdr_SC.dll</td><td>1</td><td/></row>
+		<row><td>alut.dll</td><td>alut.dll</td><td>alut.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\alut.dll</td><td>1</td><td/></row>
 		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\config.txt</td><td>1</td><td/></row>
-		<row><td>cpprest140_xp_2_10.dll</td><td>cpprest140_xp_2_10.dll</td><td>CPPRES~1.DLL|cpprest140_xp_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cpprest140_xp_2_10.dll</td><td>1</td><td/></row>
+		<row><td>cpprest140_2_10.dll</td><td>cpprest140_2_10.dll</td><td>CPPRES~1.DLL|cpprest140_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cpprest140_2_10.dll</td><td>1</td><td/></row>
 		<row><td>help.jpg</td><td>ISX_DEFAULTCOMPONENT</td><td>help.jpg</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\help.jpg</td><td>1</td><td/></row>
 		<row><td>idcardfdv.exe</td><td>IDCardFdv.exe</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>1</td><td/></row>
 		<row><td>idcardfdvregister.exe</td><td>IDCardFdvRegister.exe</td><td>IDCARD~1.EXE|IDCardFdvRegister.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdvRegister.exe</td><td>1</td><td/></row>
@@ -1952,15 +1962,19 @@
 		<row><td>msvcr120.dll</td><td>msvcr120.dll</td><td>msvcr120.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\msvcr120.dll</td><td>1</td><td/></row>
 		<row><td>mtlibidcardreader.dll</td><td>MTLibIDCardReader.dll</td><td>MTLIBI~1.DLL|MTLibIDCardReader.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibIDCardReader.dll</td><td>1</td><td/></row>
 		<row><td>mtlibnetwork.dll</td><td>MTLibNetwork.dll</td><td>MTLIBN~1.DLL|MTLibNetwork.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\MTLibNetwork.dll</td><td>1</td><td/></row>
+		<row><td>openal32.dll</td><td>OpenAL32.dll</td><td>OpenAL32.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\OpenAL32.dll</td><td>1</td><td/></row>
 		<row><td>openblas.dll</td><td>openblas.dll</td><td>openblas.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\openblas.dll</td><td>1</td><td/></row>
 		<row><td>opencv_core249.dll</td><td>opencv_core249.dll</td><td>OPENCV~1.DLL|opencv_core249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_core249.dll</td><td>1</td><td/></row>
 		<row><td>opencv_highgui249.dll</td><td>opencv_highgui249.dll</td><td>OPENCV~1.DLL|opencv_highgui249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_highgui249.dll</td><td>1</td><td/></row>
 		<row><td>opencv_imgproc249.dll</td><td>opencv_imgproc249.dll</td><td>OPENCV~1.DLL|opencv_imgproc249.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\opencv_imgproc249.dll</td><td>1</td><td/></row>
 		<row><td>right.png</td><td>ISX_DEFAULTCOMPONENT</td><td>right.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\right.png</td><td>1</td><td/></row>
+		<row><td>right.wav</td><td>ISX_DEFAULTCOMPONENT</td><td>right.wav</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\right.wav</td><td>1</td><td/></row>
 		<row><td>scan00.png</td><td>ISX_DEFAULTCOMPONENT</td><td>scan00.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\scan00.png</td><td>1</td><td/></row>
 		<row><td>scan01.png</td><td>ISX_DEFAULTCOMPONENT</td><td>scan01.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\scan01.png</td><td>1</td><td/></row>
 		<row><td>termb.dll</td><td>termb.dll</td><td>termb.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\termb.dll</td><td>1</td><td/></row>
+		<row><td>wrap_oal.dll</td><td>wrap_oal.dll</td><td>wrap_oal.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\wrap_oal.dll</td><td>1</td><td/></row>
 		<row><td>wrong.png</td><td>ISX_DEFAULTCOMPONENT</td><td>wrong.png</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\wrong.png</td><td>1</td><td/></row>
+		<row><td>wrong.wav</td><td>ISX_DEFAULTCOMPONENT</td><td>wrong.wav</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\wrong.wav</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2108,7 +2122,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_58FAD179_27FF_4F28_A8BF_EED700BDECED_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MTLibIDCardReader.dll</td><td/><td/><td>_82F2F149_5228_4416_B2F6_94C7912A1DF4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MTLibNetwork.dll</td><td/><td/><td>_55E4C8D9_D0CF_4927_8A97_9BE43D0C67CA_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>cpprest140_xp_2_10.dll</td><td/><td/><td>_CF71570C_69FD_4E94_89A0_A87D7F9B9699_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>OpenAL32.dll</td><td/><td/><td>_97154972_CD38_4D6D_975A_D9668262B0D5_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>alut.dll</td><td/><td/><td>_685EA550_8642_491A_A9E0_FFF20552C8A5_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>cpprest140_2_10.dll</td><td/><td/><td>_34DF5B81_48E6_4CC5_B250_BFCFC1E93994_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libcrypto_1_1_x64.dll</td><td/><td/><td>_707F4739_0DD9_44B9_BBA4_8DE39EA5D27A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libiconv.dll</td><td/><td/><td>_5EBA0D52_B9C3_4EEE_9B13_0F5917253CBD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>libzbar64_0.dll</td><td/><td/><td>_EE1B50F3_5084_4DDD_8CDD_A36138F3F8E4_FILTER</td><td/><td/><td/><td/></row>
@@ -2119,6 +2135,7 @@
 		<row><td>opencv_highgui249.dll</td><td/><td/><td>_F78E8C6E_73A1_455A_B7B2_FC2D8131E677_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>opencv_imgproc249.dll</td><td/><td/><td>_FD4B79C3_F911_4E09_BD3E_D4C54CEE92AD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>termb.dll</td><td/><td/><td>_B67D8311_0291_41C8_AB0E_DFF142581AB0_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>wrap_oal.dll</td><td/><td/><td>_6AEA6186_F90C_4086_BCEE_82F8A9A1E289_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">

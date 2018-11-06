@@ -7,6 +7,8 @@
 #include "CvvImage.h"
 #include "InfoDlg.h"
 #include "ImgUploadMgt.h"
+#include "al.h"
+#include "alut.h"
 #ifdef NDEBUG
 #include "AiFdrWrap.h"
 #else
@@ -70,6 +72,7 @@ public:
 	CWinThread* m_thFaceDetect;
 	CEvent m_eFaceDetectEnd;
 	CEvent m_eCaptureForDetect;
+	CEvent m_eFaceDetectResume;
 	bool m_bCmdDetect;
 	std::vector<cv::Rect> m_faces;
 	IplImage* m_iplImgCameraImg;
@@ -99,6 +102,8 @@ public:
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
 	bool m_bCmdFdvStop;
+	bool m_bFirstFdv;
+	bool m_bFirstFdvIdcardReaded;
 	CEvent m_eFdvEnd;
 #ifdef NDEBUG
 	fdr_model_wrap* m_pfrmwrap;
@@ -145,8 +150,10 @@ public:
 	double m_dThreshold;
 
 	// wav
-	char m_sndRight[100 * 1024];
-	char m_sndWrong[100 * 1024];
+	ALuint m_sndRightBuffer;
+	ALuint m_sndRightSource;
+	ALuint m_sndWrongBuffer;
+	ALuint m_sndWrongSource;
 public:
 	void checkAndOpenAllCamera();
 	void closeAllCamera();
@@ -160,11 +167,14 @@ public:
 	void stopCameraThread();
 	void startFaceDetectThread();
 	void stopFaceDetectThread();
-	void startFdvThread(std::string feat, bool live);
+	bool startFdvThread(std::string feat, bool live);
 	void waitFdvThreadStopped();
 	void startImgUploadThread();
 	void stopImgUploadThread();
 	void setClearTimer(int sec = 10);
+	void idcardPreRead();
+	void getIdcardMatPhoto(cv::Mat &matphoto);
+	void getIdcardFeat(cv::Mat &matphoto);
 
 	virtual BOOL DestroyWindow();
 	afx_msg void OnClose();

@@ -249,6 +249,8 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 
 	camdevid = getDeviceIndex(m_cfgCameraVid, m_cfgCameraPid);
 
+	MTLibTestUrl(m_cfgUrl, NULL, (MTLIBPTR)this, ::stoi(m_cfgTimeOut));
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

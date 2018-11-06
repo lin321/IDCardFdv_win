@@ -334,20 +334,46 @@ int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, MTLIBPTR 
 		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);
 		http_response resp = getTask.get();
 		if (resp.status_code() == 200) {
-			testurlCB(0, userdata);
+			if(testurlCB)
+				testurlCB(0, userdata);
 		}
 		else {
-			testurlCB(-1, userdata);
+			if (testurlCB)
+				testurlCB(-1, userdata);
 			return -1;
 		}
 	}
 	catch (const std::exception &e) {
 		(void)e;
 		//printf("Error exception:%s\n", e.what());
-		testurlCB(MTLIBNETWORK_NETWORK_ERROR, userdata);
+		if (testurlCB)
+			testurlCB(MTLIBNETWORK_NETWORK_ERROR, userdata);
 		return -1;
 	}
 
 	return 0;
 }
 
+int __stdcall MTLibTestUrlIgnoreResp(std::string url, TestUrlCallback testurlCB, MTLIBPTR userdata, int timeout)
+{
+	utility::string_t urlstr = utility::conversions::to_string_t(url);
+	http::uri uri = http::uri(urlstr);
+	http_client_config config;
+	config.set_timeout(utility::seconds(timeout));
+	config.set_validate_certificates(false);
+	http_client client(uri, config);
+	web::http::http_request postRequest;
+	postRequest.set_method(methods::POST);
+	try {
+		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);	
+	}
+	catch (const std::exception &e) {
+		(void)e;
+		//printf("Error exception:%s\n", e.what());
+		if (testurlCB)
+			testurlCB(MTLIBNETWORK_NETWORK_ERROR, userdata);
+		return -1;
+	}
+
+	return 0;
+}

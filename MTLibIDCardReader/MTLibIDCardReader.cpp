@@ -79,7 +79,7 @@ int __stdcall Authenticate_Idcard()
 	int li_ret = MTLib_pIdCardReader->Authenticate();
 	if (li_ret <= 0) {
 		// "身份证验证失败!"
-		return -1;
+		return li_ret;
 	}
 
 	return 1;
@@ -90,9 +90,10 @@ int __stdcall Authenticate_Content(int Active)
 	if (NULL == MTLib_pIdCardReader)
 		return -1;
 
-	if (1 != MTLib_pIdCardReader->Read_Content(Active)) {
+	int ret = MTLib_pIdCardReader->Read_Content(Active);
+	if (1 != ret) {
 		// "身份证信息读取失败!"
-		return -1;
+		return ret;
 	}
 
 	return 1;

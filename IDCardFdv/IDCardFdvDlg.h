@@ -21,6 +21,7 @@ class CIDCardFdvDlg : public CDialogEx
 // 构造
 public:
 	CIDCardFdvDlg(CWnd* pParent = NULL);	// 标准构造函数
+	~CIDCardFdvDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -47,6 +48,12 @@ public:
 
 	std::string m_macId;
 
+	// data loading
+	CWinThread* m_thDataLoading;
+	bool m_bStopLoading;
+	bool m_bDataReady;
+	CEvent m_eDataloadingEnd;
+
 	//config data
 	std::string m_cfgCameraVid;
 	std::string m_cfgCameraPid;
@@ -67,6 +74,14 @@ public:
 	CEvent m_eIdcardDetectResume;
 	IplImage* m_iplImgHelpImg;
 
+	// idcard read and get feature thread
+	bool m_bIdcardReadRun;
+	CWinThread* m_thIdcardRead;
+	CEvent m_eIdcardReadEnd;
+	CEvent m_eIdcardReadResume;
+	bool m_bIdcardReadFindCard;
+	CEvent m_eIdcardReadDone;
+
 	// face detect thread
 	bool m_bFaceDetectRun;
 	CWinThread* m_thFaceDetect;
@@ -83,6 +98,7 @@ public:
 	bool m_bCameraRun;
 	CWinThread* m_thCamera;
 	CEvent m_eCameraEnd;
+	CEvent m_eCameraResume;	// 手动事件
 	int m_iMainDevIdx;
 	int m_iHideDevIdx;
 	cv::VideoCapture m_vcapMain;
@@ -150,6 +166,7 @@ public:
 	double m_dThreshold;
 
 	// wav
+	bool m_bsndReady;
 	ALuint m_sndRightBuffer;
 	ALuint m_sndRightSource;
 	ALuint m_sndWrongBuffer;
@@ -161,8 +178,12 @@ public:
 	void drawHelpImage(IplImage* img);
 	void drawScanRect(cv::Mat frame);
 
+	void startDataLoadingThread();
+	void stopDataLoadingThread();
 	void startIdcardDetectThread();
 	void stopIdcardDetectThread();
+	void startIdcardReadThread();
+	void stopIdcardReadThread();
 	void startCameraThread();
 	void stopCameraThread();
 	void startFaceDetectThread();
@@ -171,8 +192,8 @@ public:
 	void waitFdvThreadStopped();
 	void startImgUploadThread();
 	void stopImgUploadThread();
-	void setClearTimer(int sec = 10);
-	void idcardPreRead();
+	void setClearTimer(int sec = 3);
+	bool idcardPreRead();
 	void getIdcardMatPhoto(cv::Mat &matphoto);
 	void getIdcardFeat(cv::Mat &matphoto);
 

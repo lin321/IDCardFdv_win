@@ -43,6 +43,7 @@ private:
 
 private:
 	void drawImage(IplImage* img, UINT ID, int type, bool clearArea = false);
+	void getItemRect(int nID, cv::Rect &rect);
 public:
 	void drawCameraImage(IplImage* img);
 	void drawIdcardImage(IplImage* img);
@@ -55,4 +56,5 @@ public:
 	void setThresholdText(std::string text);
 	void getInfoDlgScreenRect(cv::Rect &rect);
 	void getCameraImageRect(cv::Rect &rect);
+	void getResultIconRect(cv::Rect &rect);
 };

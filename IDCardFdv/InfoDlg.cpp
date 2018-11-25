@@ -319,17 +319,28 @@ void CInfoDlg::getInfoDlgScreenRect(cv::Rect &rect)
 	rect.height = m_iHeight;
 }
 
-void CInfoDlg::getCameraImageRect(cv::Rect &rect)
+void CInfoDlg::getItemRect(int nID, cv::Rect &rect)
 {
-	CWnd* pWnd = GetDlgItem(IDC_CAMERA_IMG);
+	CWnd* pWnd = GetDlgItem(nID);
 	if (pWnd) {
 		CRect r;
-		pWnd->GetClientRect(&r);
+		pWnd->GetWindowRect(&r);
+		ScreenToClient(&r);
 		rect.x = r.left;
 		rect.y = r.top;
 		rect.width = r.right - r.left;
 		rect.height = r.bottom - r.top;
 	}
+}
+
+void CInfoDlg::getCameraImageRect(cv::Rect &rect)
+{
+	getItemRect(IDC_CAMERA_IMG, rect);
+}
+
+void CInfoDlg::getResultIconRect(cv::Rect &rect)
+{
+	getItemRect(IDC_RESULT_ICON, rect);
 }
 
 void CInfoDlg::OnBnClickedBtnThresholdSet()

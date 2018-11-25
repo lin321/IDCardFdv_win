@@ -14,6 +14,10 @@
 #else
 #include <opencv2/objdetect/objdetect.hpp>
 #endif
+#include <fstream>
+// debug define
+#define DEBUG_LOG_FILE	1
+#define DEBUG_LIVECHECK_OUTPUT	0
 
 // CIDCardFdvDlg ¶Ô»°¿ò
 class CIDCardFdvDlg : public CDialogEx
@@ -157,12 +161,16 @@ public:
 	char m_IdCardIssuedate[256];
 	char m_IdCardPhoto[102400];
 	IplImage* m_iplImgPhoto;
+	bool m_bIdCardNoChange;
+	CEvent m_eGetIdCardFeat;
 
 	// info panel
 	CInfoDlg* m_pInfoDlg;
 	HBITMAP m_hBIconCamera;	// test
-	IplImage* m_iplImgResultIconRight;
-	IplImage* m_iplImgResultIconWrong;
+	bool	m_bDrawResultIconRight;
+	bool	m_bDrawResultIconWrong;
+	cv::Mat m_ResultIconRight;
+	cv::Mat m_ResultIconWrong;
 	double m_dThreshold;
 
 	// wav
@@ -171,12 +179,18 @@ public:
 	ALuint m_sndRightSource;
 	ALuint m_sndWrongBuffer;
 	ALuint m_sndWrongSource;
+
+	// debug
+#if DEBUG_LOG_FILE
+	std::ofstream m_logfile;
+#endif
 public:
 	void checkAndOpenAllCamera();
 	void closeAllCamera();
 	void showPreview(IplImage* img);
 	void drawHelpImage(IplImage* img);
 	void drawScanRect(cv::Mat frame);
+	void drawResultIcon(cv::Mat frame, cv::Mat icon);
 
 	void startDataLoadingThread();
 	void stopDataLoadingThread();

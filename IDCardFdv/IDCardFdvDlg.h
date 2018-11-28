@@ -16,7 +16,7 @@
 #endif
 #include <fstream>
 // debug define
-#define DEBUG_LOG_FILE	1
+#define DEBUG_LOG_FILE	0
 #define DEBUG_LIVECHECK_OUTPUT	0
 
 // CIDCardFdvDlg ¶Ô»°¿ò

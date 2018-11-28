@@ -11,15 +11,9 @@ using namespace std;
 	#else
 		#define AI_FDR_LIBRARY_API __declspec(dllimport)
 	#endif
-#elif
-//	#define AI_FDR_LIBRARY_API
-	#ifdef AI_FDR_LIBRARY_EXPORTS
-		#define AI_FDR_LIBRARY_API __declspec(dllexport)
-	#else
-		#define AI_FDR_LIBRARY_API __declspec(dllimport)
-	#endif
+#else
+	#define AI_FDR_LIBRARY_API
 #endif
-
 
 
 class face_recog_model
@@ -34,7 +28,7 @@ public:
 
 	virtual int ai_fdr_edge_descriptors(
 		const IplImage& inimgmat,
-		std::vector<std::vector<int>> &outfacerects,
+		std::vector<std::vector<int> > &outfacerects,
 		std::vector<std::string> &outfacefeats,
 		const int upscale = 0,
 		bool btopface = false
@@ -43,7 +37,7 @@ public:
 
 	virtual int dectect_faces(
 		const IplImage& inimgmat,
-		std::vector<std::vector<int>> &outfacerects,
+		std::vector<std::vector<int> > &outfacerects,
 		const int upscale = 0,
 		bool btop = false
 	) = 0;
@@ -58,7 +52,9 @@ public:
 	) = 0;
 
 	virtual int ai_fdr_similarity(const std::string stredge1, const std::string stredge2, double& outsim)=0;
+        virtual ~face_recog_model(){;};
 };
+
 
 class AI_FDR_LIBRARY_API fdr_model_wrap
 {
@@ -67,7 +63,7 @@ public:
 
 	int ai_fdr_edge_descriptors(
 		const IplImage& inimgmat,
-		std::vector<std::vector<int>> &outfacerects,
+		std::vector<std::vector<int> > &outfacerects,
 		std::vector<std::string> &outfacefeats,
 		const int upscale = 0,
 		bool btopface = false
@@ -81,7 +77,7 @@ public:
 
 	int dectect_faces(
 		const IplImage& inimgmat,
-		std::vector<std::vector<int>> &outfacerects,
+		std::vector<std::vector<int> > &outfacerects,
 		const int upscale = 0,
 		bool btopface = false
 	);

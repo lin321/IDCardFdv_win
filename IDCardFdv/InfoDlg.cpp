@@ -275,9 +275,12 @@ void CInfoDlg::drawCameraImage(IplImage* img)
 	Mat_<Vec3b>::iterator itend = imgMat.end<Vec3b>();
 	for (; it != itend; it++)
 	{
-		// 掩码色修改
-		if ((*it)[0] == 255 && (*it)[1] == 255 && (*it)[2] == 255)
-			(*it)[0] = 254;	
+		// 掩码色及接近色修改
+		if ((*it)[0] >= 250 && (*it)[1] >= 250 && (*it)[2] >= 250) {
+			(*it)[0] = 250;
+			(*it)[1] = 250;
+			(*it)[2] = 250;
+		}
 	}
 //	clock_t dt = clock() - time1;
 	drawImage(iplImgTemp, IDC_CAMERA_IMG, DRAW_TYPE_RATIO, true);

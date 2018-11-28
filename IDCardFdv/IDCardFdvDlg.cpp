@@ -627,7 +627,7 @@ void CIDCardFdvDlg::drawScanRect(cv::Mat frame)
 	scanX = scanX * frame.cols / m_iPreviewWidth;
 	scanX = scanX + (camera_img_rect.width * frame.cols / m_iPreviewWidth - m_MatScan.cols) / 2; // ¾ÓÖÐ
 	static int scanY = sMax;
-	scanY = ((scanY - sMin) + 4) % (sMax - sMin + 1) + sMin;
+	scanY = ((scanY - sMin) + 10) % (sMax - sMin + 1) + sMin;
 	Mat newframe_scan(frame, cvRect(scanX, scanY, m_MatScan.cols, m_MatScan.rows));
 	MatAlphaBlend(newframe_scan, m_MatScan);
 
@@ -870,8 +870,8 @@ bool CIDCardFdvDlg::startFdvThread(std::string feat, bool live)
 		cvCopy(m_iplImgCameraImg, m_CaptureImage);
 		cvResetImageROI(m_iplImgCameraImg);
 		//pDlg->m_CaptureImage = cvCloneImage(newframe);
-		//string fn = pDlg->m_strModulePath + "frame0.png";
-		//imwrite(fn.c_str(), cvarrToMat(pDlg->m_CaptureImage));
+		//string fn = m_strModulePath + "face0.png";
+		//imwrite(fn.c_str(), cvarrToMat(m_CaptureImage));
 	}
 #endif
 	m_bFdvRun = true;
@@ -1333,7 +1333,6 @@ UINT CameraShowThread(LPVOID lpParam)
 	g_CriticalSection.Lock();
 	pDlg->m_bCameraRun = true;
 	g_CriticalSection.Unlock();
-
 	pDlg->m_bMainFrameSuccess = false;
 	pDlg->m_bHideFrameSuccess = false;
 	Mat cFrame, cFrameHide;
@@ -1439,6 +1438,7 @@ UINT CameraShowThread(LPVOID lpParam)
 
 
 		pDlg->showPreview(newframe);
+		Sleep(1);
 	}
 
 	//pDlg->closeAllCamera();
@@ -1633,6 +1633,7 @@ UINT ImgUploadThread(LPVOID lpParam)
 				pDlg->m_macId, pDlg->m_cfgRegisteredNo, 
 				::stoi(pDlg->m_cfgTimeOut));
 		}
+		Sleep(1);
 	}
 
 	delete pDlg->m_imgUploadMgt;

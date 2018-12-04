@@ -4,6 +4,8 @@
 #include "utility_funcs.h"
 #include <algorithm>
 
+using namespace std;
+
 //文件头结构体
 #pragma pack(push)
 #pragma pack(2)  //两字节对齐，否则bmp_fileheader会占16Byte
@@ -212,4 +214,16 @@ void WaitObjectAndMsg(HANDLE hEvent, DWORD dwMilliseconds) {
 			DispatchMessage(&msg);
 		}
 	}
+}
+
+string ExtractFilePath(const string& szFile)
+{
+	if (szFile == "")
+		return "";
+
+	size_t idx = szFile.find_last_of("\\:");
+
+	if (-1 == idx)
+		return "";
+	return string(szFile.begin(), szFile.begin() + idx + 1);
 }

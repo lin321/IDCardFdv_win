@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CvvImage.h"
+#include "AttentionDlg.h"
 #include "InfoDlg.h"
 #include "ImgUploadMgt.h"
 #include "al.h"
@@ -108,6 +109,7 @@ public:
 	cv::VideoCapture m_vcapMain;
 	cv::VideoCapture m_vcapHide;
 	bool m_bFlip;
+	int m_iPreviewX;
 	IplImage* m_iplImgDisplay;
 	IplImage* m_iplImgTemp;
 	bool m_bDrawScan;
@@ -164,6 +166,9 @@ public:
 	bool m_bIdCardNoChange;
 	CEvent m_eGetIdCardFeat;
 
+	// attention dialog
+	CAttentionDlg* m_pAttentionDlg;
+
 	// info panel
 	CInfoDlg* m_pInfoDlg;
 	HBITMAP m_hBIconCamera;	// test
@@ -172,6 +177,7 @@ public:
 	cv::Mat m_ResultIconRight;
 	cv::Mat m_ResultIconWrong;
 	double m_dThreshold;
+	
 
 	// wav
 	bool m_bsndReady;
@@ -187,7 +193,7 @@ public:
 public:
 	void checkAndOpenAllCamera();
 	void closeAllCamera();
-	void showPreview(IplImage* img);
+	void showPreview(IplImage* img, int dX/*display X*/);
 	void drawHelpImage(IplImage* img);
 	void drawScanRect(cv::Mat frame);
 	void drawResultIcon(cv::Mat frame, cv::Mat icon);

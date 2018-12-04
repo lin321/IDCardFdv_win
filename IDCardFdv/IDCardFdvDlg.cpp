@@ -186,6 +186,7 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_iplImgDisplay = NULL;
 	m_iplImgTemp = NULL;
 	m_bFlip = false;
+	m_iPreviewX = 0;
 	m_bDrawScan = true;
 	m_bMainFrameSuccess = false;
 	m_bHideFrameSuccess = false;
@@ -237,6 +238,8 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_iplImgPhoto = NULL;
 	m_bIdCardNoChange = false;
 
+	m_pAttentionDlg = NULL;
+
 	m_pInfoDlg = NULL;
 
 	m_hBIconCamera = NULL;
@@ -272,18 +275,6 @@ BEGIN_MESSAGE_MAP(CIDCardFdvDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
-
-string ExtractFilePath(const string& szFile)
-{
-	if (szFile == "")
-		return "";
-
-	size_t idx = szFile.find_last_of("\\:");
-
-	if (-1 == idx)
-		return "";
-	return string(szFile.begin(), szFile.begin() + idx + 1);
-}
 
 // CIDCardFdvDlg 消息处理程序
 
@@ -323,8 +314,23 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_iPreviewWidth = rw;
 	m_iPreviewHeight = rh;
 
-	// 创建信息窗口
+	// 创建提醒信息窗口
 	ClientToScreen(&rect);
+	float ADRATE = 0.4f;
+	rw = (int)((rect.right - rect.left) * ADRATE); // 信息窗口宽
+	rh = rect.bottom - rect.top;					// 信息窗口高
+	offsetX = rect.left;
+	offsetY = rect.top;
+	if (NULL == m_pAttentionDlg) {
+		m_pAttentionDlg = new CAttentionDlg(offsetX, offsetY, rw, rh);
+		m_pAttentionDlg->Create(IDD_ATTENTION_DIALOG, this);
+		m_pAttentionDlg->setFontRate(m_iPreviewWidth * 1.0f / 1366);
+	}
+	m_pAttentionDlg->setVisible(false);
+	m_iPreviewX = offsetX + rw / 2;
+
+	// 创建信息窗口
+//	ClientToScreen(&rect);
 	float IPRATE = 0.15f;
 	rw = (int)((rect.right - rect.left) * IPRATE); // 信息窗口宽
 	rh = rect.bottom - rect.top;					// 信息窗口高
@@ -534,7 +540,7 @@ HCURSOR CIDCardFdvDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CIDCardFdvDlg::showPreview(IplImage* img)	
+void CIDCardFdvDlg::showPreview(IplImage* img, int dX)	
 {
 	UINT ID = IDC_PREVIEW_IMG;				// ID 是Picture Control控件的ID号
 
@@ -555,9 +561,10 @@ void CIDCardFdvDlg::showPreview(IplImage* img)
 	//SetRect( rect, tx, ty, tx+iw, ty+ih );
 	//SetRect(rect, 0, 0, rw, rh);	// 铺满控件
 	
-	int displayW = rw;					// 保持宽高比和填满控件宽
+	
+	int displayX = dX;
+	int displayW = rw;
 	int displayH = rw * ih / iw;
-	int displayX = 0;
 	int displayY = (int)(rh - displayH) / 2;	// 垂直居中
 	SetRect(rect, displayX, displayY, displayX + displayW, displayY + displayH);
 
@@ -617,6 +624,7 @@ void CIDCardFdvDlg::drawScanRect(cv::Mat frame)
 {
 	cv::Rect info_dlg_rect, camera_img_rect;
 	m_pInfoDlg->getInfoDlgScreenRect(info_dlg_rect);
+	info_dlg_rect.x -= m_iPreviewX;
 	m_pInfoDlg->getCameraImageRect(camera_img_rect);
 
 	int sMin = camera_img_rect.y;
@@ -654,6 +662,7 @@ void CIDCardFdvDlg::drawResultIcon(cv::Mat frame, cv::Mat icon)
 {
 	cv::Rect info_dlg_rect, result_icon_rect;
 	m_pInfoDlg->getInfoDlgScreenRect(info_dlg_rect);
+	info_dlg_rect.x -= m_iPreviewX;
 	m_pInfoDlg->getResultIconRect(result_icon_rect);
 
 	int sX = info_dlg_rect.x + result_icon_rect.x;
@@ -934,6 +943,9 @@ UINT DataLoadingThread(LPVOID lpParam)
 
 	while (1) {
 		// 图
+		pDlg->m_pAttentionDlg->loadAllData();
+		if (pDlg->m_bStopLoading) break;
+
 		std::string fn = pDlg->m_strModulePath + "right.png";
 		pDlg->m_ResultIconRight = imread(fn.c_str(), CV_LOAD_IMAGE_UNCHANGED);
 		if (pDlg->m_bStopLoading) break;
@@ -1019,6 +1031,7 @@ UINT IdcardDetectThread(LPVOID lpParam)
 		g_CriticalSection.Unlock();
 	}
 
+	bool close_att_dlg = false;
 	int camera_delay_cnt = 4;	// 显示帮忙画面后再打开摄像头
 	while (pDlg->m_bIdcardDetectRun)
 	{
@@ -1028,6 +1041,8 @@ UINT IdcardDetectThread(LPVOID lpParam)
 		
 		if (check > 0) {		
 			//pDlg->drawHelpImage(NULL); // clear
+			//pDlg->m_pAttentionDlg->setVisible(true);
+			//UpdateWindow(pDlg->m_pAttentionDlg->m_hWnd);
 
 			g_CriticalSection.Lock();
 			pDlg->m_bImgUploadPause = true; // 暂停数据上传
@@ -1045,6 +1060,7 @@ UINT IdcardDetectThread(LPVOID lpParam)
 			WaitForSingleObject(pDlg->m_eIdcardDetectResume, INFINITE);
 			if (!pDlg->m_bIdcardDetectRun)
 				break;	// 已退出
+			close_att_dlg = true;
 		}
 		else if (-5 == check) {
 			pDlg->drawHelpImage(pDlg->m_iplImgHelpImg);
@@ -1053,8 +1069,13 @@ UINT IdcardDetectThread(LPVOID lpParam)
 			if (iopen < 0)
 				AfxMessageBox("身份证读卡器连接失败！");
 		}
-		else
+		else {
 			pDlg->drawHelpImage(pDlg->m_iplImgHelpImg);
+			if (close_att_dlg) {
+				pDlg->m_pAttentionDlg->setVisible(false);
+				close_att_dlg = false;
+			}
+		}
 
 		// 打开并监控摄像头
 		if (camera_delay_cnt <= 0) {
@@ -1289,7 +1310,7 @@ void CIDCardFdvDlg::checkAndOpenAllCamera()
 {
 	clock_t time_s,time_dt;
 	if (-1 == m_iMainDevIdx)
-		m_iMainDevIdx = getDeviceIndex(m_cfgCameraVid, m_cfgCameraPid);
+		m_iMainDevIdx = 0;// getDeviceIndex(m_cfgCameraVid, m_cfgCameraPid);
 	if (-1 == m_iHideDevIdx)
 		m_iHideDevIdx = getDeviceIndex(m_cfgCameraHideVid, m_cfgCameraHidePid);
 
@@ -1436,8 +1457,7 @@ UINT CameraShowThread(LPVOID lpParam)
 		if (pDlg->m_bDrawResultIconWrong)
 			pDlg->drawResultIcon(cFrame, pDlg->m_ResultIconWrong);
 
-
-		pDlg->showPreview(newframe);
+		pDlg->showPreview(newframe, pDlg->m_iPreviewX);
 		Sleep(1);
 	}
 
@@ -1809,6 +1829,11 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 		m_iplImgPhoto = NULL;
 	}
 
+	if (m_pAttentionDlg) {
+		delete m_pAttentionDlg;
+		m_pAttentionDlg = NULL;
+	}
+
 	if (m_pInfoDlg) {
 		delete m_pInfoDlg;
 		m_pInfoDlg = NULL;
@@ -1841,11 +1866,13 @@ void CIDCardFdvDlg::OnClose()
 	m_bMainWinClose = true;	// 关闭主窗口->全部退出，只允许处理一次
 
 	m_pInfoDlg->ShowWindow(SW_HIDE);
+	
 	KillTimer(CLEAR_INFOIMG_TIMER);
 
 #if OPENCV_CAPTURE
 	stopFaceDetectThread(); // 停止预览线程前先停止检测
 	stopCameraThread();
+	m_pAttentionDlg->setVisible(false);
 	closeAllCamera();
 	Sleep(20);
 #else
@@ -1899,6 +1926,7 @@ void CIDCardFdvDlg::OnTimer(UINT_PTR nIDEvent)
 			waitFdvThreadStopped();
 
 			m_pInfoDlg->ShowWindow(SW_HIDE);
+
 			// 重启帮忙画面
 			SetEvent(m_eIdcardDetectResume);
 			// 重启数据上传 

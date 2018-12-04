@@ -79,14 +79,6 @@ public:
 	CEvent m_eIdcardDetectResume;
 	IplImage* m_iplImgHelpImg;
 
-	// idcard read and get feature thread
-	bool m_bIdcardReadRun;
-	CWinThread* m_thIdcardRead;
-	CEvent m_eIdcardReadEnd;
-	CEvent m_eIdcardReadResume;
-	bool m_bIdcardReadFindCard;
-	CEvent m_eIdcardReadDone;
-
 	// face detect thread
 	bool m_bFaceDetectRun;
 	CWinThread* m_thFaceDetect;
@@ -202,8 +194,6 @@ public:
 	void stopDataLoadingThread();
 	void startIdcardDetectThread();
 	void stopIdcardDetectThread();
-	void startIdcardReadThread();
-	void stopIdcardReadThread();
 	void startCameraThread();
 	void stopCameraThread();
 	void startFaceDetectThread();

@@ -26,6 +26,7 @@ using namespace cv;
 #define PREVIEW_DEBUG	0
 
 #define CLEAR_INFOIMG_TIMER 1
+#define ADV_AND_BACK_TIMER	3
 
 clock_t time_net=0;
 clock_t time_global = 0;
@@ -99,6 +100,8 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 	}
 
 	pDlg->m_bFirstFdv = false;
+	pDlg->m_bShowAdv = true;
+	pDlg->m_HtmlView.SetUrl(pDlg->m_cfgAdvUrl.c_str());
 	pDlg->setClearTimer();
 
 
@@ -278,6 +281,11 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_iPreviewWidth = rw;
 	m_iPreviewHeight = rh;
 
+	GetDlgItem(IDC_STATIC_HTML)->MoveWindow(offsetX, offsetY, rw, rh, false);
+	GetDlgItem(IDC_STATIC_HTML)->ShowWindow(SW_HIDE);
+	m_HtmlView.CreateFromStatic(IDC_STATIC_HTML, this);
+	m_HtmlView.ShowWindow(SW_HIDE);
+
 	// 创建提醒信息窗口
 	ClientToScreen(&rect);
 	float ADRATE = 0.4f;
@@ -376,6 +384,7 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
 	m_cfgUploadUrl = "http://192.168.1.201:8008/idfdv_complete";
+	m_cfgAdvUrl = "http://www.baidu.com";
 	m_cfgTimeOut = "15";
 	m_cfgRegisteredNo = "0";
 	std::ifstream confFile(m_strModulePath + "config.txt");
@@ -407,6 +416,8 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 					m_cfgUrl = value;
 				if (key == "uploadurl")
 					m_cfgUploadUrl = value;
+				if (key == "advurl")
+					m_cfgAdvUrl = value;
 				if (key == "timeout")
 					m_cfgTimeOut = value;
 				if (key == "registeredNo")
@@ -917,6 +928,10 @@ UINT DataLoadingThread(LPVOID lpParam)
 		Sleep(10);
 		MTLibTestUrlIgnoreResp(pDlg->m_cfgUrl, NULL, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 
+		// 修改注册表确定CHtmlView使用的IE内核版本
+		RaisePrivileges();
+		SetIECoreVersion();
+
 		g_CriticalSection.Lock();
 		pDlg->m_bDataReady = true;
 		g_CriticalSection.Unlock();
@@ -969,8 +984,10 @@ UINT IdcardDetectThread(LPVOID lpParam)
 #endif		
 		if (check > 0) {		
 			//pDlg->drawHelpImage(NULL); // clear
-			pDlg->m_pAttentionDlg->setVisible(false);
+			//pDlg->m_pAttentionDlg->setVisible(true);
+			pDlg->m_iPreviewX = 0;
 			UpdateWindow(pDlg->m_pAttentionDlg->m_hWnd);
+			pDlg->m_bShowAdv = false;
 
 			g_CriticalSection.Lock();
 			pDlg->m_bImgUploadPause = true; // 暂停数据上传
@@ -979,6 +996,7 @@ UINT IdcardDetectThread(LPVOID lpParam)
 			g_CriticalSection.Unlock();
 
 			ResetEvent(pDlg->m_eGetIdCardFeat);
+			pDlg->m_bDrawScan = true;
 			SetEvent(pDlg->m_eCameraResume);//pDlg->startCameraThread();
 			pDlg->idcardPreRead();			// 数据预读
 			pDlg->m_pInfoDlg->ShowWindow(SW_SHOW);
@@ -1760,28 +1778,29 @@ void CIDCardFdvDlg::OnTimer(UINT_PTR nIDEvent)
 		m_bDrawResultIconRight = m_bDrawResultIconWrong = false;//m_pInfoDlg->clearResultIcon();
 		m_pInfoDlg->setResultText("");
 		KillTimer(CLEAR_INFOIMG_TIMER);
-		//int chk1, chk2;
-		//g_CriticalSectionIdCard.Lock();
-		//chk1 = Authenticate_Idcard();
-		//chk2 = Authenticate_Content(2);
-		//g_CriticalSectionIdCard.Unlock();
-		//if (chk1 <= 0 && chk2 < 0) {
-		if(true){
-			ResetEvent(m_eCameraResume);
-			waitFdvThreadStopped();
+		ResetEvent(m_eCameraResume);
+		waitFdvThreadStopped();
+		m_bDrawScan = false;
+		m_pInfoDlg->ShowWindow(SW_HIDE);
 
-			m_pInfoDlg->ShowWindow(SW_HIDE);
-
-			// 重启帮忙画面
-			SetEvent(m_eIdcardDetectResume);
-			// 重启数据上传 
-			//g_CriticalSection.Lock();
-			//m_bImgUploadPause = false;
-			//g_CriticalSection.Unlock();
-			//SetEvent(m_eImgUploadResume);
+		if (m_bShowAdv) {
+			Sleep(100);
+			m_pAttentionDlg->setVisible(false);
+			// 显示广告
+			m_HtmlView.ShowWindow(SW_SHOW);
+			m_HtmlView.UpdateWindow();
+			SetTimer(ADV_AND_BACK_TIMER, 1000 * 10, NULL);
 		}
-		else
-			setClearTimer();
+		else {
+			Sleep(50);
+			SetEvent(m_eIdcardDetectResume);
+		}
+		break;
+	case ADV_AND_BACK_TIMER:
+		KillTimer(ADV_AND_BACK_TIMER);
+		// 重启帮忙画面
+		m_HtmlView.ShowWindow(SW_HIDE);
+		SetEvent(m_eIdcardDetectResume);
 		break;
 	}
 	CDialogEx::OnTimer(nIDEvent);

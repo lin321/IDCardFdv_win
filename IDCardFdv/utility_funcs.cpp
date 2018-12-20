@@ -227,3 +227,54 @@ string ExtractFilePath(const string& szFile)
 		return "";
 	return string(szFile.begin(), szFile.begin() + idx + 1);
 }
+
+BOOL RaisePrivileges()
+{
+	HANDLE TokenHandle;
+	TOKEN_PRIVILEGES t_privileges = { 0 };
+	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &TokenHandle))
+	{
+		return FALSE;
+	}
+	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &t_privileges.Privileges[0].Luid))
+	{
+		return TRUE;
+	}
+	t_privileges.PrivilegeCount = 1;
+	t_privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	if (!AdjustTokenPrivileges(TokenHandle, FALSE, &t_privileges, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
+	{
+		CloseHandle(TokenHandle);
+		return FALSE;
+	}
+	else
+	{
+		return TRUE;
+	}
+}
+
+void SetIECoreVersion()
+{
+	const char* path = "SOFTWARE\\Microsoft\\Internet Explorer\\MAIN\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+	const char* valueName = "IDCardFdv.exe";
+	long version = 11000;
+	char err[1024];
+	HKEY hKey;
+	DWORD dwDisposition;
+	long ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE, path, 0, REG_LEGAL_OPTION, &hKey);
+	if (ret != ERROR_SUCCESS)
+	{
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, ret, NULL, err, sizeof(err), NULL);
+		ret = RegCreateKeyEx(HKEY_LOCAL_MACHINE, path, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, &dwDisposition);
+		if (ret != ERROR_SUCCESS)
+		{
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, ret, NULL, err, sizeof(err), NULL);
+			return;
+		}
+	}
+	ret = RegSetValueEx(hKey, valueName, NULL, REG_DWORD, (BYTE*)&version, sizeof(version));
+	if (ret != ERROR_SUCCESS)
+		return;
+}
+

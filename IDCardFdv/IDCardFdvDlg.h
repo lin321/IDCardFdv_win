@@ -7,6 +7,7 @@
 #include "CvvImage.h"
 #include "AttentionDlg.h"
 #include "InfoDlg.h"
+#include "AdvHtmlView.h"
 #include "ImgUploadMgt.h"
 #include "al.h"
 #include "alut.h"
@@ -69,6 +70,7 @@ public:
 	std::string m_cfgSecretKey;
 	std::string m_cfgUrl;
 	std::string m_cfgUploadUrl;
+	std::string m_cfgAdvUrl;
 	std::string m_cfgTimeOut;
 	std::string m_cfgRegisteredNo;
 
@@ -177,6 +179,10 @@ public:
 	ALuint m_sndRightSource;
 	ALuint m_sndWrongBuffer;
 	ALuint m_sndWrongSource;
+
+	// adv
+	bool		 m_bShowAdv;
+	CAdvHtmlView m_HtmlView;
 
 	// debug
 #if DEBUG_LOG_FILE

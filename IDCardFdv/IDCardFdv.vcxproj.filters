@@ -57,6 +57,9 @@
     <ClInclude Include="AttentionDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AdvHtmlView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IDCardFdv.cpp">
@@ -87,6 +90,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AttentionDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvHtmlView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

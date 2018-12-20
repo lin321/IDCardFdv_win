@@ -12,3 +12,7 @@ int getDeviceIndex(std::string vid, std::string pid);
 void MatAlphaBlend(cv::Mat &dst, cv::Mat &scr);
 void WaitObjectAndMsg(HANDLE hEvent, DWORD dwMilliseconds);
 std::string ExtractFilePath(const std::string& szFile);
+
+// for CHtmlView IE core
+BOOL RaisePrivileges();
+void SetIECoreVersion();

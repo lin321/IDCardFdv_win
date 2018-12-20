@@ -195,6 +195,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdvHtmlView.h" />
     <ClInclude Include="AttentionDlg.h" />
     <ClInclude Include="base64.h" />
     <ClInclude Include="CvvImage.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="utility_funcs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdvHtmlView.cpp" />
     <ClCompile Include="AttentionDlg.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="IDCardFdv.cpp" />

@@ -24,6 +24,8 @@ using namespace cv;
 #endif
 
 #define PREVIEW_DEBUG	0
+#define SHOW_ADV		0
+#define SHOW_ATTENTION	0
 
 #define CLEAR_INFOIMG_TIMER 1
 #define ADV_AND_BACK_TIMER	3
@@ -100,7 +102,11 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 	}
 
 	pDlg->m_bFirstFdv = false;
+#if SHOW_ADV
 	pDlg->m_bShowAdv = true;
+#else
+	pDlg->m_bShowAdv = false;
+#endif
 	pDlg->m_HtmlView.SetUrl(pDlg->m_cfgAdvUrl.c_str());
 	pDlg->setClearTimer();
 
@@ -984,8 +990,11 @@ UINT IdcardDetectThread(LPVOID lpParam)
 #endif		
 		if (check > 0) {		
 			//pDlg->drawHelpImage(NULL); // clear
-			//pDlg->m_pAttentionDlg->setVisible(true);
+#if SHOW_ATTENTION
+			pDlg->m_pAttentionDlg->setVisible(true);
+#else
 			pDlg->m_iPreviewX = 0;
+#endif
 			UpdateWindow(pDlg->m_pAttentionDlg->m_hWnd);
 			pDlg->m_bShowAdv = false;
 

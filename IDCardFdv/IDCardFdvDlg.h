@@ -147,6 +147,7 @@ public:
 	std::string m_sCaptureBase64;
 	bool m_bFaceGot;
 	bool m_bIsAliveSample;
+	IplImage* m_iplImgTestPhoto;	//test
 	IplImage* m_iplImgTestImage;	//test
 	IplImage* m_iplImgTestImage2;	//test
 

@@ -24,6 +24,7 @@ using namespace cv;
 #endif
 
 #define PREVIEW_DEBUG	0
+#define TEST_FILE_DEBUG	0
 #define SHOW_ADV		0
 #define SHOW_ATTENTION	0
 
@@ -197,6 +198,7 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	m_bIsAliveSample = false;
 	m_bFdvRun = false;
 	m_bCmdFdvStop = false;
+	m_iplImgTestPhoto = NULL;
 	m_iplImgTestImage = NULL;
 	m_iplImgTestImage2 = NULL;
 #ifdef NDEBUG
@@ -334,6 +336,19 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	fn = m_strModulePath + "help.jpg";
 	m_iplImgHelpImg = cvLoadImage(fn.c_str(), -1);
 
+	// test files
+#if TEST_FILE_DEBUG
+	{
+		fn = m_strModulePath + "Tphoto.bmp";
+		m_iplImgTestPhoto = cvLoadImage(fn.c_str(), -1);
+
+		fn = m_strModulePath + "TF01_0.jpg";
+		m_iplImgTestImage = cvLoadImage(fn.c_str(), -1);
+
+		fn = m_strModulePath + "TF01_1.jpg";
+		m_iplImgTestImage2 = cvLoadImage(fn.c_str(), -1);
+	}
+#endif
 	/*
 	CFile file;
 	fn = m_strModulePath + "right.wav";
@@ -1321,7 +1336,12 @@ UINT CameraShowThread(LPVOID lpParam)
 					pDlg->m_iplImgCameraImgHide = cvCloneImage(newframeHide);
 				}
 			}
-
+#if TEST_FILE_DEBUG
+			cvReleaseImage(&(pDlg->m_iplImgCameraImg));
+			cvReleaseImage(&(pDlg->m_iplImgCameraImgHide));
+			pDlg->m_iplImgCameraImg = cvCloneImage(pDlg->m_iplImgTestImage);
+			pDlg->m_iplImgCameraImgHide = cvCloneImage(pDlg->m_iplImgTestImage2);
+#endif
 			pDlg->m_bCmdDetect = false;
 			SetEvent(pDlg->m_eCaptureForDetect);
 
@@ -1563,6 +1583,18 @@ bool CIDCardFdvDlg::idcardPreRead()
 	m_logfile << "start read idcard!" << endl;
 	g_CriticalSection.Unlock();
 #endif
+
+#if TEST_FILE_DEBUG
+	strcpy_s(m_IdCardId,"332526198407210014");
+	strcpy_s(m_IdCardIssuedate, "20160808");
+	m_iplImgPhoto = cvCloneImage(m_iplImgTestPhoto);
+	SetEvent(m_eGetIdCardFeat);
+	g_CriticalSection.Lock();
+	m_bFirstFdvIdcardReaded = true;
+	g_CriticalSection.Unlock();
+	return true;
+#endif
+
 	Authenticate_Content();
 
 	char idcardid[256];
@@ -1620,10 +1652,10 @@ void CIDCardFdvDlg::getIdcardFeat(cv::Mat &matphoto)
 	std::vector < std::vector<int>> face_rects;
 
 	g_CriticalSectionAiFdr.Lock();
-	int photo_face_cnt = m_pfrmwrap->dectect_faces(matphoto, face_rects, 0, true);
+	int photo_face_cnt = m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
 	g_CriticalSectionAiFdr.Unlock();
 	if (photo_face_cnt < 1) {
-		face_rects.push_back({ 10,0,92,110 }); // l t r b
+		face_rects.push_back({ 19,35,80,97 }); // l t r b
 											   //face_rects.push_back({ 0,0,102,126 });
 	}
 	m_photoFaceFeat.clear();
@@ -1668,6 +1700,10 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 		m_hBIconCamera = NULL;
 	}
 
+	if (m_iplImgTestPhoto != NULL) {
+		cvReleaseImage(&m_iplImgTestPhoto);
+		m_iplImgTestPhoto = NULL;
+	}
 	if (m_iplImgTestImage != NULL) {
 		cvReleaseImage(&m_iplImgTestImage);
 		m_iplImgTestImage = NULL;

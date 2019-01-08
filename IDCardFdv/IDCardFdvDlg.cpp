@@ -26,7 +26,7 @@ using namespace cv;
 #define PREVIEW_DEBUG	0
 #define TEST_FILE_DEBUG	0
 #define SHOW_ADV		0
-#define SHOW_ATTENTION	0
+#define SHOW_ATTENTION	1
 
 #define CLEAR_INFOIMG_TIMER 1
 #define ADV_AND_BACK_TIMER	3
@@ -302,7 +302,7 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	offsetX = rect.left;
 	offsetY = rect.top;
 	if (NULL == m_pAttentionDlg) {
-		m_pAttentionDlg = new CAttentionDlg(offsetX, offsetY, rw, rh);
+		m_pAttentionDlg = new CAttentionDlg(offsetX, offsetY, rw, rh, "");
 		m_pAttentionDlg->Create(IDD_ATTENTION_DIALOG, this);
 		m_pAttentionDlg->setFontRate(m_iPreviewWidth * 1.0f / 1366);
 	}
@@ -407,16 +407,13 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_cfgUploadUrl = "http://192.168.1.201:8008/idfdv_complete";
 	m_cfgAdvUrl = "http://www.baidu.com";
 	m_cfgTimeOut = "15";
-	m_cfgRegisteredNo = "0";
+	m_cfgAttStrMain = "¹«°²¾Ö";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
-	while (std::getline(confFile, line))
-	{
+	while (std::getline(confFile, line)){
 		std::istringstream is_line(line);
-
 		std::string key;
-		if (std::getline(is_line, key, '='))
-		{
+		if (std::getline(is_line, key, '=')){
 			std::string value;
 			if (std::getline(is_line, value)) {
 				if (key == "cameraVid")
@@ -441,13 +438,29 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 					m_cfgAdvUrl = value;
 				if (key == "timeout")
 					m_cfgTimeOut = value;
+				if (key == "AttStrMain")
+					m_cfgAttStrMain = value;
+			}
+		}
+	}
+	confFile.close();
+	m_pAttentionDlg->setDepartment(m_cfgAttStrMain);
+	
+	m_cfgRegisteredNo = "0";
+	std::ifstream RegFile(m_strModulePath + "configReg.txt");
+	while (std::getline(RegFile, line)){
+		std::istringstream is_line(line);
+		std::string key;
+		if (std::getline(is_line, key, '=')){
+			std::string value;
+			if (std::getline(is_line, value)) {
 				if (key == "registeredNo")
 					m_cfgRegisteredNo = value;
 			}
 		}
 	}
-	confFile.close();
-	
+	RegFile.close();
+
 	m_pInfoDlg->setResultText("");
 	m_pInfoDlg->setThresholdText("");
 	
@@ -1585,8 +1598,8 @@ bool CIDCardFdvDlg::idcardPreRead()
 #endif
 
 #if TEST_FILE_DEBUG
-	strcpy_s(m_IdCardId,"332526198407210014");
-	strcpy_s(m_IdCardIssuedate, "20160808");
+	strcpy_s(m_IdCardId,"339005198608221614");
+	strcpy_s(m_IdCardIssuedate, "20111207");
 	m_iplImgPhoto = cvCloneImage(m_iplImgTestPhoto);
 	SetEvent(m_eGetIdCardFeat);
 	g_CriticalSection.Lock();

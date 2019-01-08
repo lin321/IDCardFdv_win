@@ -14,13 +14,14 @@ using namespace std;
 
 IMPLEMENT_DYNAMIC(CAttentionDlg, CDialogEx)
 
-CAttentionDlg::CAttentionDlg(int screenX, int screenY, int width, int height, CWnd* pParent /*=NULL*/)
+CAttentionDlg::CAttentionDlg(int screenX, int screenY, int width, int height, std::string strMain, CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_ATTENTION_DIALOG, pParent)
 {
 	m_iScreenX = screenX;
 	m_iScreenY = screenY;
 	m_iWidth = width;
 	m_iHeight = height;
+	m_strMain = strMain;
 
 	m_fontRate = 1.0f;
 	m_att_icon = NULL;
@@ -76,12 +77,16 @@ BOOL CAttentionDlg::OnInitDialog()
 	rw = m_iWidth - offsetX;
 	rh = (int)(m_iHeight * 92 * 1.0f / 1080);
 	GetDlgItem(IDC_ATT_TITLE02)->MoveWindow(offsetX, offsetY, rw, rh, false);
+	string t02str = m_strMain + "公安局";
+	GetDlgItem(IDC_ATT_TITLE02)->SetWindowText(t02str.c_str());
 
 	offsetX = (int)(m_iWidth * 35 * 1.0f / 768);
 	offsetY = (int)(m_iHeight * 388 * 1.0f / 1080);
 	rw = m_iWidth - offsetX - (int)(m_iWidth * 10 * 1.0f / 768);
 	rh = (int)(m_iHeight * 84 * 1.0f / 1080);
 	GetDlgItem(IDC_ATT_MAIN01)->MoveWindow(offsetX, offsetY, rw, rh, false);
+	string m01str = m_strMain + "公安局提醒:";
+	GetDlgItem(IDC_ATT_MAIN01)->SetWindowText(m01str.c_str());
 
 	offsetX = (int)(m_iWidth * 111 * 1.0f / 768);
 	offsetY = (int)(m_iHeight * 525 * 1.0f / 1080);
@@ -229,6 +234,15 @@ void CAttentionDlg::drawAttentionIcon(IplImage* img)
 	cimg.DrawToHDC(hDC, &rect);				// 将图片绘制到显示控件的指定区域内
 
 	ReleaseDC(pDC);
+}
+
+void CAttentionDlg::setDepartment(std::string dep)
+{
+	m_strMain = dep;
+	string t02str = m_strMain + "公安局";
+	GetDlgItem(IDC_ATT_TITLE02)->SetWindowText(t02str.c_str());
+	string m01str = m_strMain + "公安局提醒:";
+	GetDlgItem(IDC_ATT_MAIN01)->SetWindowText(m01str.c_str());
 }
 
 void CAttentionDlg::setFontRate(float rate)

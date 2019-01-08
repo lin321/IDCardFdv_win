@@ -194,34 +194,23 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 	// config
 	m_cfgCameraVid = "2AB8";
 	m_cfgCameraPid = "A101";
-	m_cfgCameraHideVid = "2AB8";
-	m_cfgCameraHidePid = "C101";
 	m_cfgAppId = "10022245";
 	m_cfgApiKey = "MGRhNjEyYWExOTdhYzYxNTkx";
 	m_cfgSecretKey = "NzQyNTg0YmZmNDg3OWFjMTU1MDQ2YzIw";
 	m_cfgUrl = "http://192.168.1.201:8004/idcardfdv";
-	m_cfgUploadUrl = "http://192.168.1.201:8008/idfdv_complete";
-	m_cfgAdvUrl = "http://www.baidu.com";
 	m_cfgTimeOut = "15";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
-	while (std::getline(confFile, line))
-	{
+	while (std::getline(confFile, line)){
 		std::istringstream is_line(line);
-
 		std::string key;
-		if (std::getline(is_line, key, '='))
-		{
+		if (std::getline(is_line, key, '=')){
 			std::string value;
 			if (std::getline(is_line, value)) {
 				if (key == "cameraVid")
 					m_cfgCameraVid = value;
 				if (key == "cameraPid")
 					m_cfgCameraPid = value;
-				if (key == "cameraHideVid")
-					m_cfgCameraHideVid = value;
-				if (key == "cameraHidePid")
-					m_cfgCameraHidePid = value;
 				if (key == "appId")
 					m_cfgAppId = value;
 				if (key == "apiKey")
@@ -230,17 +219,29 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 					m_cfgSecretKey = value;
 				if (key == "url")
 					m_cfgUrl = value;
-				if (key == "uploadurl")
-					m_cfgUploadUrl = value;
-				if (key == "advurl")
-					m_cfgAdvUrl = value;
 				if (key == "timeout")
 					m_cfgTimeOut = value;
 			}
 		}
 	}
 	confFile.close();
+
+	m_cfgRegisterSN = "";
 	m_cfgRegisteredNo = "";
+	std::ifstream RegFile(m_strModulePath + "configReg.txt");
+	while (std::getline(RegFile, line)) {
+		std::istringstream is_line(line);
+		std::string key;
+		if (std::getline(is_line, key, '=')) {
+			std::string value;
+			if (std::getline(is_line, value)) {
+				if (key == "registerSN")
+					m_cfgRegisterSN = value;
+			}
+		}
+	}
+	RegFile.close();
+	setProductSnText(m_cfgRegisterSN);
 
 	size_t idx = m_cfgUrl.find_last_of('/');
 	std::string regurl = m_cfgUrl.substr(0, idx);
@@ -358,18 +359,23 @@ void CIDCardFdvRegisterDlg::OnBnClickedBtnReg()
 	GetDlgItem(IDC_REG_EDIT1)->GetWindowText(editstr);
 	editstr.Remove(' ');
 	std::string productsn = editstr.GetString();
+	m_cfgRegisterSN = editstr.GetString();
 
 	GetDlgItem(IDC_REG_EDIT2)->GetWindowText(editstr);
 	editstr.Remove(' ');
 	productsn = productsn + editstr.GetString();
+	m_cfgRegisterSN = m_cfgRegisterSN + "-" + editstr.GetString();
 
 	GetDlgItem(IDC_REG_EDIT3)->GetWindowText(editstr);
 	editstr.Remove(' ');
 	productsn = productsn + editstr.GetString();
+	m_cfgRegisterSN = m_cfgRegisterSN + "-" + editstr.GetString();
+
 
 	GetDlgItem(IDC_REG_EDIT4)->GetWindowText(editstr);
 	editstr.Remove(' ');
 	productsn = productsn + editstr.GetString();
+	m_cfgRegisterSN = m_cfgRegisterSN + "-" + editstr.GetString();
 
 	GetDlgItem(IDC_URL_EDIT)->GetWindowText(editstr);
 	std::string url = editstr.GetString();
@@ -547,20 +553,10 @@ void CIDCardFdvRegisterDlg::setProductSnText(std::string str)
 
 void CIDCardFdvRegisterDlg::saveConfig()
 {
-	std::ofstream confFile(m_strModulePath + "config.txt");
-	confFile << "cameraVid=" << m_cfgCameraVid << endl;
-	confFile << "cameraPid=" << m_cfgCameraPid << endl;
-	confFile << "cameraHideVid=" << m_cfgCameraHideVid << endl;
-	confFile << "cameraHidePid=" << m_cfgCameraHidePid << endl;
-	confFile << "appId=" << m_cfgAppId << endl;
-	confFile << "apiKey=" << m_cfgApiKey << endl;
-	confFile << "secretKey=" << m_cfgSecretKey << endl;
-	confFile << "url=" << m_cfgUrl << endl;
-	confFile << "uploadurl=" << m_cfgUploadUrl << endl;
-	confFile << "advurl=" << m_cfgAdvUrl << endl;
-	confFile << "timeout=" << m_cfgTimeOut << endl;
-	confFile << "registeredNo=" << m_cfgRegisteredNo << endl;
-	confFile.close();
+	std::ofstream RegFile(m_strModulePath + "configReg.txt");
+	RegFile << "registerSN=" << m_cfgRegisterSN << endl;
+	RegFile << "registeredNo=" << m_cfgRegisteredNo << endl;
+	RegFile.close();
 }
 
 UINT CameraShowThread(LPVOID lpParam)

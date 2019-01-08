@@ -9,7 +9,7 @@ class CAttentionDlg : public CDialogEx
 	DECLARE_DYNAMIC(CAttentionDlg)
 
 public:
-	CAttentionDlg(int screenX, int screenY, int width, int height, CWnd* pParent = NULL);   // 标准构造函数
+	CAttentionDlg(int screenX, int screenY, int width, int height, std::string strMain, CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CAttentionDlg();
 
 // 对话框数据
@@ -27,12 +27,14 @@ private:
 	int m_iScreenY;
 	int m_iWidth;
 	int m_iHeight;
+	std::string m_strMain;
 	float m_fontRate;
 	IplImage* m_att_icon;
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
+	void setDepartment(std::string dep);
 	void setFontRate(float rate);
 	void loadAllData();
 	void setVisible(bool visible);

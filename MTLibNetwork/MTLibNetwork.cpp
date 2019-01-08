@@ -182,7 +182,7 @@ int __stdcall CallVerifySub(utility::string_t& url, web::json::value& postParame
 	http::uri uri = http::uri(url);
 	http_client_config config;
 	config.set_timeout(utility::seconds(timeout));
-	config.set_validate_certificates(false);
+	config.set_validate_certificates(true);
 	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
@@ -276,7 +276,7 @@ int __stdcall callregisterSub(utility::string_t& url, web::json::value& postPara
 	http::uri uri = http::uri(url);
 	http_client_config config;
 	config.set_timeout(utility::seconds(timeout));
-	config.set_validate_certificates(false);
+	config.set_validate_certificates(true);
 	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
@@ -326,7 +326,7 @@ int __stdcall MTLibTestUrl(std::string url, TestUrlCallback testurlCB, MTLIBPTR 
 	http::uri uri = http::uri(urlstr);
 	http_client_config config;
 	config.set_timeout(utility::seconds(timeout));
-	config.set_validate_certificates(false);
+	config.set_validate_certificates(true);
 	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
@@ -360,12 +360,13 @@ int __stdcall MTLibTestUrlIgnoreResp(std::string url, TestUrlCallback testurlCB,
 	http::uri uri = http::uri(urlstr);
 	http_client_config config;
 	config.set_timeout(utility::seconds(timeout));
-	config.set_validate_certificates(false);
+	config.set_validate_certificates(true);
 	http_client client(uri, config);
 	web::http::http_request postRequest;
 	postRequest.set_method(methods::POST);
 	try {
 		Concurrency::task<web::http::http_response> getTask = client.request(postRequest);	
+		http_response resp = getTask.get();
 	}
 	catch (const std::exception &e) {
 		(void)e;

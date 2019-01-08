@@ -9,4 +9,4 @@ url=https://118.31.14.72:8004/calcsimilarity
 uploadurl=https://118.31.14.72:8004/idfdv_complete
 advurl=http://www.baidu.com
 timeout=5
-registeredNo=9081
+AttStrMain=Œ‰∫∫ –

@@ -72,6 +72,7 @@ public:
 	std::string m_cfgUploadUrl;
 	std::string m_cfgAdvUrl;
 	std::string m_cfgTimeOut;
+	std::string m_cfgAttStrMain;
 	std::string m_cfgRegisteredNo;
 
 	// idcard detect thread

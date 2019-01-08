@@ -1946,7 +1946,9 @@
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>ai_fdr_sc.dll</td><td>Ai_Fdr_SC.dll</td><td>AI_FDR~1.DLL|Ai_Fdr_SC.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Ai_Fdr_SC.dll</td><td>1</td><td/></row>
 		<row><td>alut.dll</td><td>alut.dll</td><td>alut.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\alut.dll</td><td>1</td><td/></row>
+		<row><td>cacert.118.31.14.72.cer</td><td>ISX_DEFAULTCOMPONENT</td><td>CACERT~1.CER|cacert.118.31.14.72.cer</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cacert.118.31.14.72.cer</td><td>1</td><td/></row>
 		<row><td>config.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\config.txt</td><td>1</td><td/></row>
+		<row><td>configreg.txt</td><td>ISX_DEFAULTCOMPONENT</td><td>CONFIG~1.TXT|configReg.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\configReg.txt</td><td>1</td><td/></row>
 		<row><td>cpprest140_2_10.dll</td><td>cpprest140_2_10.dll</td><td>CPPRES~1.DLL|cpprest140_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\cpprest140_2_10.dll</td><td>1</td><td/></row>
 		<row><td>help.jpg</td><td>ISX_DEFAULTCOMPONENT</td><td>help.jpg</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\help.jpg</td><td>1</td><td/></row>
 		<row><td>idcardfdv.exe</td><td>IDCardFdv.exe</td><td>IDCARD~1.EXE|IDCardFdv.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\IDCardFdv.exe</td><td>1</td><td/></row>
@@ -4096,7 +4098,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{9375D42B-A6E7-49EB-8CB9-7E657A0CA038}</td></row>
 		<row><td>ISUSSignature</td><td>{99C04130-07A9-418F-ABCA-C8BB76C7D495}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewObjects,viewShortcuts,viewAppFiles,viewUI,viewTextMessages,viewSystemSearch,viewRelease,viewFileExtensions,viewEnvironmentVariables</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewObjects,viewShortcuts,viewAppFiles,viewUI,viewTextMessages,viewSystemSearch,viewRelease,viewFileExtensions,viewEnvironmentVariables,viewISToday</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>

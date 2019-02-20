@@ -72,15 +72,10 @@ bool CImgUploadMgt::insert(std::string serial_no, IplImage* frame, IplImage* fra
 	if (frameQueue.size() > 1000)	// 内存最大缓存数量
 		ret = false;
 	else {
-		if (frame) {
-			frameQueue.push(frame);
-		}
-		if (frameHide) {
-			frameHideQueue.push(frameHide);
-		}
-		if (photo) {
-			photoQueue.push(photo);
-		}
+		frameQueue.push(frame);
+		frameHideQueue.push(frameHide);
+		photoQueue.push(photo);
+
 		serialNoQueue.push(serial_no);
 		idcardIdQueue.push(idcardId);
 		idcardIssuedateQueue.push(idcardIssuedate);
@@ -132,10 +127,18 @@ bool CImgUploadMgt::upload(std::string url, std::string appId, std::string apiKe
 	cv::Mat matphoto = cv::cvarrToMat(photo);
 
 	vector<int> param = vector<int>(2);
-	cv::imencode(".png", matphoto, idcardPhoto, param);
-	cv::imencode(".jpg", matframe, verifyPhotos[0], param);
-	cv::imencode(".jpg", matframeHide, verifyPhotos[1], param);
-
+	if (frame)
+		cv::imencode(".jpg", matframe, verifyPhotos[0], param);
+	else
+		verifyPhotos[0].clear();
+	if (frameHide)
+		cv::imencode(".jpg", matframeHide, verifyPhotos[1], param);
+	else
+		verifyPhotos[1].clear();
+	if (photo)
+		cv::imencode(".png", matphoto, idcardPhoto, param);
+	else
+		idcardPhoto.clear();
 	// uuid
 	CString struuid(L"error");
 	RPC_CSTR guidStr;

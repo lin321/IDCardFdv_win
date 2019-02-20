@@ -114,13 +114,21 @@ int __stdcall MTLibUploadImage(std::string url, std::string appId, std::string a
 	verify_json[U("Serial_No")] = json::value::string(utility::conversions::to_string_t(serial_no));
 	shastr_part += serial_no;
 	
-	utility::string_t b64str = U("data:image/bmp;base64,") + utility::conversions::to_base64(idcardPhoto);
+	utility::string_t b64str;
+	if (idcardPhoto.size() > 0)
+		b64str = U("data:image/bmp;base64,") + utility::conversions::to_base64(idcardPhoto);
+	else
+		b64str = U("");
 	verify_json[U("idcard_photo")] = json::value::string(b64str);
 	shastr_part += utility::conversions::to_utf8string(b64str);
 
 	verify_json[U("verify_photos")] = json::value::array();
 	for (int i = 0; i < verifyPhotoNum; i++) {
-		utility::string_t b64str = U("data:image/jpg;base64,") + utility::conversions::to_base64(verifyPhotos[i]);
+		utility::string_t b64str;
+		if(verifyPhotos[i].size() > 0)
+			b64str = U("data:image/jpg;base64,") + utility::conversions::to_base64(verifyPhotos[i]);
+		else
+			b64str = U("");
 		verify_json[U("verify_photos")][i] = json::value::string(b64str);
 		shastr_part += utility::conversions::to_utf8string(b64str);
 	}

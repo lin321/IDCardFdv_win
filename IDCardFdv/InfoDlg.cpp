@@ -1,13 +1,16 @@
 // InfoDlg.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "IDCardFdv.h"
+#include "IDCardFdvDlg.h"
 #include "InfoDlg.h"
 #include "afxdialogex.h"
+#include <regex>
 
+using namespace std;
 using namespace cv;
 // CInfoDlg 对话框
+#define _FSIZE(size) ((int)(size * m_fFontRate))
 
 IMPLEMENT_DYNAMIC(CInfoDlg, CDialogEx)
 
@@ -19,6 +22,11 @@ CInfoDlg::CInfoDlg(int screenX, int screenY, int width, int height, CWnd* pParen
 	m_iWidth = width;
 	m_iHeight = height;
 
+	m_iMode = INFO_MODE_PHOTO;
+	m_pFdvDlg = NULL;
+	m_fFontRate = 1.0f;
+	m_bIDCardNoReady = false;
+	m_bIDCardNoNoneText = true;
 	m_iResultTextSize = 60;
 	m_iplImgClearImg = NULL;
 }
@@ -40,6 +48,10 @@ void CInfoDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CInfoDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_BTN_THRESHOLD_SET, &CInfoDlg::OnBnClickedBtnThresholdSet)
+	ON_BN_CLICKED(IDC_BTN_IDCARDNO, &CInfoDlg::OnBnClickedBtnIdcardno)
+	ON_EN_CHANGE(IDC_EDIT_IDCARDNO, &CInfoDlg::OnEnChangeEditIdcardno)
+	ON_EN_SETFOCUS(IDC_EDIT_IDCARDNO, &CInfoDlg::OnEnSetfocusEditIdcardno)
+	ON_EN_KILLFOCUS(IDC_EDIT_IDCARDNO, &CInfoDlg::OnEnKillfocusEditIdcardno)
 END_MESSAGE_MAP()
 
 
@@ -82,20 +94,45 @@ BOOL CInfoDlg::OnInitDialog()
 	rh = (int)(m_iHeight * 0.1);
 	GetDlgItem(IDC_SIMILARITY)->MoveWindow(offsetX, offsetY, rw, rh, false);
 
-	offsetX = 0;
-	offsetY += rh;
-	rw = m_iWidth;
-	rh = (int)(m_iHeight * 0.2);
-	GetDlgItem(IDC_IDCARD_IMG)->MoveWindow(offsetX, offsetY, rw, rh, false);
+	int tmpY = offsetY + rh;
+	{
+		// INFO_MODE_PHOTO
+		offsetX = 0;
+		offsetY = tmpY;
+		rw = m_iWidth;
+		rh = (int)(m_iHeight * 0.2);
+		GetDlgItem(IDC_IDCARD_IMG)->MoveWindow(offsetX, offsetY, rw, rh, false);
+
+		offsetX = 0;
+		offsetY += rh;
+		rw = m_iWidth;
+		rh = (int)(m_iHeight * 0.25);
+		GetDlgItem(IDC_RESULT_ICON)->MoveWindow(offsetX, offsetY, rw, rh, false);
+		
+		// 	INFO_MODE_IDCARDNO
+		offsetX = 0;
+		offsetY = tmpY;
+		//CRect rect;
+		//GetDlgItem(IDC_EDIT_IDCARDNO)->GetClientRect(&rect);
+		rw = m_iWidth;
+		rh = (int)(m_iHeight * 0.04 * m_fFontRate);
+		GetDlgItem(IDC_EDIT_IDCARDNO)->MoveWindow(offsetX, offsetY, rw, rh, false);
+		m_IDCardNoFont.CreatePointFont(_FSIZE(130), "Microsoft Yahei UI");
+		GetDlgItem(IDC_EDIT_IDCARDNO)->SetFont(&m_IDCardNoFont);
+
+		offsetY += rh;
+		CRect rect;
+		GetDlgItem(IDC_BTN_IDCARDNO)->GetClientRect(&rect);
+		rw = (int)((rect.right - rect.left) * 1.4f * m_fFontRate);
+		rh = (int)((rect.bottom - rect.top) * 1.4f * m_fFontRate);
+		offsetX = (m_iWidth - rw) / 2;
+		offsetY += ((int)(m_iHeight * 0.1) - rh) / 2;
+		GetDlgItem(IDC_BTN_IDCARDNO)->MoveWindow(offsetX, offsetY, rw, rh, false);
+		GetDlgItem(IDC_BTN_IDCARDNO)->SetFont(&m_IDCardNoFont);
+	}
 
 	offsetX = 0;
-	offsetY += rh;
-	rw = m_iWidth;
-	rh = (int)(m_iHeight * 0.25);
-	GetDlgItem(IDC_RESULT_ICON)->MoveWindow(offsetX, offsetY, rw, rh, false);
-
-	offsetX = 0;
-	offsetY += rh;
+	offsetY = tmpY + (int)(m_iHeight * 0.45);
 	rw = m_iWidth;
 	rh = (int)(m_iHeight * 0.05);
 	GetDlgItem(IDC_THRESHOLD_TEXT1)->MoveWindow(offsetX, offsetY, rw, rh, false);
@@ -147,6 +184,15 @@ HBRUSH CInfoDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		return (HBRUSH)(brush->m_hObject);
 	}
 
+	if (nCtlColor == CTLCOLOR_EDIT&&pWnd->GetDlgCtrlID() == IDC_EDIT_IDCARDNO)
+	{		
+		pDC->SetBkColor(RGB(255, 255, 254));//设置字体背景颜色
+
+		CBrush *brush;
+		brush = new CBrush(RGB(255, 255, 254));
+		return (HBRUSH)(brush->m_hObject);
+	}
+
 	if (nCtlColor == CTLCOLOR_STATIC&&pWnd->GetDlgCtrlID() == IDC_THRESHOLD_TEXT1)
 	{
 		pDC->SetBkMode(TRANSPARENT);
@@ -173,6 +219,29 @@ HBRUSH CInfoDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
 	return hbr;
+}
+
+void CInfoDlg::setShowMode(int mode)
+{
+	if (INFO_MODE_PHOTO == mode) {
+		GetDlgItem(IDC_IDCARD_IMG)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_RESULT_ICON)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_IDCARDNO)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BTN_IDCARDNO)->ShowWindow(SW_HIDE);
+	}
+	else {
+		// INFO_MODE_IDCARDNO
+		GetDlgItem(IDC_IDCARD_IMG)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_RESULT_ICON)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_IDCARDNO)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BTN_IDCARDNO)->ShowWindow(SW_SHOW);
+	}
+}
+
+void CInfoDlg::setMode(int mode) 
+{
+	m_iMode = mode;
+	setShowMode(mode);
 }
 
 void CInfoDlg::drawImage(IplImage* img, UINT ID, int type, bool clearArea)
@@ -346,11 +415,140 @@ void CInfoDlg::getResultIconRect(cv::Rect &rect)
 	getItemRect(IDC_RESULT_ICON, rect);
 }
 
+void CInfoDlg::resetIDCardNoInput()
+{
+	GetDlgItem(IDC_EDIT_IDCARDNO)->SetWindowText(_T("请输入您的身份证号码"));
+	GetDlgItem(IDC_EDIT_IDCARDNO)->EnableWindow(true);
+	GetDlgItem(IDC_BTN_IDCARDNO)->SetWindowText(_T("确定"));
+	m_bIDCardNoReady = false;
+	m_bIDCardNoNoneText = true;
+}
+
+std::string CInfoDlg::getIDCardNo()
+{
+	CString idcardno;
+	GetDlgItem(IDC_EDIT_IDCARDNO)->GetWindowText(idcardno);
+	return idcardno.GetString();
+}
+
+void CInfoDlg::enableIDCardNoBtn(bool enable)
+{
+	GetDlgItem(IDC_BTN_IDCARDNO)->EnableWindow(enable);
+}
+
 void CInfoDlg::OnBnClickedBtnThresholdSet()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)m_pFdvDlg;
+	if (pDlg)
+		pDlg->stopClearTimer();
+
 	CThresholdSettingDlg dlg(this);
 	dlg.DoModal();
+
+	if (pDlg)
+		pDlg->setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
 }
+
+
+void CInfoDlg::OnBnClickedBtnIdcardno()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)m_pFdvDlg;
+
+	if (m_bIDCardNoReady) {
+		GetDlgItem(IDC_EDIT_IDCARDNO)->EnableWindow(true);
+		GetDlgItem(IDC_EDIT_IDCARDNO)->SetFocus();
+		GetDlgItem(IDC_BTN_IDCARDNO)->SetWindowText(_T("确定"));
+		m_bIDCardNoReady = false;
+	}
+	else {
+		string idcardno = getIDCardNo();
+		const regex rx("^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$");
+		smatch results;
+
+		if (regex_match(idcardno, results, rx)) {
+			GetDlgItem(IDC_EDIT_IDCARDNO)->EnableWindow(false);
+			GetDlgItem(IDC_BTN_IDCARDNO)->SetWindowText(_T("修改"));
+			m_bIDCardNoReady = true;
+		}
+		else {
+			AfxMessageBox("无效的身份证号码！");
+			m_bIDCardNoReady = false;
+		}
+	}
+
+	if (pDlg)
+		pDlg->setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
+}
+
+
+void CInfoDlg::OnEnChangeEditIdcardno()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)m_pFdvDlg;
+	if (pDlg)
+		pDlg->setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
+}
+
+
+void CInfoDlg::OnEnSetfocusEditIdcardno()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (m_bIDCardNoNoneText) {
+		GetDlgItem(IDC_EDIT_IDCARDNO)->SetWindowText("");
+		m_bIDCardNoNoneText = false;
+	}
+}
+
+void CInfoDlg::OnEnKillfocusEditIdcardno()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	string no = getIDCardNo();
+	if ("" == no) {
+		resetIDCardNoInput();
+	}
+}
+
+
+void CInfoDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	//CDialogEx::OnOK();
+}
+
+
+BOOL CInfoDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		switch (pMsg->wParam)
+		{
+		case VK_ESCAPE: //Esc按键事件
+			if (GetFocus() == GetDlgItem(IDC_EDIT_IDCARDNO)) {				
+				GetDlgItem(IDC_EDIT_IDCARDNO)->SetWindowText("");
+				UpdateData(TRUE);
+			}
+			return true;
+		case VK_RETURN: //Enter按键事件
+			if (GetFocus() == GetDlgItem(IDC_EDIT_IDCARDNO)) {
+				OnBnClickedBtnIdcardno();
+			}
+			return true;
+		default:
+			;
+		}
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
 
 

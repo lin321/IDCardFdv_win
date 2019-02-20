@@ -101,7 +101,12 @@ void CThresholdSettingDlg::OnBnClickedOk()
 	CIDCardFdvDlg *p = dynamic_cast<CIDCardFdvDlg*>(this->GetParent()->GetParent());
 	if (NULL != p) {
 		CString csAreaS;
-		GetDlgItem(IDC_THRESHOLD_EDIT)->GetWindowText(csAreaS);	
+		GetDlgItem(IDC_THRESHOLD_EDIT)->GetWindowText(csAreaS);
+		string text = csAreaS.GetString();
+		if ("" == text) {
+			AfxMessageBox("请输入数值！");
+			return;
+		}
 		double threshold = std::stod(csAreaS.GetString());
 		if (threshold > 100)
 			threshold = 100.0;
@@ -125,3 +130,11 @@ void CThresholdSettingDlg::OnBnClickedCancel()
 
 
 
+
+
+void CThresholdSettingDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	CDialogEx::OnOK();
+}

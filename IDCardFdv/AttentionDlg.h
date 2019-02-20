@@ -28,14 +28,14 @@ private:
 	int m_iWidth;
 	int m_iHeight;
 	std::string m_strMain;
-	float m_fontRate;
+	float m_fFontRate;
 	IplImage* m_att_icon;
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	void setDepartment(std::string dep);
-	void setFontRate(float rate);
+	void setFontRate(float rate) { m_fFontRate = rate; }
 	void loadAllData();
 	void setVisible(bool visible);
 private:

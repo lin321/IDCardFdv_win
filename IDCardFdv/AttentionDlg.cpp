@@ -23,7 +23,7 @@ CAttentionDlg::CAttentionDlg(int screenX, int screenY, int width, int height, st
 	m_iHeight = height;
 	m_strMain = strMain;
 
-	m_fontRate = 1.0f;
+	m_fFontRate = 1.0f;
 	m_att_icon = NULL;
 }
 
@@ -121,7 +121,7 @@ BOOL CAttentionDlg::OnInitDialog()
 }
 
 
-#define _FSIZE(size) ((int)(size * m_fontRate))
+#define _FSIZE(size) ((int)(size * m_fFontRate))
 HBRUSH CAttentionDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -243,11 +243,6 @@ void CAttentionDlg::setDepartment(std::string dep)
 	GetDlgItem(IDC_ATT_TITLE02)->SetWindowText(t02str.c_str());
 	string m01str = m_strMain + "公安局提醒:";
 	GetDlgItem(IDC_ATT_MAIN01)->SetWindowText(m01str.c_str());
-}
-
-void CAttentionDlg::setFontRate(float rate)
-{
-	m_fontRate = rate;
 }
 
 void CAttentionDlg::loadAllData()

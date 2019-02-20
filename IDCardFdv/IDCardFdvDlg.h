@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CvvImage.h"
+#include "OperationDlg.h"
 #include "AttentionDlg.h"
 #include "InfoDlg.h"
 #include "AdvHtmlView.h"
@@ -17,6 +18,9 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #endif
 #include <fstream>
+
+#define FDVDLG_DEFAULT_CLEAR_TIME	20
+
 // debug define
 #define DEBUG_LOG_FILE	0
 #define DEBUG_LIVECHECK_OUTPUT	0
@@ -162,6 +166,9 @@ public:
 	bool m_bIdCardNoChange;
 	CEvent m_eGetIdCardFeat;
 
+	// opration panel
+	COperationDlg* m_pOperationDlg;
+
 	// attention dialog
 	CAttentionDlg* m_pAttentionDlg;
 
@@ -211,6 +218,7 @@ public:
 	void startImgUploadThread();
 	void stopImgUploadThread();
 	void setClearTimer(int sec = 3);
+	void stopClearTimer();
 	bool idcardPreRead();
 	void getIdcardMatPhoto(cv::Mat &matphoto);
 	void getIdcardFeat(cv::Mat &matphoto);
@@ -221,4 +229,6 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	virtual void OnOK();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

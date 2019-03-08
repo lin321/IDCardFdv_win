@@ -74,6 +74,7 @@ public:
 	std::string m_cfgSecretKey;
 	std::string m_cfgUrl;
 	std::string m_cfgUploadUrl;
+	std::string m_cfgUploadLoc;
 	std::string m_cfgAdvUrl;
 	std::string m_cfgTimeOut;
 	std::string m_cfgAttStrMain;
@@ -123,8 +124,6 @@ public:
 	CWinThread* m_thFdv;
 	bool m_bFdvRun;
 	bool m_bCmdFdvStop;
-	bool m_bFirstFdv;
-	bool m_bFirstFdvIdcardReaded;
 	CEvent m_eFdvEnd;
 #ifdef NDEBUG
 	fdr_model_wrap* m_pfrmwrap;
@@ -164,7 +163,7 @@ public:
 	char m_IdCardPhoto[102400];
 	IplImage* m_iplImgPhoto;
 	bool m_bIdCardNoChange;
-	CEvent m_eGetIdCardFeat;
+	CEvent m_eGetIdCardFeat;	// 手动事件
 
 	// opration panel
 	COperationDlg* m_pOperationDlg;

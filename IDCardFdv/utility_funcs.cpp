@@ -228,6 +228,44 @@ string ExtractFilePath(const string& szFile)
 	return string(szFile.begin(), szFile.begin() + idx + 1);
 }
 
+bool saveToLocal(string path,string idcard_no, string serialno, double similarity,
+	IplImage* frame, IplImage* frameHide, IplImage* photo)
+{
+	bool ret = false;
+	CString csTempPath;
+	csTempPath.Format("%s", path.c_str());
+	if (!PathIsDirectory(csTempPath))
+	{
+		::CreateDirectory(csTempPath, NULL);//创建目录,已有的话不影响
+	}
+
+	CString csTempFile;
+	csTempFile.Format("%s\\%s_%s_%03d",
+		path.c_str(),
+		idcard_no.c_str(),
+		serialno.c_str(),
+		(int)similarity);
+
+	string outfile = csTempFile.GetString();
+	if (photo) {
+		ret = cv::imwrite(outfile + "_0.bmp", cvarrToMat(photo));
+		if (!ret)
+			return false;
+	}
+	if (frame) {
+		ret = cv::imwrite(outfile + "_1.jpeg", cvarrToMat(frame));
+		if (!ret)
+			return false;
+	}
+	if (frameHide) {
+		ret = cv::imwrite(outfile + "_2.jpeg", cvarrToMat(frameHide));
+		if (!ret)
+			return false;
+	}
+
+	return true;
+}
+
 BOOL RaisePrivileges()
 {
 	HANDLE TokenHandle;

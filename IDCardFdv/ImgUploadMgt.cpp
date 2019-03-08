@@ -131,10 +131,12 @@ bool CImgUploadMgt::upload(std::string url, std::string appId, std::string apiKe
 		cv::imencode(".jpg", matframe, verifyPhotos[0], param);
 	else
 		verifyPhotos[0].clear();
+
 	if (frameHide)
 		cv::imencode(".jpg", matframeHide, verifyPhotos[1], param);
 	else
 		verifyPhotos[1].clear();
+
 	if (photo)
 		cv::imencode(".png", matphoto, idcardPhoto, param);
 	else

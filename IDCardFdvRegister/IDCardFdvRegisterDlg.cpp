@@ -255,6 +255,10 @@ BOOL CIDCardFdvRegisterDlg::OnInitDialog()
 
 	MTLibTestUrl(m_cfgUrl, NULL, (MTLIBPTR)this, ::stoi(m_cfgTimeOut));
 
+	GetDlgItem(IDC_URL_TEXT)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_URL_EDIT)->ShowWindow(SW_HIDE);
+	//GetDlgItem(IDC_BTN_TEST)->ShowWindow(SW_HIDE);
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -519,6 +523,9 @@ void CIDCardFdvRegisterDlg::stopCameraThread()
 
 void CIDCardFdvRegisterDlg::setProductSnText(std::string str)
 {
+	if (str == "")
+		return;
+
 	string strbuf = str;
 	string text;
 	if (strbuf.find('-') == string::npos) {

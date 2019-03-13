@@ -19,9 +19,8 @@ CImgUploadMgt::~CImgUploadMgt()
 {
 	while (frameQueue.size()>0) {
 		IplImage* img = frameQueue.front();
-		if (img) {
+		if (img) 
 			cvReleaseImage(&img);
-		}
 		frameQueue.pop();
 	}
 
@@ -96,10 +95,22 @@ static void __stdcall UploadCB(int err_no, std::string err_msg, double unuse, st
 		return;
 	}
 
+	IplImage* img = NULL;
+	
 	g_UploadCS.Lock();
+
+	img = mgt->frameQueue.front();
+	if (img){ cvReleaseImage(&img); }
 	mgt->frameQueue.pop();
+
+	img = mgt->frameHideQueue.front();
+	if (img) { cvReleaseImage(&img); }
 	mgt->frameHideQueue.pop();
+
+	img = mgt->photoQueue.front();
+	if (img) { cvReleaseImage(&img); }
 	mgt->photoQueue.pop();
+
 	mgt->serialNoQueue.pop();
 	mgt->idcardIdQueue.pop();
 	mgt->idcardIssuedateQueue.pop();

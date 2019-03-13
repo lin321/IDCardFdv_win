@@ -37,7 +37,7 @@ clock_t time_global2 = 0;
 
 CCriticalSection g_CriticalSection;
 CCriticalSection g_CriticalSectionAiFdr;
-CCriticalSection g_CriticalSectionIdCard;
+CCriticalSection g_CriticalSectionIDCard;
 UINT DataLoadingThread(LPVOID lpParam);
 UINT IdcardDetectThread(LPVOID lpParam);
 UINT FaceDetectThread(LPVOID lpParam);
@@ -120,23 +120,29 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 								pDlg->m_iplImgUploadCopyFrame, 
 								pDlg->m_iplImgUploadCopyFrameHide,
 								pDlg->m_iplImgUploadCopyPhoto,
-								pDlg->m_IdCardId, 
-								pDlg->m_IdCardIssuedate);
+								pDlg->m_IDCardId, 
+								pDlg->m_IDCardIssuedate);
 		*/
 		string path = pDlg->m_strModulePath + pDlg->m_cfgUploadLoc;
 		bInsert = saveToLocal(path,
-								pDlg->m_IdCardId,
+								pDlg->m_IDCardId,
 								serial_no,
 								similarity * 1000,
 								pDlg->m_iplImgUploadCopyFrame,
 								pDlg->m_iplImgUploadCopyFrameHide,
 								pDlg->m_iplImgUploadCopyPhoto);
+		//保存本地时需要释放
+		if (pDlg->m_iplImgUploadCopyFrame)
+			cvReleaseImage(&pDlg->m_iplImgUploadCopyFrame);
+		if (pDlg->m_iplImgUploadCopyFrameHide)
+			cvReleaseImage(&pDlg->m_iplImgUploadCopyFrameHide);
+		if(pDlg->m_iplImgUploadCopyPhoto)
+			cvReleaseImage(&pDlg->m_iplImgUploadCopyPhoto);
 
-		if (bInsert) {
-			pDlg->m_iplImgUploadCopyFrame = NULL;
-			pDlg->m_iplImgUploadCopyFrameHide = NULL;
-			pDlg->m_iplImgUploadCopyPhoto = NULL;
-		}
+		// 无论成功与否重置为NULL
+		pDlg->m_iplImgUploadCopyFrame = NULL;
+		pDlg->m_iplImgUploadCopyFrameHide = NULL;
+		pDlg->m_iplImgUploadCopyPhoto = NULL;
 
 	}
 
@@ -146,10 +152,10 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 	g_CriticalSection.Unlock();
 	SetEvent(pDlg->m_eImgUploadResume);
 
-	bool bNoIdcard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
-	if (bNoIdcard) {
+	bool bNoIDCard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
+	if (bNoIDCard) {
 		// 清理数据以避免下次使用身份证产生的问题
-		memset(pDlg->m_IdCardId, 0, sizeof(pDlg->m_IdCardId));
+		memset(pDlg->m_IDCardId, 0, sizeof(pDlg->m_IDCardId));
 	}
 
 #if DEBUG_LOG_FILE
@@ -170,7 +176,7 @@ static void __stdcall VerifyCB(int err_no, std::string err_msg, double similarit
 // CIDCardFdvDlg 对话框
 CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_IDCARDFDV_DIALOG, pParent), 
-	m_eCameraResume(FALSE,TRUE,0,0), m_eGetIdCardFeat(FALSE, TRUE, 0, 0)
+	m_eCameraResume(FALSE,TRUE,0,0), m_eGetIDCardFeat(FALSE, TRUE, 0, 0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -226,12 +232,14 @@ CIDCardFdvDlg::CIDCardFdvDlg(CWnd* pParent /*=NULL*/)
 
 	m_bMainWinClose = false;
 
-	memset(m_IdCardId, 0, sizeof(m_IdCardId));
-	memset(m_IdCardIssuedate, 0, sizeof(m_IdCardIssuedate));
-	memset(m_IdCardPhoto, 0, sizeof(m_IdCardPhoto));
+	memset(m_IDCardId, 0, sizeof(m_IDCardId));
+	memset(m_IDCardIssuedate, 0, sizeof(m_IDCardIssuedate));
+	memset(m_IDCardPhoto, 0, sizeof(m_IDCardPhoto));
 	m_iplImgPhoto = NULL;
-	m_bIdCardNoChange = false;
+	m_bIDCardReadOK = false;
+	m_bIDCardNoChange = false;
 
+	m_pMsgDlg = NULL;
 	m_pOperationDlg = NULL;
 	m_pAttentionDlg = NULL;
 	m_pInfoDlg = NULL;
@@ -313,9 +321,18 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_HtmlView.CreateFromStatic(IDC_STATIC_HTML, this);
 	m_HtmlView.ShowWindow(SW_HIDE);
 
+	ClientToScreen(&rect);
+	if (NULL == m_pMsgDlg) {
+		int cx = (rect.right - rect.left) / 2;
+		int cy = (rect.bottom - rect.top) / 2;
+		m_pMsgDlg = new CMsgDlg(cx,cy);
+		m_pMsgDlg->setFontRate(m_iPreviewWidth * 1.0f / 1366);// 开发时使用的屏幕宽1366作为基准
+		m_pMsgDlg->Create(IDD_MSG_DIALOG, this);
+	}
+	
+	m_pMsgDlg->hide();
 
 	// 创建操作面板窗口
-	ClientToScreen(&rect);
 	rw = (int)((rect.right - rect.left) * 0.1f);
 	rh = (int)((rect.bottom - rect.top) * 0.08f);
 	offsetX = (int)((rect.right - rect.left - rw)/2);
@@ -652,7 +669,7 @@ void CIDCardFdvDlg::drawHelpImage(IplImage* img)
 	SetRect(rect, 0, 0, rw, rh);	// 铺满控件
 
 	if (NULL == img) {
-		pDC->FillSolidRect(rect, RGB(255, 255, 255));
+		pDC->FillSolidRect(rect, RGB(74, 144, 226));
 	}
 	else {
 		CvvImage cimg;
@@ -822,7 +839,7 @@ void CIDCardFdvDlg::stopFaceDetectThread()
 		m_bFaceDetectRun = false;
 		g_CriticalSection.Unlock();
 		SetEvent(m_eCaptureForDetect); // 释放截图等待
-		SetEvent(m_eGetIdCardFeat);	   // 释放提取feat等待
+		SetEvent(m_eGetIDCardFeat);	   // 释放提取feat等待
 		SetEvent(m_eFaceDetectResume); // 释放检测结束等待
 		WaitObjectAndMsg(m_eFaceDetectEnd, INFINITE);
 		ResetEvent(m_eFaceDetectEnd);
@@ -838,17 +855,31 @@ bool CIDCardFdvDlg::startFdvThread(std::string feat, bool live)
 		return false;
 
 	if (m_bFdvRun)
-		return false;	
+		return false;
+
+	bool bNoIDCard = m_pOperationDlg->isNoIDCardCheckIn();
+	if (!bNoIDCard && NULL == m_iplImgPhoto)
+		return false;	// 身份证读取失败时不处理
 
 	m_frameFaceFeats.clear();
 	m_frameFaceFeats.shrink_to_fit();
 	m_frameFaceFeats.push_back(feat);
 	m_bIsAliveSample = live;
-	if(NULL == m_iplImgUploadCopyFrame)
-		m_iplImgUploadCopyFrame = cvCloneImage(m_iplImgCameraImg);
-	if (NULL == m_iplImgUploadCopyFrameHide)
-		m_iplImgUploadCopyFrameHide = cvCloneImage(m_iplImgCameraImgHide);
-	
+
+	// 识别图备份
+	if (m_iplImgUploadCopyFrame)
+		cvReleaseImage(&m_iplImgUploadCopyFrame);
+	if (m_iplImgUploadCopyFrameHide)
+		cvReleaseImage(&m_iplImgUploadCopyFrameHide);
+	if (m_iplImgUploadCopyPhoto)
+		cvReleaseImage(&m_iplImgUploadCopyPhoto);
+
+	m_iplImgUploadCopyFrame = cvCloneImage(m_iplImgCameraImg);
+	m_iplImgUploadCopyFrameHide = cvCloneImage(m_iplImgCameraImgHide);
+	if (!bNoIDCard && m_iplImgPhoto){
+		m_iplImgUploadCopyPhoto = cvCloneImage(m_iplImgPhoto);
+	}
+
 
 	// 截出人脸
 	int facex, facey;
@@ -1034,7 +1065,7 @@ UINT IdcardDetectThread(LPVOID lpParam)
 	int iopen = OpenIDCardReader();
 #endif
 	if (iopen < 0) {
-		AfxMessageBox("身份证读卡器连接失败！");
+		pDlg->m_pMsgDlg->setMessage("身份证读卡器连接失败！");
 		g_CriticalSection.Lock();
 		//pDlg->m_bIdcardDetectRun = false;
 		g_CriticalSection.Unlock();
@@ -1045,43 +1076,38 @@ UINT IdcardDetectThread(LPVOID lpParam)
 	{
 		time_s = clock();
 
-		bool bNoIdcard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
+		bool bNoIDCard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
 #if PREVIEW_DEBUG
-		bNoIdcard = true;//false;
+		bNoIDCard = true;//false;
 		int check = 1;
 #else
 		int check = Authenticate_Idcard(); //Authenticate_Content(2);
 #endif		
-		if (check > 0 || bNoIdcard) {
+		if (check > 0 || bNoIDCard) {
 			//pDlg->drawHelpImage(NULL); // clear
-			pDlg->m_pOperationDlg->ShowWindow(SW_HIDE);
-#if SHOW_ATTENTION
-			pDlg->m_pAttentionDlg->setVisible(true);
-			UpdateWindow(pDlg->m_pAttentionDlg->m_hWnd);
-#else
-			pDlg->m_iPreviewX = 0;
-#endif			
+			pDlg->m_pOperationDlg->ShowWindow(SW_HIDE);			
 			pDlg->m_bShowAdv = false;
 
 			g_CriticalSection.Lock();
 			pDlg->m_bImgUploadPause = true; // 暂停数据上传
 			g_CriticalSection.Unlock();
 
-			ResetEvent(pDlg->m_eGetIdCardFeat);
-			pDlg->m_bDrawScan = true;
+			pDlg->m_bIDCardReadOK = false;
+			ResetEvent(pDlg->m_eGetIDCardFeat);
+			
 			SetEvent(pDlg->m_eCameraResume);//pDlg->startCameraThread();
 			SetEvent(pDlg->m_eFaceDetectResume);
-			if (bNoIdcard) {
+			if (bNoIDCard) {
+				pDlg->afterIDCardReadOK();
 				pDlg->m_pInfoDlg->setMode(CInfoDlg::INFO_MODE_INCARDNO);
+				pDlg->m_pInfoDlg->ShowWindow(SW_SHOW);
+				pDlg->m_pInfoDlg->UpdateWindow();
+				pDlg->setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
 			}
 			else {
 				pDlg->m_pInfoDlg->setMode(CInfoDlg::INFO_MODE_PHOTO);
 				pDlg->idcardPreRead();			// 数据预读
-			}
-			pDlg->m_pInfoDlg->ShowWindow(SW_SHOW);
-			pDlg->m_pInfoDlg->Invalidate();
-			pDlg->m_pInfoDlg->UpdateWindow();
-			pDlg->setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
+			}			
 
 			ResetEvent(pDlg->m_eIdcardDetectResume);
 			WaitForSingleObject(pDlg->m_eIdcardDetectResume, INFINITE);
@@ -1089,13 +1115,13 @@ UINT IdcardDetectThread(LPVOID lpParam)
 				break;	// 已退出
 			reset_screen = true;	// 重画帮助画面后进行其他重置工作
 		}
-		else if (-5 == check) {
+		/*else if (-5 == check) {
 			pDlg->drawHelpImage(pDlg->m_iplImgHelpImg);
 			CloseIDCardReader();
 			int iopen = OpenIDCardReader();
 			if (iopen < 0)
 				AfxMessageBox("身份证读卡器连接失败！");
-		}
+		}*/
 		else {
 			pDlg->drawHelpImage(pDlg->m_iplImgHelpImg);
 			if (reset_screen) {
@@ -1169,8 +1195,8 @@ UINT FaceDetectThread(LPVOID lpParam)
 			time_global = clock();
 			g_CriticalSection.Unlock();
 #endif
-			bool bNoIdcard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
-			if (live && !bNoIdcard) {
+			bool bNoIDCard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
+			if (live && !bNoIDCard) {
 				// 提取身份证照片feat,仅在这里提取
 #if DEBUG_LOG_FILE
 				clock_t stime2 = clock();
@@ -1178,14 +1204,14 @@ UINT FaceDetectThread(LPVOID lpParam)
 				pDlg->m_logfile << "start get photo feat!" << endl;
 				g_CriticalSection.Unlock();
 #endif
-				WaitForSingleObject(pDlg->m_eGetIdCardFeat, INFINITE);
+				WaitForSingleObject(pDlg->m_eGetIDCardFeat, INFINITE);
 				if (!pDlg->m_bFaceDetectRun)
 					break;
 
-				if (!pDlg->m_bIdCardNoChange || pDlg->m_photoFaceFeat.size()<=0) {
+				if (!pDlg->m_bIDCardNoChange || pDlg->m_photoFaceFeat.size()<=0) {
 					// 仅身份证有变化或特征值为空时提取
 					Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
-					pDlg->getIdcardFeat(matphoto);
+					pDlg->getIDCardFeat(matphoto);
 				}
 
 #if DEBUG_LOG_FILE
@@ -1431,7 +1457,8 @@ UINT CameraShowThread(LPVOID lpParam)
 		if (pDlg->m_bDrawResultIconWrong)
 			pDlg->drawResultIcon(cFrame, pDlg->m_ResultIconWrong);
 
-		pDlg->showPreview(newframe, pDlg->m_iPreviewX);
+		if(pDlg->m_bIDCardReadOK)
+			pDlg->showPreview(newframe, pDlg->m_iPreviewX);
 		Sleep(1);
 	}
 
@@ -1442,25 +1469,19 @@ UINT CameraShowThread(LPVOID lpParam)
 
 //====================================
 
-// capture thread
+// fdv thread
+
 UINT FdvThread(LPVOID lpParam)
 {
 	CIDCardFdvDlg* pDlg = (CIDCardFdvDlg*)lpParam;
 	//pDlg->m_bFdvRun = true;
 
-	bool bNoIdcard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
+	bool bNoIDCard = pDlg->m_pOperationDlg->isNoIDCardCheckIn();
 
 	try {
 		char szPath[1024] = { 0 };
 		GetModuleFileName(NULL, szPath, MAX_PATH);
 		std::string strModulePath = ExtractFilePath(szPath);
-
-		if (pDlg->m_bCmdFdvStop) {
-			pDlg->m_bFdvRun = false;
-			SetEvent(pDlg->m_eFdvEnd);
-			//SetEvent(pDlg->m_eFaceDetectResume);
-			return 0;
-		}
 
 		/*
 		// 获取摄像头人脸,base64数据转IplImage
@@ -1471,10 +1492,6 @@ UINT FdvThread(LPVOID lpParam)
 		IplImage imgTmp = facemat;
 		pDlg->m_CaptureImage = cvCloneImage(&imgTmp);
 		//*/
-
-		// copy idcard photo
-		if (!bNoIdcard && pDlg->m_iplImgPhoto && (NULL == pDlg->m_iplImgUploadCopyPhoto))
-			pDlg->m_iplImgUploadCopyPhoto = cvCloneImage(pDlg->m_iplImgPhoto);
 		
 		{
 			// mat
@@ -1482,16 +1499,15 @@ UINT FdvThread(LPVOID lpParam)
 			//Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
 
 			// 显示
-			//clock_t t1 = clock();
 			//pDlg->m_pInfoDlg->clearResultIcon();  // 验证结果图标清空
 			pDlg->m_bDrawResultIconRight = pDlg->m_bDrawResultIconWrong = false;
 			pDlg->m_pInfoDlg->drawCameraImage(pDlg->m_CaptureImage);
 			pDlg->m_bDrawScan = false;
 
-			if (bNoIdcard) {
+			if (bNoIDCard) {
 				while (!pDlg->m_pInfoDlg->isIDCardNoReady()) {
 					// 等待输入有效身份证号码
-					if (pDlg->m_bCmdFdvStop) {
+					if (pDlg->m_bCmdFdvStop) {	// 超时退出
 						pDlg->m_bFdvRun = false;
 						SetEvent(pDlg->m_eFdvEnd);
 						//SetEvent(pDlg->m_eFaceDetectResume);
@@ -1502,10 +1518,16 @@ UINT FdvThread(LPVOID lpParam)
 				pDlg->m_pInfoDlg->enableIDCardNoBtn(false);
 			}
 
+			if (pDlg->m_bCmdFdvStop) { // 超时退出
+				pDlg->m_bFdvRun = false;
+				SetEvent(pDlg->m_eFdvEnd);
+				//SetEvent(pDlg->m_eFaceDetectResume);
+				return 0;
+			}
 			pDlg->stopClearTimer();
-			if (!bNoIdcard) {
-				pDlg->m_pInfoDlg->drawIdcardImage(pDlg->m_iplImgPhoto);
-			}//clock_t t2 = clock() - t1;
+			//if (!bNoIDCard) {
+			//	pDlg->m_pInfoDlg->drawIDCardImage(pDlg->m_iplImgPhoto);
+			//}
 			if (false == pDlg->m_bIsAliveSample) {
 				// 非活体警告
 				pDlg->m_pInfoDlg->setResultTextSize(60);
@@ -1516,7 +1538,7 @@ UINT FdvThread(LPVOID lpParam)
 				SetEvent(pDlg->m_eFaceDetectResume);
 				return 0;
 			}
-			if (!bNoIdcard) {
+			if (!bNoIDCard) {
 				pDlg->m_pInfoDlg->setResultTextSize(60);
 				pDlg->m_pInfoDlg->setResultText("--%");
 			}
@@ -1563,7 +1585,7 @@ UINT FdvThread(LPVOID lpParam)
 			g_CriticalSection.Unlock();
 #endif
 			time_net = clock();
-			if (!bNoIdcard) {
+			if (!bNoIDCard) {
 				if (NULL == pDlg->m_iplImgPhoto) {
 					VerifyCB(200, _T("身份证照片错误!"), -1, "", (MTLIBPTR)pDlg);
 				}
@@ -1574,18 +1596,18 @@ UINT FdvThread(LPVOID lpParam)
 					MTLibCallVerify(pDlg->m_cfgUrl,
 						pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 						pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-						pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats, 1,
+						pDlg->m_IDCardId, pDlg->m_IDCardIssuedate, pDlg->m_photoFaceFeat, pDlg->m_frameFaceFeats, 1,
 						VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 				}
 			}
 			else {
 				string nostr = pDlg->m_pInfoDlg->getIDCardNo();
-				strcpy_s(pDlg->m_IdCardId, nostr.c_str());
-				strcpy_s(pDlg->m_IdCardIssuedate,"");
+				strcpy_s(pDlg->m_IDCardId, nostr.c_str());
+				strcpy_s(pDlg->m_IDCardIssuedate,"");
 				MTLibCallVerify(pDlg->m_cfgUrl,
 					pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 					pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-					pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, "None", pDlg->m_frameFaceFeats, 1,
+					pDlg->m_IDCardId, pDlg->m_IDCardIssuedate, "None", pDlg->m_frameFaceFeats, 1,
 					VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 			}
 			//*/
@@ -1594,7 +1616,7 @@ UINT FdvThread(LPVOID lpParam)
 			MTLibCallVerify_Image("http://192.168.1.201:8004/idcardfdv",//pDlg->m_cfgUrl,
 				pDlg->m_cfgAppId, pDlg->m_cfgApiKey, pDlg->m_cfgSecretKey, uuid,
 				pDlg->m_macId, pDlg->m_cfgRegisteredNo,
-				pDlg->m_IdCardId, pDlg->m_IdCardIssuedate, idcardPhoto, verifyPhotos, 1,
+				pDlg->m_IDCardId, pDlg->m_IDCardIssuedate, idcardPhoto, verifyPhotos, 1,
 				VerifyCB, (MTLIBPTR)pDlg, ::stoi(pDlg->m_cfgTimeOut));
 			/**/
 #endif
@@ -1653,15 +1675,32 @@ UINT ImgUploadThread(LPVOID lpParam)
 
 
 
-void CIDCardFdvDlg::setClearTimer(int sec)
+void CIDCardFdvDlg::setClearTimer(float sec)
 {
 	KillTimer(CLEAR_INFOIMG_TIMER);
-	SetTimer(CLEAR_INFOIMG_TIMER, 1000 * sec, NULL);
+	int m = (int)(sec * 1000);
+	SetTimer(CLEAR_INFOIMG_TIMER, m, NULL);
 }
 
 void CIDCardFdvDlg::stopClearTimer()
 {
 	KillTimer(CLEAR_INFOIMG_TIMER);
+}
+
+void CIDCardFdvDlg::afterIDCardReadOK()
+{
+	m_bIDCardReadOK = true;
+
+	m_pMsgDlg->hide();
+
+	m_bDrawScan = true;
+
+#if SHOW_ATTENTION
+	m_pAttentionDlg->setVisible(true);
+	m_pAttentionDlg->UpdateWindow();
+#else
+	m_iPreviewX = 0;
+#endif
 }
 
 bool CIDCardFdvDlg::idcardPreRead()
@@ -1678,33 +1717,34 @@ bool CIDCardFdvDlg::idcardPreRead()
 #endif
 
 #if TEST_FILE_DEBUG
-	strcpy_s(m_IdCardId, "339005198608221614");
-	strcpy_s(m_IdCardIssuedate, "20111207");
+	strcpy_s(m_IDCardId, "339005198608221614");
+	strcpy_s(m_IDCardIssuedate, "20111207");
 	m_iplImgPhoto = cvCloneImage(m_iplImgTestPhoto);
-	SetEvent(m_eGetIdCardFeat);
+	SetEvent(m_eGetIDCardFeat);
 	return true;
 #endif
+	m_pMsgDlg->setMessage("正在读取身份证信息···",0);
 	int content_ret = Authenticate_Content();
 	if (1 != content_ret) {
 		ret = false;
 	}
 	else {
-
+		afterIDCardReadOK();
 		char idcardid[256] = { 0 };
 		long len = IDCardReader_GetPeopleIDCode(idcardid, sizeof(idcardid));
-		if (strcmp(m_IdCardId, idcardid) == 0 && m_iplImgPhoto != NULL) {
+		if (strcmp(m_IDCardId, idcardid) == 0 && m_iplImgPhoto != NULL) {
 			// 身份证无变化且之前已正常读取
-			m_bIdCardNoChange = true;
+			m_bIDCardNoChange = true;
 		}
 		else {
-			m_bIdCardNoChange = false;
+			m_bIDCardNoChange = false;
 			// 获取身份证号
-			long len = IDCardReader_GetPeopleIDCode(m_IdCardId, sizeof(m_IdCardId));
+			long len = IDCardReader_GetPeopleIDCode(m_IDCardId, sizeof(m_IDCardId));
 			// 获取身份证有效期
-			len = IDCardReader_GetStartDate(m_IdCardIssuedate, sizeof(m_IdCardIssuedate));
+			len = IDCardReader_GetStartDate(m_IDCardIssuedate, sizeof(m_IDCardIssuedate));
 
 			Mat matphoto;
-			getIdcardMatPhoto(matphoto);
+			getIDCardMatPhoto(matphoto);
 
 			if (matphoto.empty())
 				ret = false;
@@ -1712,17 +1752,24 @@ bool CIDCardFdvDlg::idcardPreRead()
 	}
 
 	if (!ret) {
-		memset(m_IdCardId, 0, sizeof(m_IdCardId));
-		memset(m_IdCardIssuedate, 0, sizeof(m_IdCardIssuedate));
-		memset(m_IdCardPhoto, 0, sizeof(m_IdCardPhoto));
+		memset(m_IDCardId, 0, sizeof(m_IDCardId));
+		memset(m_IDCardIssuedate, 0, sizeof(m_IDCardIssuedate));
+		memset(m_IDCardPhoto, 0, sizeof(m_IDCardPhoto));
 		if (m_iplImgPhoto) {
 			cvReleaseImage(&(m_iplImgPhoto));
 			m_iplImgPhoto = NULL;
 		}
+		m_pMsgDlg->setMessage("身份证信息读取错误！请移走身份证重新放置。", 1.9f);
+		setClearTimer(2.0f);
+	}
+	else {
+		m_pInfoDlg->ShowWindow(SW_SHOW);
+		m_pInfoDlg->drawIDCardImage(m_iplImgPhoto);
+		setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
 	}
 
-	//getIdcardFeat(matphoto);
-	SetEvent(m_eGetIdCardFeat);	// ready to get feat
+	//getIDCardFeat(matphoto);
+	SetEvent(m_eGetIDCardFeat);	// ready to get feat
 
 #if DEBUG_LOG_FILE
 	g_CriticalSection.Lock();
@@ -1732,10 +1779,10 @@ bool CIDCardFdvDlg::idcardPreRead()
 
 	return ret;
 }
-void CIDCardFdvDlg::getIdcardMatPhoto(cv::Mat &matphoto)
+void CIDCardFdvDlg::getIDCardMatPhoto(cv::Mat &matphoto)
 {
 	// 获取照片
-	long lenbmp = IDCardReader_GetPhotoBMP(m_IdCardPhoto, sizeof(m_IdCardPhoto));
+	long lenbmp = IDCardReader_GetPhotoBMP(m_IDCardPhoto, sizeof(m_IDCardPhoto));
 
 	if (m_iplImgPhoto) {
 		cvReleaseImage(&(m_iplImgPhoto));	// 先释放
@@ -1744,7 +1791,7 @@ void CIDCardFdvDlg::getIdcardMatPhoto(cv::Mat &matphoto)
 
 	if (lenbmp > 0) {
 		vector<char>  vcBuf;
-		vcBuf.insert(vcBuf.end(), m_IdCardPhoto, m_IdCardPhoto + lenbmp);
+		vcBuf.insert(vcBuf.end(), m_IDCardPhoto, m_IDCardPhoto + lenbmp);
 		matphoto = cv::imdecode(vcBuf, CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
 	}
 
@@ -1752,10 +1799,10 @@ void CIDCardFdvDlg::getIdcardMatPhoto(cv::Mat &matphoto)
 		IplImage imgTmp = matphoto;
 		m_iplImgPhoto = cvCloneImage(&imgTmp);
 	}
-	//m_iplImgPhoto = BMP2Ipl((unsigned char*)m_IdCardPhoto, lenbmp);
+	//m_iplImgPhoto = BMP2Ipl((unsigned char*)m_IDCardPhoto, lenbmp);
 }
 
-void CIDCardFdvDlg::getIdcardFeat(cv::Mat &matphoto)
+void CIDCardFdvDlg::getIDCardFeat(cv::Mat &matphoto)
 {
 	if (matphoto.empty())
 		return;
@@ -1857,6 +1904,11 @@ BOOL CIDCardFdvDlg::DestroyWindow()
 		m_iplImgPhoto = NULL;
 	}
 
+	if (m_pMsgDlg) {
+		delete m_pMsgDlg;
+		m_pMsgDlg = NULL;
+	}
+
 	if (m_pOperationDlg) {
 		delete m_pOperationDlg;
 		m_pOperationDlg = NULL;
@@ -1933,16 +1985,16 @@ void CIDCardFdvDlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent)
 	{
 	case CLEAR_INFOIMG_TIMER:
-		waitFdvThreadStopped();
-		m_pInfoDlg->ShowWindow(SW_HIDE);
-		m_pInfoDlg->clearCameraImage();
-		m_pInfoDlg->clearIdcardImage();
+		waitFdvThreadStopped();	
 		m_bDrawResultIconRight = m_bDrawResultIconWrong = false;//m_pInfoDlg->clearResultIcon();
+		Sleep(100);
+		m_pInfoDlg->ShowWindow(SW_HIDE);
+		//m_pInfoDlg->clearCameraImage();	// SW_HIDE后描画无效，不需清理
+		//m_pInfoDlg->clearIDCardImage();		
 		m_pInfoDlg->setResultText("");
 		m_pInfoDlg->UpdateData(FALSE);
-		m_pInfoDlg->Invalidate();
 		m_pInfoDlg->UpdateWindow();
-		stopClearTimer();// KillTimer(CLEAR_INFOIMG_TIMER);
+		stopClearTimer();
 		ResetEvent(m_eCameraResume);	
 		m_bDrawScan = false;
 		m_pInfoDlg->enableIDCardNoBtn(true);

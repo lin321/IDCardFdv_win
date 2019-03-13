@@ -262,7 +262,7 @@ bool saveToLocal(string path,string idcard_no, string serialno, double similarit
 		if (!ret)
 			return false;
 	}
-
+	
 	return true;
 }
 

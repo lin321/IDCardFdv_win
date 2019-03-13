@@ -302,7 +302,7 @@ void CInfoDlg::drawImage(IplImage* img, UINT ID, int type, bool clearArea)
 	ReleaseDC(pDC);
 }
 
-void CInfoDlg::drawIdcardImage(IplImage* img)
+void CInfoDlg::drawIDCardImage(IplImage* img)
 {
 	if (!img)
 		return;
@@ -358,7 +358,7 @@ void CInfoDlg::drawCameraImage(IplImage* img)
 }
 
 void CInfoDlg::clearCameraImage() { drawImage(m_iplImgClearImg, IDC_CAMERA_IMG, DRAW_TYPE_FULL); }
-void CInfoDlg::clearIdcardImage() { drawImage(m_iplImgClearImg, IDC_IDCARD_IMG, DRAW_TYPE_FULL); }
+void CInfoDlg::clearIDCardImage() { drawImage(m_iplImgClearImg, IDC_IDCARD_IMG, DRAW_TYPE_FULL); }
 void CInfoDlg::clearResultIcon() { drawImage(m_iplImgClearImg, IDC_RESULT_ICON, DRAW_TYPE_FULL); }
 
 void CInfoDlg::drawResultIcon(IplImage* img)

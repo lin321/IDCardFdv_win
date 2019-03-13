@@ -63,10 +63,10 @@ public:
 	void setFdvDlgPtr(WORK_PTR ptr) { m_pFdvDlg = ptr; }
 	void setFontRate(float rate) { m_fFontRate = rate; }
 	void drawCameraImage(IplImage* img);
-	void drawIdcardImage(IplImage* img);
+	void drawIDCardImage(IplImage* img);
 	void drawResultIcon(IplImage* img);
 	void clearCameraImage();
-	void clearIdcardImage();
+	void clearIDCardImage();
 	void clearResultIcon();
 	void setResultText(std::string result);
 	void setResultTextSize(int size) { m_iResultTextSize = size; }

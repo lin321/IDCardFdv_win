@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CvvImage.h"
+#include "MsgDlg.h"
 #include "OperationDlg.h"
 #include "AttentionDlg.h"
 #include "InfoDlg.h"
@@ -158,12 +159,16 @@ public:
 	bool m_bMainWinClose;
 
 	// idcard
-	char m_IdCardId[256];
-	char m_IdCardIssuedate[256];
-	char m_IdCardPhoto[102400];
+	char m_IDCardId[256];
+	char m_IDCardIssuedate[256];
+	char m_IDCardPhoto[102400];
 	IplImage* m_iplImgPhoto;
-	bool m_bIdCardNoChange;
-	CEvent m_eGetIdCardFeat;	// 手动事件
+	bool m_bIDCardReadOK;
+	bool m_bIDCardNoChange;
+	CEvent m_eGetIDCardFeat;	// 手动事件
+
+	// msg dialog
+	CMsgDlg* m_pMsgDlg;
 
 	// opration panel
 	COperationDlg* m_pOperationDlg;
@@ -216,11 +221,14 @@ public:
 	void waitFdvThreadStopped();
 	void startImgUploadThread();
 	void stopImgUploadThread();
-	void setClearTimer(int sec = 3);
+	void setClearTimer(float sec = 3.0);
 	void stopClearTimer();
+
+	void afterIDCardReadOK();
 	bool idcardPreRead();
-	void getIdcardMatPhoto(cv::Mat &matphoto);
-	void getIdcardFeat(cv::Mat &matphoto);
+	
+	void getIDCardMatPhoto(cv::Mat &matphoto);
+	void getIDCardFeat(cv::Mat &matphoto);
 
 	virtual BOOL DestroyWindow();
 	afx_msg void OnClose();

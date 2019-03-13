@@ -168,7 +168,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -204,6 +204,7 @@
     <ClInclude Include="ImgUploadMgt.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LocalMac.h" />
+    <ClInclude Include="MsgDlg.h" />
     <ClInclude Include="OperationDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="ImgUploadMgt.cpp" />
     <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="LocalMac.cpp" />
+    <ClCompile Include="MsgDlg.cpp" />
     <ClCompile Include="OperationDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

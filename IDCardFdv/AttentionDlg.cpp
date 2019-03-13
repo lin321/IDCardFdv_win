@@ -212,7 +212,7 @@ HBRUSH CAttentionDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CAttentionDlg::drawAttentionIcon(IplImage* img)
 {
 	CWnd* pWnd = GetDlgItem(IDC_ATT_ICON);
-	if (NULL == pWnd)
+	if (NULL == pWnd || NULL == img)
 		return;
 
 	CDC* pDC = pWnd->GetDC();		// 获得显示控件的 DC

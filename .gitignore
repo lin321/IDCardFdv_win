@@ -22,3 +22,6 @@ bin/opencv_imgproc400.dll
 bin/opencv_imgcodecs400.dll
 bin/opencv_core400.dll
 include/opencv-2.4.7/
+IDCardFdvStartup/IDCardFdvStartup.aps
+IDCardFdvStartup/IDCardFdvStartup.vcxproj.user
+others/backup/

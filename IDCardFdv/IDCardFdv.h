@@ -28,6 +28,9 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+private:
+	HANDLE m_hMutex;
 };
 
 extern CIDCardFdvApp theApp;

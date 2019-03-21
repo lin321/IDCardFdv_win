@@ -27,6 +27,9 @@ public:
 // й╣ож
 
 	DECLARE_MESSAGE_MAP()
+
+private:
+	HANDLE m_hMutex;
 };
 
 extern CIDCardFdvRegisterApp theApp;

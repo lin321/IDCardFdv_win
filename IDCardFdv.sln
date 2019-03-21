@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qrencode", "qrencode\qrenco
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "IDCardFdvSetup", "IDCardFdvSetup\IDCardFdvSetup.isproj", "{286389C9-54C7-4F44-9D49-A5B43195AE70}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IDCardFdvStartup", "IDCardFdvStartup\IDCardFdvStartup.vcxproj", "{A7E591BD-EECA-41F8-9A07-088083640B32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|x64 = CD_ROM|x64
@@ -171,6 +173,26 @@ Global
 		{286389C9-54C7-4F44-9D49-A5B43195AE70}.SingleImage|x64.Build.0 = SingleImage
 		{286389C9-54C7-4F44-9D49-A5B43195AE70}.SingleImage|x86.ActiveCfg = SingleImage
 		{286389C9-54C7-4F44-9D49-A5B43195AE70}.SingleImage|x86.Build.0 = SingleImage
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.CD_ROM|x64.ActiveCfg = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.CD_ROM|x64.Build.0 = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.CD_ROM|x86.ActiveCfg = Release|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.CD_ROM|x86.Build.0 = Release|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Debug|x64.ActiveCfg = Debug|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Debug|x64.Build.0 = Debug|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Debug|x86.ActiveCfg = Debug|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Debug|x86.Build.0 = Debug|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.DVD-5|x64.ActiveCfg = Debug|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.DVD-5|x64.Build.0 = Debug|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.DVD-5|x86.ActiveCfg = Debug|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.DVD-5|x86.Build.0 = Debug|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Release|x64.ActiveCfg = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Release|x64.Build.0 = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Release|x86.ActiveCfg = Release|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.Release|x86.Build.0 = Release|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.SingleImage|x64.ActiveCfg = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.SingleImage|x64.Build.0 = Release|x64
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.SingleImage|x86.ActiveCfg = Release|Win32
+		{A7E591BD-EECA-41F8-9A07-088083640B32}.SingleImage|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

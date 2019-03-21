@@ -90,6 +90,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\include\opencv-2.4.9;$(SolutionDir)\include\opencv-2.4.9\opencv;$(SolutionDir)\include\opencv-2.4.9\opencv2;$(SolutionDir)\include\ZZLibrary-2.0.0.1;$(SolutionDir)\include\MTLib;$(SolutionDir)\include\Ai_Fdr_SC;$(SolutionDir)\include\alut;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Runnable\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -168,7 +169,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

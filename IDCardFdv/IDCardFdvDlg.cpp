@@ -28,9 +28,13 @@ using namespace cv;
 #define SHOW_ADV		0
 #define SHOW_ATTENTION	1
 
-#define CLEAR_INFOIMG_TIMER 1
-#define ADV_AND_BACK_TIMER	3
+#define CLEAR_INFOIMG_TIMER		1
+#define ADV_AND_BACK_TIMER		3
+#define READ_IDCARD_MSG_TIMER	4
+#define CLOSE_FDV_TIMER			5
 
+// 自定义消息
+#define WM_UPGRADE_CLOSE	WM_USER+1001	// IDCardFdvStartup发送
 clock_t time_net=0;
 clock_t time_global = 0;
 clock_t time_global2 = 0;
@@ -275,6 +279,7 @@ BEGIN_MESSAGE_MAP(CIDCardFdvDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_TIMER()
 	ON_WM_SYSCOMMAND()
+	ON_MESSAGE(WM_UPGRADE_CLOSE, &CIDCardFdvDlg::OnUpgradeClose)
 END_MESSAGE_MAP()
 
 
@@ -322,16 +327,6 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_HtmlView.ShowWindow(SW_HIDE);
 
 	ClientToScreen(&rect);
-	if (NULL == m_pMsgDlg) {
-		int cx = (rect.right - rect.left) / 2;
-		int cy = (rect.bottom - rect.top) / 2;
-		m_pMsgDlg = new CMsgDlg(cx,cy);
-		m_pMsgDlg->setFontRate(m_iPreviewWidth * 1.0f / 1366);// 开发时使用的屏幕宽1366作为基准
-		m_pMsgDlg->Create(IDD_MSG_DIALOG, this);
-	}
-	
-	m_pMsgDlg->hide();
-
 	// 创建操作面板窗口
 	rw = (int)((rect.right - rect.left) * 0.1f);
 	rh = (int)((rect.bottom - rect.top) * 0.08f);
@@ -374,6 +369,16 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 		m_pInfoDlg->resetIDCardNoInput();
 	}
 	m_pInfoDlg->ShowWindow(SW_HIDE);//(SW_SHOW);
+
+	// 提示窗口。 显示在最顶层最后创建
+	if (NULL == m_pMsgDlg) {
+		int cx = (rect.right - rect.left) / 2;
+		int cy = (rect.bottom - rect.top) / 2;
+		m_pMsgDlg = new CMsgDlg(cx, cy);
+		m_pMsgDlg->setFontRate(m_iPreviewWidth * 1.0f / 1366);// 开发时使用的屏幕宽1366作为基准
+		m_pMsgDlg->Create(IDD_MSG_DIALOG, this);
+	}
+	m_pMsgDlg->hide();
 
 	/*
 	m_hBIconCamera = (HBITMAP)LoadImage(AfxGetInstanceHandle(),
@@ -449,8 +454,6 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 		AfxMessageBox("haarcascade_frontalface_default.xml加载出错！");
 	}
 #endif
-
-	
 
 	// config
 	m_cfgCameraVid = "2AB8";
@@ -1065,7 +1068,7 @@ UINT IdcardDetectThread(LPVOID lpParam)
 	int iopen = OpenIDCardReader();
 #endif
 	if (iopen < 0) {
-		pDlg->m_pMsgDlg->setMessage("身份证读卡器连接失败！");
+		pDlg->m_pMsgDlg->setMessage("身份证读卡器连接失败！",1.5f);
 		g_CriticalSection.Lock();
 		//pDlg->m_bIdcardDetectRun = false;
 		g_CriticalSection.Unlock();
@@ -1723,13 +1726,14 @@ bool CIDCardFdvDlg::idcardPreRead()
 	SetEvent(m_eGetIDCardFeat);
 	return true;
 #endif
-	m_pMsgDlg->setMessage("正在读取身份证信息···",0);
+	m_pMsgDlg->setMessage("正在读取身份证信息◇◇◇",0);
+	m_iAniStep = 1;
+	SetTimer(READ_IDCARD_MSG_TIMER, 200, NULL);
 	int content_ret = Authenticate_Content();
-	if (1 != content_ret) {
+	if (1 != content_ret) {		
 		ret = false;
 	}
 	else {
-		afterIDCardReadOK();
 		char idcardid[256] = { 0 };
 		long len = IDCardReader_GetPeopleIDCode(idcardid, sizeof(idcardid));
 		if (strcmp(m_IDCardId, idcardid) == 0 && m_iplImgPhoto != NULL) {
@@ -1759,10 +1763,15 @@ bool CIDCardFdvDlg::idcardPreRead()
 			cvReleaseImage(&(m_iplImgPhoto));
 			m_iplImgPhoto = NULL;
 		}
+
+		KillTimer(READ_IDCARD_MSG_TIMER);
+		m_pMsgDlg->hide(); // 闪一下以提醒用户
 		m_pMsgDlg->setMessage("身份证信息读取错误！请移走身份证重新放置。", 1.9f);
 		setClearTimer(2.0f);
 	}
 	else {
+		KillTimer(READ_IDCARD_MSG_TIMER);
+		afterIDCardReadOK();
 		m_pInfoDlg->ShowWindow(SW_SHOW);
 		m_pInfoDlg->drawIDCardImage(m_iplImgPhoto);
 		setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
@@ -2020,6 +2029,26 @@ void CIDCardFdvDlg::OnTimer(UINT_PTR nIDEvent)
 		m_HtmlView.ShowWindow(SW_HIDE);
 		SetEvent(m_eIdcardDetectResume);
 		break;
+	case READ_IDCARD_MSG_TIMER:
+		{
+			string msg = "正在读取身份证信息";
+			if (1 == m_iAniStep)
+				msg += "◆◇◇";
+			else if (2 == m_iAniStep)
+				msg += "◆◆◇";
+			else if (3 == m_iAniStep)
+				msg += "◆◆◆";
+			else
+				msg += "◇◇◇";
+
+			m_iAniStep = (m_iAniStep + 1) % 4;
+			m_pMsgDlg->setMessage(msg, 0);
+		}
+		break;
+	case CLOSE_FDV_TIMER:
+		KillTimer(CLOSE_FDV_TIMER);
+		SendMessage(WM_CLOSE, 0, 0);
+		break;
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -2061,3 +2090,14 @@ BOOL CIDCardFdvDlg::PreTranslateMessage(MSG* pMsg)
 
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+
+
+afx_msg LRESULT CIDCardFdvDlg::OnUpgradeClose(WPARAM wParam, LPARAM lParam)
+{
+	KillTimer(READ_IDCARD_MSG_TIMER);
+	m_pMsgDlg->setMessage("因维护需要即将重启软件。重启过程大致需要1分钟。", 0, true);
+	SetTimer(CLOSE_FDV_TIMER, 5 * 1000, NULL);
+	
+	return 0;
+}
+

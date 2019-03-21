@@ -1,2 +1,2 @@
-registerSN=5BC3-4447-D2DF-4CC7
+registerSN=
 registeredNo=9081

@@ -87,6 +87,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\include\cpprestsdk-2.10.6;$(SolutionDir)\include\openssl-1_1_0i;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Runnable\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

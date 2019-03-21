@@ -91,6 +91,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\include\opencv-2.4.9;$(SolutionDir)\include\opencv-2.4.9\opencv;$(SolutionDir)\include\opencv-2.4.9\opencv2;$(SolutionDir)\include\ZBarWin64;$(SolutionDir)\include\MTLib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\lib64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Runnable\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

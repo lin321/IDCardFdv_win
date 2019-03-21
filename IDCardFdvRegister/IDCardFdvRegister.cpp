@@ -39,6 +39,17 @@ CIDCardFdvRegisterApp theApp;
 
 BOOL CIDCardFdvRegisterApp::InitInstance()
 {
+	// 创建互斥量
+	m_hMutex = CreateMutex(NULL, FALSE, "IDCardFdvRegister");
+	// 检查错误代码
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		// 如果已有互斥量存在则释放句柄并复位互斥量
+		CloseHandle(m_hMutex);
+		m_hMutex = NULL;
+		// 程序退出
+		return FALSE;
+	}
+
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
 	//则需要 InitCommonControlsEx()。  否则，将无法创建窗口。
@@ -98,6 +109,9 @@ BOOL CIDCardFdvRegisterApp::InitInstance()
 #ifndef _AFXDLL
 	ControlBarCleanUp();
 #endif
+	// 释放互斥量句柄
+	CloseHandle(m_hMutex);
+	m_hMutex = NULL;
 
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。

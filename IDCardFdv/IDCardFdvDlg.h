@@ -169,6 +169,7 @@ public:
 
 	// msg dialog
 	CMsgDlg* m_pMsgDlg;
+	int		m_iAniStep;
 
 	// opration panel
 	COperationDlg* m_pOperationDlg;
@@ -238,4 +239,7 @@ public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	virtual void OnOK();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	// WM_CLOSEFDV
+	afx_msg LRESULT OnUpgradeClose(WPARAM wParam, LPARAM lParam);
 };

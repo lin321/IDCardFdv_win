@@ -51,7 +51,7 @@ BOOL CIDCardFdvApp::InitInstance()
 	}
 
 	/////////////////////////////////////////////////////////
-	WNDCLASS wc;
+/*	WNDCLASS wc;
 
 	// Get the info for this class.
 	// #32770 is the default class name for dialogs boxes.
@@ -62,7 +62,7 @@ BOOL CIDCardFdvApp::InitInstance()
 
 											// Register this class so that MFC can use it.
 	AfxRegisterClass(&wc);
-
+*/
 	/////////////////////////////////////////////////////////
 
 

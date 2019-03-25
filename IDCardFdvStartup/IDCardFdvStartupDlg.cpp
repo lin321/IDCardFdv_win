@@ -175,14 +175,14 @@ UINT MainWorkThread(LPVOID lpParam)
 	CIDCardFdvStartupDlg* pDlg = (CIDCardFdvStartupDlg*)lpParam;
 
 	// 结束可能已打开的IDCardFdv
-	HWND hWnd = ::FindWindow("CIDCardFdvDlg", "IDCardFdv");
+	HWND hWnd = ::FindWindow(NULL, "IDCardFdv.exe");
 	if (hWnd) {
 		::SendMessage(hWnd, WM_CLOSE, 0, 0);
 		int timeout = 2000;	
 		do {
 			Sleep(100);
 			timeout -= 100;
-			hWnd = ::FindWindow("CIDCardFdvDlg", "IDCardFdv");
+			hWnd = ::FindWindow(NULL, "IDCardFdv.exe");
 		} while (hWnd && timeout > 0);
 
 		if (hWnd) {
@@ -377,7 +377,7 @@ UINT MainWorkThread(LPVOID lpParam)
 					string spt = pDlg->m_strModulePath + "Runnable\\AddRestartTask.bat";
 					if (WinExec(spt.c_str(), SW_HIDE) > 31) {
 						// 关闭IDCardFdv.exe
-						HWND hWnd = ::FindWindow(NULL, "IDCardFdv");
+						HWND hWnd = ::FindWindow(NULL, "IDCardFdv.exe");
 						if (hWnd) {
 							::SendMessage(hWnd, WM_UPGRADE_CLOSE, 0, 0);
 						}

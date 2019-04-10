@@ -468,7 +468,7 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 	m_cfgUploadLoc = "UPLOAD";
 	m_cfgAdvUrl = "http://www.baidu.com";
 	m_cfgTimeOut = "15";
-	m_cfgAttStrMain = "公安局";
+	m_cfgAttStrMain = "武汉市";
 	std::ifstream confFile(m_strModulePath + "config.txt");
 	std::string line;
 	while (std::getline(confFile, line)){
@@ -507,6 +507,20 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 		}
 	}
 	confFile.close();
+	// 本地设置，因使用地或场景不同的设置信息
+	std::ifstream confFileLocal(m_strModulePath + "configLocal.txt");
+	if (confFileLocal) {
+		std::istringstream is_line(line);
+		std::string key;
+		if (std::getline(is_line, key, '=')) {
+			std::string value;
+			if (std::getline(is_line, value)) {
+				if (key == "AttStrMain")
+					m_cfgAttStrMain = value;
+			}
+		}
+	}
+	confFileLocal.close();
 	m_pAttentionDlg->setDepartment(m_cfgAttStrMain);
 	
 	m_cfgRegisteredNo = "0";
@@ -1186,11 +1200,19 @@ UINT FaceDetectThread(LPVOID lpParam)
 			time_global = clock();
 			g_CriticalSection.Unlock();
 #endif
+			IplImage* cameraImgRGB = cvCloneImage(pDlg->m_iplImgCameraImg);
+			cvtColor(cvarrToMat(pDlg->m_iplImgCameraImg), cvarrToMat(cameraImgRGB), CV_BGR2RGB);
+			IplImage* cameraImgHideRGB = cvCloneImage(pDlg->m_iplImgCameraImgHide);
+			cvtColor(cvarrToMat(pDlg->m_iplImgCameraImgHide), cvarrToMat(cameraImgHideRGB), CV_BGR2RGB);
+			Mat matframeRGB(cvarrToMat(cameraImgRGB));
+			Mat matframehideRGB(cvarrToMat(cameraImgHideRGB));
 
 			g_CriticalSectionAiFdr.Lock();
-			live = pDlg->m_pfrmwrap->livecheck(matframe, matframehide, tmpfacerect, tmpfacefeat);
+			live = pDlg->m_pfrmwrap->livecheck(matframeRGB, matframehideRGB, tmpfacerect, tmpfacefeat);
 			g_CriticalSectionAiFdr.Unlock();
 
+			cvReleaseImage(&cameraImgRGB);
+			cvReleaseImage(&cameraImgHideRGB);
 #if DEBUG_LOG_FILE
 			g_CriticalSection.Lock();
 			pDlg->m_logfile << "end livecheck! " << clock() - time_global << "ms" << endl;
@@ -1213,8 +1235,11 @@ UINT FaceDetectThread(LPVOID lpParam)
 
 				if (!pDlg->m_bIDCardNoChange || pDlg->m_photoFaceFeat.size()<=0) {
 					// 仅身份证有变化或特征值为空时提取
-					Mat matphoto = cvarrToMat(pDlg->m_iplImgPhoto);
+					IplImage* imgRGB = cvCloneImage(pDlg->m_iplImgPhoto);
+					cvtColor(cvarrToMat(pDlg->m_iplImgPhoto), cvarrToMat(imgRGB), CV_BGR2RGB);
+					Mat matphoto = cvarrToMat(imgRGB);
 					pDlg->getIDCardFeat(matphoto);
+					cvReleaseImage(&imgRGB);
 				}
 
 #if DEBUG_LOG_FILE

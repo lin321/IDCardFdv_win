@@ -201,6 +201,13 @@ UINT MainWorkThread(LPVOID lpParam)
 	BOOL lret = LockFile(hFile, 0, 0, fsize, 0);
 	*/
 	ifstream verFileUpgrade(pDlg->m_strModulePath + "Upgrade\\version.txt");
+	ifstream tmpVerFile(pDlg->m_strModulePath + "Runnable\\version.txt");
+	if (!tmpVerFile) {
+		std::ofstream newVer(pDlg->m_strModulePath + "Runnable\\version.txt");
+		newVer << "v1.0.0-win" << endl;
+		newVer.close();
+	}
+	tmpVerFile.close();
 	ifstream verFileRunnable(pDlg->m_strModulePath + "Runnable\\version.txt");
 	if (verFileUpgrade && verFileRunnable) {
 		// ¼ì²éÐÂ°æ±¾

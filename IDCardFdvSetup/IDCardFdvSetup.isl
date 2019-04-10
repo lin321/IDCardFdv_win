@@ -2017,6 +2017,7 @@
 		<row><td>cacert.pem</td><td>ISX_DEFAULTCOMPONENT4</td><td>cacert.pem</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\cacert.pem</td><td>1</td><td/></row>
 		<row><td>certmgr.exe</td><td>certmgr.exe</td><td>certmgr.exe</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\certmgr.exe</td><td>1</td><td/></row>
 		<row><td>config.txt1</td><td>ISX_DEFAULTCOMPONENT4</td><td>config.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\config.txt</td><td>1</td><td/></row>
+		<row><td>configlocal.txt</td><td>ISX_DEFAULTCOMPONENT4</td><td>CONFIG~1.TXT|configLocal.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\configLocal.txt</td><td>1</td><td/></row>
 		<row><td>configreg.txt1</td><td>ISX_DEFAULTCOMPONENT4</td><td>CONFIG~1.TXT|configReg.txt</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\configReg.txt</td><td>1</td><td/></row>
 		<row><td>cpprest140_2_10.dll1</td><td>cpprest140_2_10.dll1</td><td>CPPRES~1.DLL|cpprest140_2_10.dll</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\cpprest140_2_10.dll</td><td>1</td><td/></row>
 		<row><td>help.jpg1</td><td>ISX_DEFAULTCOMPONENT4</td><td>help.jpg</td><td>0</td><td/><td/><td/><td>1</td><td>E:\vc\facedetect\IDCardFdv\x64\Release\Runnable\help.jpg</td><td>1</td><td/></row>

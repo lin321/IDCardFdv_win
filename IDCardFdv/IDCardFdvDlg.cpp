@@ -401,11 +401,11 @@ BOOL CIDCardFdvDlg::OnInitDialog()
 		m_iplImgTestPhoto = cvLoadImage(fn.c_str(), -1);
 		cvtColor(cvarrToMat(m_iplImgTestPhoto), cvarrToMat(m_iplImgTestPhoto), CV_BGR2RGB);
 
-		fn = m_strModulePath + "TF01_0.jpg";
+		fn = m_strModulePath + "TF01_0.jpeg";
 		m_iplImgTestImage = cvLoadImage(fn.c_str(), -1);
 		cvtColor(cvarrToMat(m_iplImgTestImage), cvarrToMat(m_iplImgTestImage), CV_BGR2RGB);
 
-		fn = m_strModulePath + "TF01_1.jpg";
+		fn = m_strModulePath + "TF01_1.jpeg";
 		m_iplImgTestImage2 = cvLoadImage(fn.c_str(), -1);
 		cvtColor(cvarrToMat(m_iplImgTestImage2), cvarrToMat(m_iplImgTestImage2), CV_BGR2RGB);
 
@@ -1748,7 +1748,12 @@ bool CIDCardFdvDlg::idcardPreRead()
 	strcpy_s(m_IDCardId, "339005198608221614");
 	strcpy_s(m_IDCardIssuedate, "20111207");
 	m_iplImgPhoto = cvCloneImage(m_iplImgTestPhoto);
+	afterIDCardReadOK();
+	m_pInfoDlg->ShowWindow(SW_SHOW);
+	m_pInfoDlg->drawIDCardImage(m_iplImgPhoto);
+	setClearTimer(FDVDLG_DEFAULT_CLEAR_TIME);
 	SetEvent(m_eGetIDCardFeat);
+//	getIDCardFeat(cvarrToMat(m_iplImgPhoto));
 	return true;
 #endif
 	m_pMsgDlg->setMessage("正在读取身份证信息◇◇◇",0);
@@ -1844,7 +1849,7 @@ void CIDCardFdvDlg::getIDCardFeat(cv::Mat &matphoto)
 	std::vector < std::vector<int>> face_rects;
 
 	g_CriticalSectionAiFdr.Lock();
-	int photo_face_cnt = m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
+	int photo_face_cnt = 0;// m_pfrmwrap->dectect_faces(matphoto, face_rects, 1, true);
 	g_CriticalSectionAiFdr.Unlock();
 	if (photo_face_cnt < 1) {
 		face_rects.push_back({ 19,35,80,97 }); // l t r b

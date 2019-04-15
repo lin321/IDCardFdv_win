@@ -362,7 +362,12 @@ UINT MainWorkThread(LPVOID lpParam)
 
 	// 取重启的分钟随机数
 	::srand((unsigned)time(NULL));
-	int rebootM = (::rand() % 58); // 0-57
+	int rebootM;
+	if (CTime::GetCurrentTime().GetHour() == 5)
+		rebootM = -1;	// 当前在重启时间段，不执行重启（避免多次重启）
+	else
+		rebootM = (::rand() % 58); // 0-57
+	
 	while(1){
 		Sleep(10*1000);
 		//Sleep(1 * 1000);
@@ -376,9 +381,12 @@ UINT MainWorkThread(LPVOID lpParam)
 			// 定点重启
 			CTime time = CTime::GetCurrentTime();
 			int hour = time.GetHour();
+			if (rebootM == -1 && (hour != 5))
+				rebootM = (::rand() % 58); // 0-57
+
 			if (hour == 5 || upgrademyself) {
 				int minute = time.GetMinute();
-				if (minute >= rebootM || upgrademyself) {
+				if ((rebootM > 0 && (minute >= rebootM)) || upgrademyself) {
 					// 重启
 					// 执行添加重启的计划任务bat
 					string spt = pDlg->m_strModulePath + "Runnable\\AddRestartTask.bat";
